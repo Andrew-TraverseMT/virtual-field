@@ -2,14 +2,20 @@
 
 import { useState } from 'react'
 import { signIn } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
+import Link from 'next/link'
+import { Suspense } from 'react'
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+
+  const verified = searchParams.get('verified') === '1'
+  const tokenError = searchParams.get('error')
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -48,6 +54,23 @@ export default function LoginPage() {
             3-week virtual geology field experience
           </p>
         </div>
+
+        {/* Verification banner */}
+        {verified && (
+          <div className="mb-4 rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+            Email verified — you can now sign in.
+          </div>
+        )}
+        {tokenError === 'token_expired' && (
+          <div className="mb-4 rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600">
+            That link has expired. <Link href="/register" className="font-medium underline">Register again</Link> to get a new one.
+          </div>
+        )}
+        {tokenError === 'invalid_token' && (
+          <div className="mb-4 rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600">
+            Invalid or already-used verification link.
+          </div>
+        )}
 
         {/* Card */}
         <div className="rounded-2xl border border-stone-200 bg-white px-8 py-8 shadow-sm">
@@ -104,13 +127,28 @@ export default function LoginPage() {
           </form>
         </div>
 
+        <p className="mt-4 text-center text-sm text-stone-400">
+          Montana University student?{' '}
+          <Link href="/register" className="font-medium text-amber-700 hover:text-amber-800">
+            Create an account
+          </Link>
+        </p>
+
         {/* Demo credentials */}
-        <div className="mt-6 rounded-lg border border-dashed border-stone-200 bg-white/60 px-4 py-3">
+        <div className="mt-4 rounded-lg border border-dashed border-stone-200 bg-white/60 px-4 py-3">
           <p className="text-xs font-medium text-stone-500 mb-1">Demo credentials</p>
           <p className="text-xs text-stone-400 font-mono">student@virtualfield.dev / test1234</p>
           <p className="text-xs text-stone-400 font-mono mt-0.5">instructor@virtualfield.dev / instructor1234</p>
         </div>
       </div>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
   )
 }

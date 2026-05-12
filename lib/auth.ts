@@ -1,5 +1,8 @@
 import type { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
+import bcrypt from 'bcryptjs'
+import { getDB } from '@/lib/db'
+import type { RegisteredUser } from '@/lib/db'
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -12,7 +15,7 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null
 
-        const users = [
+        const hardcoded = [
           {
             id: 'student-001',
             name: 'Test Student',
@@ -29,14 +32,32 @@ export const authOptions: NextAuthOptions = {
           },
         ]
 
-        const user = users.find(
+        const match = hardcoded.find(
           (u) =>
             u.email === credentials.email &&
             u.password === credentials.password
         )
+        if (match) {
+          return { id: match.id, name: match.name, email: match.email, role: match.role }
+        }
 
-        if (!user) return null
-        return { id: user.id, name: user.name, email: user.email, role: user.role as 'student' | 'instructor' }
+        // Check registered @montana.edu users
+        const db = getDB()
+        const dbUser = db
+          .prepare('SELECT * FROM registered_users WHERE email = ? AND verified = 1')
+          .get(credentials.email.toLowerCase()) as RegisteredUser | undefined
+
+        if (!dbUser) return null
+
+        const passwordOk = await bcrypt.compare(credentials.password, dbUser.password_hash)
+        if (!passwordOk) return null
+
+        return {
+          id: dbUser.id,
+          name: dbUser.name,
+          email: dbUser.email,
+          role: 'student' as const,
+        }
       },
     }),
   ],

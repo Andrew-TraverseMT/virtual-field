@@ -16,6 +16,16 @@ export function getDB(): Database.Database {
 
 function initSchema(database: Database.Database): void {
   database.exec(`
+    CREATE TABLE IF NOT EXISTS registered_users (
+      id                  TEXT PRIMARY KEY,
+      name                TEXT NOT NULL,
+      email               TEXT NOT NULL UNIQUE,
+      password_hash       TEXT NOT NULL,
+      verified            INTEGER NOT NULL DEFAULT 0,
+      verification_token  TEXT UNIQUE,
+      created_at          INTEGER NOT NULL
+    );
+
     CREATE TABLE IF NOT EXISTS students (
       id          TEXT PRIMARY KEY,
       name        TEXT NOT NULL,
@@ -85,4 +95,14 @@ export type Student = {
   email: string
   enrolled_at: number
   deadline_at: number
+}
+
+export type RegisteredUser = {
+  id: string
+  name: string
+  email: string
+  password_hash: string
+  verified: 0 | 1
+  verification_token: string | null
+  created_at: number
 }
