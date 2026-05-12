@@ -6,7 +6,7 @@ export async function proxy(request: NextRequest) {
   const token = await getToken({ req: request })
   const { pathname } = request.nextUrl
 
-  if (pathname.startsWith('/dashboard') || pathname.startsWith('/assignments')) {
+  if (pathname.startsWith('/dashboard') || pathname.startsWith('/assignments') || pathname.startsWith('/account')) {
     if (!token) {
       return NextResponse.redirect(new URL('/login', request.url))
     }
@@ -22,5 +22,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/assignments/:path*', '/instructor/:path*'],
+  matcher: ['/dashboard/:path*', '/assignments/:path*', '/instructor/:path*', '/account/:path*'],
 }

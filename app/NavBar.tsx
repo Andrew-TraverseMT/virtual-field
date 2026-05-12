@@ -28,20 +28,36 @@ export default function NavBar() {
 
         <nav className="flex items-center gap-1">
           {role === 'instructor' && (
-            <Link
-              href="/instructor"
-              className="rounded-md px-3 py-1.5 text-sm font-medium text-stone-500 hover:bg-stone-100 hover:text-stone-900 transition-colors"
-            >
-              Portal
-            </Link>
+            <>
+              <Link
+                href="/instructor"
+                className="rounded-md px-3 py-1.5 text-sm font-medium text-stone-500 hover:bg-stone-100 hover:text-stone-900 transition-colors"
+              >
+                Portal
+              </Link>
+              <Link
+                href="/instructor/students"
+                className="rounded-md px-3 py-1.5 text-sm font-medium text-stone-500 hover:bg-stone-100 hover:text-stone-900 transition-colors"
+              >
+                Students
+              </Link>
+            </>
           )}
           {role === 'student' && (
-            <Link
-              href="/dashboard"
-              className="rounded-md px-3 py-1.5 text-sm font-medium text-stone-500 hover:bg-stone-100 hover:text-stone-900 transition-colors"
-            >
-              Dashboard
-            </Link>
+            <>
+              <Link
+                href="/dashboard"
+                className="rounded-md px-3 py-1.5 text-sm font-medium text-stone-500 hover:bg-stone-100 hover:text-stone-900 transition-colors"
+              >
+                Dashboard
+              </Link>
+              <Link
+                href="/account"
+                className="rounded-md px-3 py-1.5 text-sm font-medium text-stone-500 hover:bg-stone-100 hover:text-stone-900 transition-colors"
+              >
+                Account
+              </Link>
+            </>
           )}
 
           {session && (

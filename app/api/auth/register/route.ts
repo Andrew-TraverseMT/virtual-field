@@ -3,10 +3,20 @@ import { randomBytes } from 'crypto'
 import bcrypt from 'bcryptjs'
 import { getDB } from '@/lib/db'
 import { sendVerificationEmail } from '@/lib/email'
+import { rateLimit, getClientIp } from '@/lib/rateLimit'
 
 export const runtime = 'nodejs'
 
 export async function POST(req: NextRequest) {
+  const ip = getClientIp(req.headers)
+  const rl = rateLimit(`register:${ip}`, 5, 15 * 60 * 1000)
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: `Too many registration attempts. Try again in ${rl.retryAfterSec}s.` },
+      { status: 429 }
+    )
+  }
+
   const { name, email, password } = await req.json() as {
     name?: string
     email?: string

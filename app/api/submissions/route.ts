@@ -4,8 +4,7 @@ import { authOptions } from '@/lib/auth'
 import { getDB } from '@/lib/db'
 import { assignments } from '@/lib/assignments'
 import { gradeSubmission } from '@/lib/gemini'
-import { writeFile, mkdir } from 'fs/promises'
-import path from 'path'
+import { storeFile } from '@/lib/storage'
 import { randomUUID } from 'crypto'
 
 export async function POST(request: NextRequest) {
@@ -51,8 +50,25 @@ export async function POST(request: NextRequest) {
     }
   }
 
+  // Enforce submission deadline (skip for instructors)
+  const callerRole = (session.user as { role?: string }).role
+  if (callerRole !== 'instructor') {
+    const stu = db
+      .prepare('SELECT deadline_at FROM students WHERE id = ?')
+      .get(studentId) as { deadline_at: number | null } | undefined
+    const nowSec = Math.floor(Date.now() / 1000)
+    if (stu?.deadline_at && stu.deadline_at < nowSec) {
+      return NextResponse.json(
+        { error: 'The submission deadline for your cohort has passed.' },
+        { status: 403 }
+      )
+    }
+  }
+
   const file = formData.get('file') as File | null
   let fileName: string | null = null
+  let fileUrl: string | null = null
+  let gradeBuffer: Buffer | null = null
 
   if (file && file.size > 0) {
     // Validate file type (PDF only)
@@ -64,14 +80,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'File exceeds 25 MB limit' }, { status: 400 })
     }
 
-    const uploadDir = path.join(process.cwd(), 'uploads', studentId)
-    await mkdir(uploadDir, { recursive: true })
-
     const safeBase = `${assignmentId}-${Date.now()}.pdf`
-    const filePath = path.join(uploadDir, safeBase)
-    const buffer = Buffer.from(await file.arrayBuffer())
-    await writeFile(filePath, buffer)
-    fileName = safeBase
+    gradeBuffer = Buffer.from(await file.arrayBuffer())
+    fileUrl = await storeFile(gradeBuffer, studentId, safeBase)
+    fileName = file.name
   }
 
   const submissionId = randomUUID()
@@ -85,27 +97,28 @@ export async function POST(request: NextRequest) {
   const effectiveId = existing?.id ?? submissionId
 
   db.prepare(
-    `INSERT INTO submissions (id, student_id, assignment_id, submitted_at, file_name, status)
-     VALUES (?, ?, ?, ?, ?, 'pending')
+    `INSERT INTO submissions (id, student_id, assignment_id, submitted_at, file_name, file_url, status)
+     VALUES (?, ?, ?, ?, ?, ?, 'pending')
      ON CONFLICT(student_id, assignment_id) DO UPDATE SET
        submitted_at = excluded.submitted_at,
        file_name = excluded.file_name,
+       file_url = excluded.file_url,
        status = 'pending',
        ai_grade = NULL,
        ai_feedback = NULL,
        ai_rubric_scores = NULL`
-  ).run(submissionId, studentId, assignmentId, now, fileName)
+  ).run(submissionId, studentId, assignmentId, now, fileName, fileUrl)
 
   // Fire-and-forget AI grading — runs in the background after response is sent.
   // The grade route updates status to 'ai_graded' when complete.
   // Students won't see the grade until an instructor approves it.
-  if (fileName && process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== 'your_gemini_api_key_here') {
-    const gradeFilePath = path.join(process.cwd(), 'uploads', studentId, fileName)
+  if (fileUrl && gradeBuffer && process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== 'your_gemini_api_key_here') {
+    const bufferForGrade = gradeBuffer
     const assignmentForGrade = assignment
     const idToGrade = effectiveId
     ;(async () => {
       try {
-        const result = await gradeSubmission(gradeFilePath, assignmentForGrade)
+        const result = await gradeSubmission(bufferForGrade, assignmentForGrade)
         const db2 = getDB()
         db2
           .prepare(

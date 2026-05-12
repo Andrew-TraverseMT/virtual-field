@@ -79,16 +79,10 @@ function cleanJson(text: string): string {
 // rubric from assignments.json instead of a static answer key.
 
 export async function gradeSubmission(
-  filePath: string,
+  fileBuffer: Buffer,
   assignment: Assignment
 ): Promise<GradeResult> {
-  const { genAI, fileManager } = getClients()
-
-  // Upload the PDF using the Gemini File API (same as notebook's genai.upload_file)
-  const upload = await fileManager.uploadFile(filePath, {
-    mimeType: 'application/pdf',
-    displayName: `${assignment.id}-submission`,
-  })
+  const { genAI } = getClients()
 
   const prompt = `You are a geology TA grading a student submission. Award partial credit where deserved. For graphical deliverables (maps, cross-sections, stereonets) assess based on visual accuracy and completeness.
 
@@ -119,7 +113,12 @@ Return ONLY a raw JSON object — no markdown code blocks:
   const model = genAI.getGenerativeModel({ model: 'gemini-2.5-pro' })
   const result = await model.generateContent([
     prompt,
-    { fileData: { mimeType: 'application/pdf', fileUri: upload.file.uri } },
+    {
+      inlineData: {
+        mimeType: 'application/pdf',
+        data: fileBuffer.toString('base64'),
+      },
+    },
   ])
 
   return JSON.parse(cleanJson(result.response.text())) as GradeResult

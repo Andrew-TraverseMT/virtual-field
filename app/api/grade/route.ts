@@ -23,6 +23,7 @@ import { authOptions } from '@/lib/auth'
 import { getDB } from '@/lib/db'
 import { assignments } from '@/lib/assignments'
 import { gradeSubmission } from '@/lib/gemini'
+import { getFileBuffer } from '@/lib/storage'
 import path from 'path'
 
 export const runtime = 'nodejs'
@@ -54,6 +55,7 @@ export async function POST(request: NextRequest) {
         student_id: string
         assignment_id: string
         file_name: string | null
+        file_url: string | null
         status: string
       }
     | undefined
@@ -78,15 +80,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Assignment not found' }, { status: 404 })
   }
 
-  const filePath = path.join(
-    process.cwd(),
-    'uploads',
-    submission.student_id,
-    submission.file_name
-  )
+  const filePointer =
+    submission.file_url ??
+    path.join(process.cwd(), 'uploads', submission.student_id, submission.file_name ?? '')
 
   try {
-    const result = await gradeSubmission(filePath, assignment)
+    const buffer = await getFileBuffer(filePointer)
+    const result = await gradeSubmission(buffer, assignment)
 
     db.prepare(
       `UPDATE submissions

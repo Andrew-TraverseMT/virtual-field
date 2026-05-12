@@ -34,12 +34,19 @@ function initSchema(database: Database.Database): void {
       deadline_at INTEGER NOT NULL
     );
 
+    CREATE TABLE IF NOT EXISTS password_reset_tokens (
+      token      TEXT PRIMARY KEY,
+      user_id    TEXT NOT NULL,
+      created_at INTEGER NOT NULL
+    );
+
     CREATE TABLE IF NOT EXISTS submissions (
       id                    TEXT PRIMARY KEY,
       student_id            TEXT NOT NULL,
       assignment_id         TEXT NOT NULL,
       submitted_at          INTEGER NOT NULL,
       file_name             TEXT,
+      file_url              TEXT,
       status                TEXT NOT NULL DEFAULT 'pending',
       ai_grade              INTEGER,
       ai_feedback           TEXT,
@@ -51,6 +58,15 @@ function initSchema(database: Database.Database): void {
       UNIQUE(student_id, assignment_id)
     );
   `)
+
+  // Migrate existing databases: add new columns (no-op if already present)
+  const migrations = [
+    `ALTER TABLE submissions ADD COLUMN file_url TEXT`,
+    `ALTER TABLE registered_users ADD COLUMN email_bounced INTEGER NOT NULL DEFAULT 0`,
+  ]
+  for (const sql of migrations) {
+    try { database.exec(sql) } catch { /* column already exists */ }
+  }
 
   // Seed the hardcoded test student
   const existing = database
@@ -75,6 +91,7 @@ export type Submission = {
   assignment_id: string
   submitted_at: number
   file_name: string | null
+  file_url: string | null
   // 'pending'        → saved, AI grading in progress
   // 'ai_graded'      → AI grade stored, awaiting instructor review (hidden from student)
   // 'approved'       → instructor approved AI grade (student can see)
@@ -103,6 +120,7 @@ export type RegisteredUser = {
   email: string
   password_hash: string
   verified: 0 | 1
+  email_bounced: 0 | 1
   verification_token: string | null
   created_at: number
 }
