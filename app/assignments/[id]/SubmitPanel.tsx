@@ -90,79 +90,79 @@ export default function SubmitPanel({
   const gradeVisible = existingStatus === 'approved' || existingStatus === 'graded' || canResubmit
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
+
       {/* Grading-in-progress notice */}
       {(existingStatus === 'pending' || existingStatus === 'ai_graded') && (
-        <div className="rounded-xl border border-violet-200 bg-violet-50 p-4 text-sm text-violet-700">
-          <div className="font-semibold mb-0.5">
-            {existingStatus === 'pending' ? '⏳ Grading in progress…' : '✦ AI grading complete'}
-          </div>
-          <p className="text-violet-600">
+        <div className="rounded-2xl border border-violet-100 bg-violet-50/80 p-5">
+          <p className="text-sm font-medium text-violet-800 mb-1">
+            {existingStatus === 'pending' ? 'Grading in progress' : 'AI grading complete'}
+          </p>
+          <p className="text-sm text-violet-600 leading-relaxed">
             {existingStatus === 'pending'
-              ? 'Your submission is being graded by AI. Your instructor will review and confirm the grade before it is released to you.'
-              : 'Your work has been graded by AI and is awaiting your instructor\'s review. Your grade will be released once confirmed.'}
+              ? 'Your submission is being reviewed by AI. Your instructor will confirm the grade before it\'s released.'
+              : 'Graded by AI — awaiting instructor review before your grade is released.'}
           </p>
         </div>
       )}
 
-      {/* Feedback panel — shown only after instructor has approved/graded */}
+      {/* Grade & feedback panel */}
       {gradeVisible && (aiGrade !== null || instructorGrade !== null) && (
-        <div className="rounded-xl border border-stone-200 bg-white p-5 shadow-sm">
-          <h3 className="mb-4 font-semibold text-stone-700">Grading Feedback</h3>
+        <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
+          <h3 className="text-xs font-semibold uppercase tracking-widest text-stone-400 mb-5">Grading Feedback</h3>
 
-          <div className="mb-4 flex items-center gap-3">
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-amber-50 text-2xl font-bold text-amber-700">
+          {/* Score display */}
+          <div className="mb-5 flex items-center gap-4">
+            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-stone-900 text-xl font-bold text-white tabular-nums">
               {finalGrade}
             </div>
             <div>
-              <div className="text-sm text-stone-500">
-                {instructorGrade !== null ? 'Instructor grade' : 'AI provisional grade'}
-              </div>
-              <div className="text-sm font-medium text-stone-700">out of {totalPoints} points</div>
+              <p className="text-xs text-stone-400 mb-0.5">
+                {instructorGrade !== null ? 'Instructor grade' : 'Grade'}
+              </p>
+              <p className="text-lg font-semibold text-stone-900 tabular-nums">
+                {finalGrade} / {totalPoints}
+              </p>
             </div>
-            {existingStatus === 'approved' && (
-              <span className="ml-auto rounded-full bg-emerald-100 px-3 py-1 text-sm font-semibold text-emerald-700">
-                ✓ Approved
-              </span>
-            )}
-            {existingStatus === 'revision_requested' && (
-              <span className="ml-auto rounded-full bg-orange-100 px-3 py-1 text-sm font-semibold text-orange-700">
-                ↩ Revision Requested
-              </span>
-            )}
+            <div className="ml-auto">
+              {existingStatus === 'approved' && (
+                <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-200">
+                  Approved
+                </span>
+              )}
+              {existingStatus === 'revision_requested' && (
+                <span className="rounded-full bg-orange-50 px-3 py-1 text-xs font-semibold text-orange-700 ring-1 ring-orange-200">
+                  Revision Needed
+                </span>
+              )}
+            </div>
           </div>
 
           {instructorNotes && (
-            <div className="mb-3 rounded-lg bg-stone-50 p-3">
-              <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-stone-500">
-                Instructor Notes
-              </div>
-              <p className="text-sm text-stone-700">{instructorNotes}</p>
+            <div className="mb-4 rounded-xl bg-stone-50 p-4">
+              <p className="text-xs font-semibold uppercase tracking-widest text-stone-400 mb-2">Instructor Notes</p>
+              <p className="text-sm text-stone-700 leading-relaxed">{instructorNotes}</p>
             </div>
           )}
 
           {aiFeedback && (
-            <div className="rounded-lg bg-violet-50 p-3">
-              <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-violet-600">
-                AI Feedback
-              </div>
-              <p className="whitespace-pre-line text-sm text-stone-700">{aiFeedback}</p>
+            <div className="mb-4 rounded-xl bg-violet-50/60 p-4">
+              <p className="text-xs font-semibold uppercase tracking-widest text-violet-500 mb-2">Feedback</p>
+              <p className="whitespace-pre-line text-sm text-stone-700 leading-relaxed">{aiFeedback}</p>
             </div>
           )}
 
           {parsedRubric && parsedRubric.length > 0 && (
-            <div className="mt-3">
-              <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-stone-500">
-                Criterion Scores
-              </div>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-widest text-stone-400 mb-3">Criterion Scores</p>
               <div className="space-y-2">
                 {parsedRubric.map((score) => (
-                  <div key={score.criterion_id} className="rounded-lg bg-stone-50 p-2.5">
-                    <div className="flex justify-between text-sm mb-0.5">
-                      <span className="font-medium text-stone-700">{score.label}</span>
-                      <span className="font-bold text-amber-700">{score.points_earned}/{score.points_available}</span>
+                  <div key={score.criterion_id} className="rounded-xl bg-stone-50 p-3.5">
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="text-sm font-medium text-stone-700">{score.label}</span>
+                      <span className="text-sm font-bold text-amber-700 tabular-nums">{score.points_earned}/{score.points_available}</span>
                     </div>
-                    <p className="text-xs text-stone-500">{score.justification}</p>
+                    <p className="text-xs text-stone-400 leading-relaxed">{score.justification}</p>
                   </div>
                 ))}
               </div>
@@ -173,24 +173,21 @@ export default function SubmitPanel({
 
       {/* Submission form */}
       {(!submitted || canResubmit) && (
-        <div className="rounded-xl border border-stone-200 bg-white p-5 shadow-sm">
-          <h3 className="mb-1 font-semibold text-stone-700">
-            {canResubmit ? 'Re-submit Your Work' : 'Submit Your Work'}
+        <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
+          <h3 className="text-xs font-semibold uppercase tracking-widest text-stone-400 mb-1">
+            {canResubmit ? 'Re-submit Work' : 'Submit Work'}
           </h3>
-          <p className="mb-4 text-sm text-stone-500">
+          <p className="text-sm text-stone-500 mb-5 leading-relaxed">
             Combine all deliverables into a single PDF and upload below.
-            Submitting will unlock the next assignment immediately.
           </p>
 
           {canResubmit && (
-            <div className="mb-4 rounded-lg bg-orange-50 p-3 text-sm text-orange-700">
-              Your instructor has requested revisions. Please address the feedback above
-              before re-submitting.
+            <div className="mb-4 rounded-xl border border-orange-100 bg-orange-50 p-4 text-sm text-orange-700">
+              Address the instructor feedback above before re-submitting.
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Drop zone */}
             <div
               role="button"
               tabIndex={0}
@@ -199,12 +196,12 @@ export default function SubmitPanel({
               onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
               onDragLeave={() => setDragging(false)}
               onDrop={handleDrop}
-              className={`flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed p-8 text-center transition ${
+              className={`flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed px-4 py-8 text-center transition-colors ${
                 dragging
-                  ? 'border-amber-400 bg-amber-50'
+                  ? 'border-amber-500 bg-amber-50'
                   : file
                   ? 'border-emerald-400 bg-emerald-50'
-                  : 'border-stone-300 bg-stone-50 hover:border-amber-400 hover:bg-amber-50'
+                  : 'border-stone-200 bg-stone-50 hover:border-amber-400 hover:bg-amber-50'
               }`}
             >
               <input
@@ -217,36 +214,35 @@ export default function SubmitPanel({
                   if (f) { setFile(f); setError('') }
                 }}
               />
-              <div className="mb-2 text-3xl">{file ? '📄' : '⬆️'}</div>
               {file ? (
                 <>
-                  <p className="font-medium text-emerald-700">{file.name}</p>
-                  <p className="text-xs text-stone-500">
-                    {(file.size / 1024 / 1024).toFixed(2)} MB · Click to change
+                  <p className="font-medium text-emerald-700 text-sm">{file.name}</p>
+                  <p className="text-xs text-stone-400 mt-1">
+                    {(file.size / 1024 / 1024).toFixed(2)} MB · click to change
                   </p>
                 </>
               ) : (
                 <>
-                  <p className="font-medium text-stone-600">Drop your PDF here or click to browse</p>
-                  <p className="text-xs text-stone-400">PDF only · max 25 MB</p>
+                  <p className="font-medium text-stone-500 text-sm">Drop PDF here or click to browse</p>
+                  <p className="text-xs text-stone-400 mt-1">PDF only · max 25 MB</p>
                 </>
               )}
             </div>
 
             {error && (
-              <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-600">{error}</p>
+              <p className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600">{error}</p>
             )}
 
             {success && (
-              <p className="rounded-md bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
-                ✓ Submitted successfully! The next assignment is now unlocked.
+              <p className="rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+                Submitted — the next assignment is now unlocked.
               </p>
             )}
 
             <button
               type="submit"
               disabled={submitting || !file}
-              className="w-full rounded-lg bg-amber-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-amber-700 disabled:opacity-60"
+              className="w-full rounded-xl bg-stone-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-stone-800 active:scale-[0.98] disabled:opacity-50"
             >
               {submitting ? 'Uploading…' : 'Submit Assignment'}
             </button>
@@ -254,21 +250,13 @@ export default function SubmitPanel({
         </div>
       )}
 
-      {/* Already submitted and no revision needed */}
-      {submitted && existingStatus !== 'revision_requested' && aiGrade === null && instructorGrade === null && (
-        <div className="rounded-xl border border-sky-200 bg-sky-50 p-5">
-          <div className="flex items-center gap-3">
-            <div className="text-2xl">🕐</div>
-            <div>
-              <p className="font-medium text-sky-800">Submission received</p>
-              <p className="text-sm text-sky-600">
-                {existingFileName
-                  ? `File: ${existingFileName}`
-                  : 'Your submission is being reviewed.'}
-                {' '}Feedback will appear here once graded.
-              </p>
-            </div>
-          </div>
+      {/* Submitted, awaiting review */}
+      {submitted && existingStatus !== 'revision_requested' && !gradeVisible && existingStatus !== 'pending' && existingStatus !== 'ai_graded' && (
+        <div className="rounded-2xl border border-stone-200 bg-white p-5">
+          <p className="text-sm font-medium text-stone-700 mb-0.5">Submission received</p>
+          <p className="text-sm text-stone-400">
+            {existingFileName ? `${existingFileName}` : 'Your work is under review.'} Feedback appears here once released.
+          </p>
         </div>
       )}
     </div>

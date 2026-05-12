@@ -8,42 +8,55 @@ export default function NavBar() {
   const role = (session?.user as { role?: string })?.role
 
   return (
-    <header className="sticky top-0 z-50 border-b border-stone-200 bg-white/95 backdrop-blur-sm">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-        <Link href="/dashboard" className="flex items-center gap-2 font-semibold text-stone-800">
-          <span className="text-lg">🗺️</span>
-          <span>Virtual Field Camp</span>
+    <header className="sticky top-0 z-50 border-b border-stone-200/80 bg-white/90 backdrop-blur-md">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 sm:px-6 h-14">
+        {/* Wordmark */}
+        <Link
+          href="/dashboard"
+          className="flex items-center gap-2.5 group"
+        >
+          <span className="flex h-7 w-7 items-center justify-center rounded-md bg-amber-700 text-white text-sm font-bold select-none">
+            B
+          </span>
+          <span className="hidden sm:block font-semibold text-stone-800 tracking-tight group-hover:text-amber-700 transition-colors">
+            Geology Basecamp
+          </span>
+          <span className="sm:hidden font-semibold text-stone-800 tracking-tight">
+            Basecamp
+          </span>
         </Link>
 
-        <nav className="flex items-center gap-4">
+        <nav className="flex items-center gap-1">
           {role === 'instructor' && (
             <Link
               href="/instructor"
-              className="text-sm font-medium text-stone-600 hover:text-stone-900"
+              className="rounded-md px-3 py-1.5 text-sm font-medium text-stone-500 hover:bg-stone-100 hover:text-stone-900 transition-colors"
             >
-              Instructor Portal
+              Portal
             </Link>
           )}
           {role === 'student' && (
             <Link
               href="/dashboard"
-              className="text-sm font-medium text-stone-600 hover:text-stone-900"
+              className="rounded-md px-3 py-1.5 text-sm font-medium text-stone-500 hover:bg-stone-100 hover:text-stone-900 transition-colors"
             >
-              My Dashboard
+              Dashboard
             </Link>
           )}
+
           {session && (
-            <div className="flex items-center gap-3">
-              <span className="hidden text-sm text-stone-500 sm:block">
+            <>
+              <div className="mx-1 h-4 w-px bg-stone-200" />
+              <span className="hidden sm:block text-sm text-stone-400 px-2">
                 {session.user?.name}
               </span>
               <button
                 onClick={() => signOut({ callbackUrl: '/login' })}
-                className="rounded-md border border-stone-300 px-3 py-1.5 text-sm font-medium text-stone-600 hover:bg-stone-50"
+                className="rounded-md px-3 py-1.5 text-sm font-medium text-stone-500 hover:bg-stone-100 hover:text-stone-900 transition-colors"
               >
                 Sign out
               </button>
-            </div>
+            </>
           )}
         </nav>
       </div>

@@ -12,7 +12,7 @@ const geistSans = Geist({
 })
 
 export const metadata: Metadata = {
-  title: 'Virtual Field Camp',
+  title: 'Virtual Field Geology Basecamp',
   description: '3-week virtual geology field camp — map, analyse, and interpret.',
 }
 

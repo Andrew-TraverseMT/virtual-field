@@ -18,11 +18,11 @@ type RubricScore = {
 }
 
 const STATUS_CONFIG: Record<string, { label: string; className: string; note?: string }> = {
-  pending:    { label: 'Pending', className: 'bg-sky-100 text-sky-700', note: 'Awaiting AI grading' },
-  ai_graded:  { label: 'AI Graded', className: 'bg-violet-100 text-violet-700', note: 'Review & approve before student sees grade' },
-  graded:     { label: 'Grade Modified', className: 'bg-amber-100 text-amber-700' },
-  approved:   { label: 'Approved', className: 'bg-emerald-100 text-emerald-700' },
-  revision_requested: { label: 'Revision Requested', className: 'bg-orange-100 text-orange-700' },
+  pending:    { label: 'Pending', className: 'bg-sky-50 text-sky-700 ring-1 ring-sky-200', note: 'Awaiting AI grading' },
+  ai_graded:  { label: 'AI Graded', className: 'bg-violet-50 text-violet-700 ring-1 ring-violet-200', note: 'Review & approve before student sees grade' },
+  graded:     { label: 'Grade Modified', className: 'bg-amber-50 text-amber-700 ring-1 ring-amber-200' },
+  approved:   { label: 'Approved', className: 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200' },
+  revision_requested: { label: 'Revision Requested', className: 'bg-orange-50 text-orange-700 ring-1 ring-orange-200' },
 }
 
 export default async function InstructorPage({
@@ -69,48 +69,53 @@ export default async function InstructorPage({
   ]
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-8">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-stone-800">Instructor Portal</h1>
-        <p className="mt-1 text-stone-500">
+    <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 py-10">
+
+      <div className="mb-8">
+        <h1 className="text-2xl font-semibold tracking-tight text-stone-900">Instructor Portal</h1>
+        <p className="mt-1 text-sm text-stone-400">
           Review student submissions, approve grades, or request revisions.
         </p>
       </div>
 
       {/* Stats row */}
-      <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <div className="rounded-xl border border-stone-200 bg-white p-4 text-center shadow-sm">
-          <div className="text-2xl font-bold text-stone-800">{counts.all}</div>
-          <div className="text-xs text-stone-500">Total submissions</div>
+      <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="rounded-2xl border border-stone-200 bg-white p-5 text-center shadow-sm">
+          <div className="text-3xl font-semibold text-stone-900 tabular-nums">{counts.all}</div>
+          <div className="mt-0.5 text-xs font-medium text-stone-400">Total</div>
         </div>
-        <div className="rounded-xl border border-violet-200 bg-violet-50 p-4 text-center">
-          <div className="text-2xl font-bold text-violet-700">{counts.ai_graded}</div>
-          <div className="text-xs text-violet-600">Needs review</div>
+        <div className="rounded-2xl border border-violet-100 bg-violet-50/60 p-5 text-center">
+          <div className="text-3xl font-semibold text-violet-700 tabular-nums">{counts.ai_graded}</div>
+          <div className="mt-0.5 text-xs font-medium text-violet-400">Needs Review</div>
         </div>
-        <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-center">
-          <div className="text-2xl font-bold text-emerald-700">{counts.approved}</div>
-          <div className="text-xs text-emerald-600">Approved</div>
+        <div className="rounded-2xl border border-emerald-100 bg-emerald-50/60 p-5 text-center">
+          <div className="text-3xl font-semibold text-emerald-700 tabular-nums">{counts.approved}</div>
+          <div className="mt-0.5 text-xs font-medium text-emerald-400">Approved</div>
         </div>
-        <div className="rounded-xl border border-orange-200 bg-orange-50 p-4 text-center">
-          <div className="text-2xl font-bold text-orange-700">{counts.revision_requested}</div>
-          <div className="text-xs text-orange-600">Needs revision</div>
+        <div className="rounded-2xl border border-orange-100 bg-orange-50/60 p-5 text-center">
+          <div className="text-3xl font-semibold text-orange-700 tabular-nums">{counts.revision_requested}</div>
+          <div className="mt-0.5 text-xs font-medium text-orange-400">Needs Revision</div>
         </div>
       </div>
 
       {/* Filter tabs */}
-      <div className="mb-4 flex flex-wrap gap-2">
+      <div className="mb-6 flex flex-wrap gap-2">
         {FILTER_TABS.map((tab) => (
           <a
             key={tab.key}
             href={tab.key ? `?filter=${tab.key}` : '/instructor'}
-            className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition ${
+            className={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors ${
               (filter ?? '') === tab.key
-                ? 'border-amber-400 bg-amber-100 text-amber-800'
-                : 'border-stone-200 bg-white text-stone-600 hover:border-amber-300 hover:bg-amber-50'
+                ? 'border-stone-900 bg-stone-900 text-white'
+                : 'border-stone-200 bg-white text-stone-500 hover:border-stone-300 hover:text-stone-700'
             }`}
           >
             {tab.label}
-            <span className="rounded-full bg-stone-100 px-1.5 py-0.5 text-xs font-semibold text-stone-600">
+            <span className={`rounded-full px-1.5 py-0.5 text-[11px] font-semibold tabular-nums ${
+              (filter ?? '') === tab.key
+                ? 'bg-white/20 text-white'
+                : 'bg-stone-100 text-stone-500'
+            }`}>
               {tab.count}
             </span>
           </a>
@@ -119,9 +124,8 @@ export default async function InstructorPage({
 
       {/* Submission list */}
       {submissions.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-stone-300 bg-white p-12 text-center">
-          <div className="mb-2 text-4xl">📭</div>
-          <p className="text-stone-500">No submissions match this filter.</p>
+        <div className="rounded-2xl border border-dashed border-stone-200 bg-white p-16 text-center">
+          <p className="text-sm text-stone-400">No submissions match this filter.</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -143,61 +147,62 @@ export default async function InstructorPage({
             return (
               <div
                 key={sub.id}
-                className="rounded-xl border border-stone-200 bg-white p-5 shadow-sm"
+                className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm"
               >
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
                   <div className="flex-1 min-w-0">
-                    {/* Header */}
-                    <div className="mb-2 flex flex-wrap items-center gap-2">
-                      <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusCfg.className}`}>
+
+                    {/* Status + meta row */}
+                    <div className="mb-3 flex flex-wrap items-center gap-2">
+                      <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${statusCfg.className}`}>
                         {statusCfg.label}
                       </span>
                       {statusCfg.note && (
                         <span className="text-xs text-stone-400 italic">{statusCfg.note}</span>
                       )}
-                      <span className="text-xs text-stone-400">Submitted {submittedDate}</span>
+                      <span className="text-xs text-stone-300">·</span>
+                      <span className="text-xs text-stone-400">{submittedDate}</span>
                       {sub.file_name && (
-                        <span className="text-xs text-stone-400">📄 {sub.file_name}</span>
+                        <>
+                          <span className="text-xs text-stone-300">·</span>
+                          <span className="text-xs text-stone-400 truncate max-w-[200px]">{sub.file_name}</span>
+                        </>
                       )}
                     </div>
 
-                    {/* Student + Assignment */}
-                    <h3 className="font-semibold text-stone-800">
+                    {/* Assignment + student */}
+                    <h3 className="font-semibold text-stone-900 text-base">
                       {assignment.title}
-                      <span className="ml-2 text-sm font-normal text-stone-400">
-                        #{assignment.sequence}
-                      </span>
                     </h3>
-                    <p className="text-sm text-stone-500">
-                      Student:{' '}
-                      <span className="font-medium text-stone-700">{sub.student_name}</span>
-                      <span className="ml-2 text-stone-400">{sub.student_email}</span>
+                    <p className="mt-0.5 text-sm text-stone-400">
+                      <span className="font-medium text-stone-600">{sub.student_name}</span>
+                      <span className="ml-2">{sub.student_email}</span>
                     </p>
 
-                    {/* Grade display */}
+                    {/* Grade */}
                     {displayGrade !== null && (
-                      <p className="mt-1 text-sm text-stone-600">
+                      <p className="mt-2 text-sm text-stone-500">
                         {sub.instructor_grade !== null ? 'Instructor grade' : 'AI provisional grade'}:{' '}
-                        <span className="font-bold text-stone-800">
+                        <span className="font-semibold text-stone-800 tabular-nums">
                           {displayGrade}/{assignment.rubric.totalPoints}
                         </span>
                         {sub.status === 'ai_graded' && (
-                          <span className="ml-2 text-xs text-violet-600">(not yet visible to student)</span>
+                          <span className="ml-2 text-xs text-violet-500">(not visible to student)</span>
                         )}
                       </p>
                     )}
 
                     {/* AI rubric breakdown */}
                     {rubricScores.length > 0 && (
-                      <div className="mt-3 rounded-lg border border-violet-100 bg-violet-50 p-3">
-                        <div className="mb-2 text-xs font-semibold text-violet-700">AI Rubric Breakdown</div>
-                        <div className="space-y-1.5">
+                      <div className="mt-4 rounded-xl border border-violet-100 bg-violet-50/60 p-4">
+                        <p className="text-xs font-semibold uppercase tracking-widest text-violet-500 mb-3">AI Rubric Breakdown</p>
+                        <div className="space-y-2">
                           {rubricScores.map((score) => (
-                            <div key={score.criterion_id} className="flex gap-2 text-xs">
-                              <span className="shrink-0 font-semibold text-violet-800 w-10 text-right">
+                            <div key={score.criterion_id} className="flex gap-3 text-xs">
+                              <span className="shrink-0 font-semibold text-violet-700 tabular-nums w-10 text-right">
                                 {score.points_earned}/{score.points_available}
                               </span>
-                              <span className="text-stone-600">
+                              <span className="text-stone-500 leading-relaxed">
                                 <span className="font-medium text-stone-700">{score.label}</span>
                                 {' — '}{score.justification}
                               </span>
@@ -209,24 +214,23 @@ export default async function InstructorPage({
 
                     {/* AI overall feedback */}
                     {sub.ai_feedback && (
-                      <div className="mt-2 rounded-lg bg-stone-50 p-2.5">
-                        <div className="mb-1 text-xs font-semibold text-stone-500">AI Overall Feedback</div>
-                        <p className="text-xs text-stone-600 whitespace-pre-line">{sub.ai_feedback}</p>
+                      <div className="mt-3 rounded-xl bg-stone-50 p-4">
+                        <p className="text-xs font-semibold uppercase tracking-widest text-stone-400 mb-2">AI Feedback</p>
+                        <p className="text-xs text-stone-500 whitespace-pre-line leading-relaxed">{sub.ai_feedback}</p>
                       </div>
                     )}
 
                     {/* Instructor notes */}
                     {sub.instructor_notes && (
-                      <div className="mt-2 rounded-lg bg-amber-50 p-2.5">
-                        <div className="mb-1 text-xs font-semibold text-amber-600">Your notes</div>
-                        <p className="text-xs text-stone-600">{sub.instructor_notes}</p>
+                      <div className="mt-3 rounded-xl border border-amber-100 bg-amber-50/60 p-4">
+                        <p className="text-xs font-semibold uppercase tracking-widest text-amber-600 mb-2">Your Notes</p>
+                        <p className="text-xs text-stone-500 leading-relaxed">{sub.instructor_notes}</p>
                       </div>
                     )}
                   </div>
 
                   {/* Action panel */}
-                  <div className="flex-shrink-0 sm:w-52 space-y-2">
-                    {/* Re-run AI grading button — shown for pending submissions with a file */}
+                  <div className="shrink-0 sm:w-52 space-y-2">
                     {sub.status === 'pending' && sub.file_name && (
                       <ReGradeButton submissionId={sub.id} />
                     )}

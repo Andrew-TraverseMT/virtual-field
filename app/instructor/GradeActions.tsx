@@ -50,43 +50,43 @@ export default function GradeActions({
   }
 
   return (
-    <div className="mt-3 space-y-3">
+    <div className="mt-3 space-y-2">
       {!action && (
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-col gap-2">
           <button
             onClick={() => setAction('approve')}
             disabled={currentStatus === 'approved'}
-            className="rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-700 disabled:opacity-40"
+            className="w-full rounded-xl bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-200 hover:bg-emerald-100 transition-colors disabled:opacity-40"
           >
-            ✓ Approve
+            Approve
           </button>
           <button
             onClick={() => setAction('modify')}
-            className="rounded-lg bg-violet-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-violet-700"
+            className="w-full rounded-xl bg-stone-50 px-3 py-2 text-xs font-semibold text-stone-700 ring-1 ring-stone-200 hover:bg-stone-100 transition-colors"
           >
-            ✏️ Modify Grade
+            Modify Grade
           </button>
           <button
             onClick={() => setAction('request_revision')}
             disabled={currentStatus === 'revision_requested'}
-            className="rounded-lg bg-orange-500 px-3 py-1.5 text-xs font-semibold text-white hover:bg-orange-600 disabled:opacity-40"
+            className="w-full rounded-xl bg-orange-50 px-3 py-2 text-xs font-semibold text-orange-700 ring-1 ring-orange-200 hover:bg-orange-100 transition-colors disabled:opacity-40"
           >
-            ↩ Request Revision
+            Request Revision
           </button>
         </div>
       )}
 
       {action && (
-        <div className="rounded-lg border border-stone-200 bg-stone-50 p-3">
-          <div className="mb-2 text-sm font-medium text-stone-700">
+        <div className="rounded-xl border border-stone-200 bg-stone-50 p-4 space-y-3">
+          <p className="text-xs font-semibold uppercase tracking-widest text-stone-400">
             {action === 'approve' && 'Approve submission'}
             {action === 'modify' && 'Modify grade'}
             {action === 'request_revision' && 'Request revision'}
-          </div>
+          </p>
 
           {action !== 'request_revision' && (
-            <div className="mb-2">
-              <label className="mb-1 block text-xs font-medium text-stone-600">
+            <div>
+              <label className="mb-1.5 block text-xs font-medium text-stone-500">
                 Grade (out of {totalPoints})
               </label>
               <input
@@ -95,38 +95,38 @@ export default function GradeActions({
                 max={totalPoints}
                 value={grade}
                 onChange={(e) => setGrade(e.target.value)}
-                className="w-24 rounded-md border border-stone-300 px-2 py-1 text-sm focus:border-amber-400 focus:outline-none"
+                className="w-24 rounded-lg border border-stone-200 bg-white px-2.5 py-1.5 text-sm focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-100"
               />
             </div>
           )}
 
-          <div className="mb-3">
-            <label className="mb-1 block text-xs font-medium text-stone-600">
-              Notes to student {action !== 'request_revision' && '(optional)'}
+          <div>
+            <label className="mb-1.5 block text-xs font-medium text-stone-500">
+              Notes to student{action !== 'request_revision' && ' (optional)'}
             </label>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={2}
-              className="w-full rounded-md border border-stone-300 px-2 py-1 text-sm focus:border-amber-400 focus:outline-none"
+              className="w-full rounded-lg border border-stone-200 bg-white px-2.5 py-2 text-sm focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-100 resize-none"
               placeholder={action === 'request_revision' ? 'Explain what needs to be revised…' : 'Any additional feedback…'}
               required={action === 'request_revision'}
             />
           </div>
 
-          {error && <p className="mb-2 text-xs text-red-600">{error}</p>}
+          {error && <p className="text-xs text-red-500">{error}</p>}
 
           <div className="flex gap-2">
             <button
               onClick={() => submit(action)}
               disabled={loading || (action === 'request_revision' && !notes.trim())}
-              className="rounded-lg bg-stone-800 px-3 py-1.5 text-xs font-semibold text-white hover:bg-stone-900 disabled:opacity-50"
+              className="rounded-lg bg-stone-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-stone-800 disabled:opacity-50 transition-colors"
             >
               {loading ? 'Saving…' : 'Confirm'}
             </button>
             <button
               onClick={() => { setAction(null); setError('') }}
-              className="rounded-lg border border-stone-300 px-3 py-1.5 text-xs font-medium text-stone-600 hover:bg-stone-100"
+              className="rounded-lg border border-stone-200 px-3 py-1.5 text-xs font-medium text-stone-500 hover:bg-white transition-colors"
             >
               Cancel
             </button>

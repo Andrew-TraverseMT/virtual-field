@@ -11,15 +11,9 @@ import FeedbackPanel from './FeedbackPanel'
 type Props = { params: Promise<{ id: string }> }
 
 const UNIT_COLORS: Record<string, string> = {
-  'Leeds Virtual Landscapes': 'bg-sky-100 text-sky-700',
-  'Visible Geology': 'bg-violet-100 text-violet-700',
-  'CYOA Final Project': 'bg-amber-100 text-amber-700',
-}
-
-const TYPE_ICON: Record<string, string> = {
-  'virtual-landscape': '🌄',
-  'visible-geology': '🧊',
-  'cyoa': '🗺️',
+  'Leeds Virtual Landscapes': 'bg-sky-50 text-sky-700 ring-1 ring-sky-200',
+  'Visible Geology': 'bg-violet-50 text-violet-700 ring-1 ring-violet-200',
+  'CYOA Final Project': 'bg-amber-50 text-amber-700 ring-1 ring-amber-200',
 }
 
 export default async function AssignmentPage({ params }: Props) {
@@ -56,28 +50,33 @@ export default async function AssignmentPage({ params }: Props) {
   const nextAssignment = assignments.find((a) => a.sequence === assignment.sequence + 1)
 
   return (
-    <div className="mx-auto w-full max-w-5xl px-4 py-8">
+    <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 py-10">
+
       {/* Breadcrumb */}
-      <nav className="mb-6 flex items-center gap-2 text-sm text-stone-500">
-        <Link href="/dashboard" className="hover:text-stone-800">Dashboard</Link>
-        <span>›</span>
-        <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${UNIT_COLORS[assignment.unit] ?? 'bg-stone-100 text-stone-600'}`}>
+      <nav className="mb-8 flex items-center gap-2 text-sm text-stone-400">
+        <Link href="/dashboard" className="hover:text-stone-700 transition-colors">Dashboard</Link>
+        <span>/</span>
+        <span className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${UNIT_COLORS[assignment.unit] ?? 'bg-stone-100 text-stone-600'}`}>
           {assignment.unit}
         </span>
-        <span>›</span>
-        <span className="truncate text-stone-700">{assignment.title}</span>
+        <span>/</span>
+        <span className="truncate text-stone-600 font-medium">{assignment.title}</span>
       </nav>
 
       {/* Locked banner */}
       {isLocked && (
-        <div className="mb-6 flex items-center gap-3 rounded-xl border border-stone-200 bg-stone-50 p-4">
-          <span className="text-2xl">🔒</span>
+        <div className="mb-8 flex items-center gap-4 rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-stone-100">
+            <svg className="h-5 w-5 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+          </div>
           <div>
-            <p className="font-medium text-stone-700">This assignment is locked</p>
+            <p className="font-medium text-stone-700">Assignment locked</p>
             <p className="text-sm text-stone-500">
               Complete{' '}
               {prevAssignment && (
-                <Link href={`/assignments/${prevAssignment.id}`} className="font-medium text-amber-700 underline">
+                <Link href={`/assignments/${prevAssignment.id}`} className="font-medium text-amber-700 underline underline-offset-2">
                   {prevAssignment.title}
                 </Link>
               )}{' '}
@@ -87,43 +86,38 @@ export default async function AssignmentPage({ params }: Props) {
         </div>
       )}
 
-      {/* Header card */}
-      <div className="mb-6 rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
-        <div className="mb-3 flex flex-wrap items-center gap-2">
-          <span className="text-2xl">{TYPE_ICON[assignment.type]}</span>
-          <span
-            className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${UNIT_COLORS[assignment.unit] ?? 'bg-stone-100 text-stone-600'}`}
-          >
+      {/* Header */}
+      <div className="mb-8 rounded-2xl border border-stone-200 bg-white p-6 sm:p-8 shadow-sm">
+        <div className="mb-4 flex flex-wrap items-center gap-2">
+          <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-medium ${UNIT_COLORS[assignment.unit] ?? 'bg-stone-100 text-stone-600'}`}>
             {assignment.unit}
           </span>
-          <span className="rounded-full bg-stone-100 px-2.5 py-0.5 text-xs font-medium text-stone-600">
-            Assignment {assignment.sequence} of {assignments.length}
+          <span className="text-[11px] text-stone-400 font-medium">
+            {assignment.sequence} / {assignments.length}
           </span>
-          <span className="rounded-full bg-stone-100 px-2.5 py-0.5 text-xs font-medium text-stone-600">
-            {assignment.rubric.totalPoints} points
-          </span>
-          <span className="rounded-full bg-stone-100 px-2.5 py-0.5 text-xs font-medium text-stone-600">
-            ~{assignment.estimatedHours} hr{assignment.estimatedHours !== 1 ? 's' : ''}
-          </span>
+          <span className="text-[11px] text-stone-400">·</span>
+          <span className="text-[11px] text-stone-400 font-medium">{assignment.rubric.totalPoints} pts</span>
+          <span className="text-[11px] text-stone-400">·</span>
+          <span className="text-[11px] text-stone-400 font-medium">~{assignment.estimatedHours}h</span>
         </div>
 
-        <h1 className="mb-1 text-2xl font-bold text-stone-900">{assignment.title}</h1>
-        <p className="mb-4 text-base text-stone-500">{assignment.subtitle}</p>
+        <h1 className="mb-1.5 text-2xl font-semibold tracking-tight text-stone-900">{assignment.title}</h1>
+        <p className="mb-4 text-base text-stone-400 font-medium">{assignment.subtitle}</p>
         <p className="text-sm leading-relaxed text-stone-600">{assignment.description}</p>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-5">
-        {/* Left column — content */}
-        <div className="space-y-6 lg:col-span-3">
+        {/* Left column */}
+        <div className="space-y-5 lg:col-span-3">
 
           {/* Learning goals */}
           {assignment.learningGoals && assignment.learningGoals.length > 0 && (
-            <div className="rounded-xl border border-stone-200 bg-white p-5 shadow-sm">
-              <h2 className="mb-3 font-semibold text-stone-700">Learning Goals</h2>
-              <ul className="space-y-2">
+            <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
+              <h2 className="mb-4 text-xs font-semibold uppercase tracking-widest text-stone-400">Learning Goals</h2>
+              <ul className="space-y-2.5">
                 {assignment.learningGoals.map((goal, i) => (
-                  <li key={i} className="flex gap-2 text-sm text-stone-600">
-                    <span className="mt-0.5 flex-shrink-0 text-amber-500">◆</span>
+                  <li key={i} className="flex gap-3 text-sm text-stone-600">
+                    <span className="mt-0.5 shrink-0 h-1.5 w-1.5 rounded-full bg-amber-600 mt-1.5" />
                     <span>{goal}</span>
                   </li>
                 ))}
@@ -133,13 +127,13 @@ export default async function AssignmentPage({ params }: Props) {
 
           {/* Activity / Tool */}
           {assignment.url && (
-            <div className="rounded-xl border border-stone-200 bg-white p-5 shadow-sm">
-              <h2 className="mb-3 font-semibold text-stone-700">
-                {assignment.type === 'virtual-landscape' ? 'Virtual Landscape Tool' : 'Visible Geology Tool'}
+            <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
+              <h2 className="mb-4 text-xs font-semibold uppercase tracking-widest text-stone-400">
+                {assignment.type === 'virtual-landscape' ? 'Virtual Landscape' : 'Visible Geology Tool'}
               </h2>
 
               {assignment.canEmbed && assignment.embedUrl ? (
-                <div className="overflow-hidden rounded-lg border border-stone-200">
+                <div className="overflow-hidden rounded-xl border border-stone-200 mb-3">
                   <iframe
                     src={assignment.embedUrl}
                     className="h-96 w-full"
@@ -153,19 +147,21 @@ export default async function AssignmentPage({ params }: Props) {
                 href={assignment.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`${assignment.canEmbed ? 'mt-3 ' : ''}flex items-center justify-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-800 transition hover:bg-amber-100`}
+                className="flex items-center gap-3 rounded-xl border border-stone-200 px-4 py-3 text-sm font-medium text-stone-700 transition hover:border-amber-300 hover:bg-amber-50 group"
               >
-                <span>🚀</span>
-                <span>Open{assignment.canEmbed ? ' in new tab' : ' Activity'}</span>
-                <span className="ml-auto text-xs font-normal opacity-60">{assignment.url}</span>
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-amber-700 group-hover:bg-amber-100 transition-colors text-base">↗</span>
+                <div className="min-w-0">
+                  <div className="font-medium text-stone-800">{assignment.canEmbed ? 'Open in new tab' : 'Open activity'}</div>
+                  <div className="text-xs text-stone-400 truncate">{assignment.url}</div>
+                </div>
               </a>
             </div>
           )}
 
           {/* Materials */}
           {assignment.materials.length > 0 && (
-            <div className="rounded-xl border border-stone-200 bg-white p-5 shadow-sm">
-              <h2 className="mb-3 font-semibold text-stone-700">Materials &amp; Reference Files</h2>
+            <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
+              <h2 className="mb-4 text-xs font-semibold uppercase tracking-widest text-stone-400">Materials &amp; Files</h2>
               <ul className="space-y-2">
                 {assignment.materials.map((filename) => (
                   <li key={filename}>
@@ -173,11 +169,11 @@ export default async function AssignmentPage({ params }: Props) {
                       href={`/api/materials/${encodeURIComponent(filename)}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 rounded-lg border border-stone-200 px-3 py-2.5 text-sm text-stone-700 transition hover:border-amber-300 hover:bg-amber-50"
+                      className="flex items-center gap-3 rounded-xl border border-stone-200 px-3.5 py-2.5 text-sm text-stone-700 transition hover:border-amber-300 hover:bg-amber-50"
                     >
-                      <span className="text-base">{filename.endsWith('.pdf') ? '📄' : '🖼️'}</span>
-                      <span className="flex-1 truncate">{filename}</span>
-                      <span className="text-xs text-stone-400">Open ↗</span>
+                      <span className="text-stone-400 text-base shrink-0">{filename.endsWith('.pdf') ? '⬜' : '🖼'}</span>
+                      <span className="flex-1 truncate font-medium">{filename}</span>
+                      <span className="text-xs text-stone-400 shrink-0">↗</span>
                     </a>
                   </li>
                 ))}
@@ -185,27 +181,27 @@ export default async function AssignmentPage({ params }: Props) {
             </div>
           )}
 
-          {/* CYOA-specific: Location options */}
+          {/* CYOA: Location options */}
           {assignment.locationOptions && assignment.locationOptions.length > 0 && (
-            <div className="rounded-xl border border-stone-200 bg-white p-5 shadow-sm">
-              <h2 className="mb-1 font-semibold text-stone-700">Project Type Options</h2>
+            <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
+              <h2 className="mb-1 text-xs font-semibold uppercase tracking-widest text-stone-400">Project Type Options</h2>
               <p className="mb-4 text-sm text-stone-500">
-                Choose the project type that best fits your interests. State your choice in the proposal.
+                Choose the option that best fits your interests. State your choice in the proposal.
               </p>
               <div className="space-y-3">
                 {assignment.locationOptions.map((opt) => (
-                  <div key={opt.id} className="rounded-lg border border-stone-200 p-3">
-                    <div className="mb-1 flex items-center gap-2">
-                      <span className="font-medium text-stone-800">{opt.label}</span>
+                  <div key={opt.id} className="rounded-xl border border-stone-200 p-4">
+                    <div className="mb-1.5 flex flex-wrap items-center gap-2">
+                      <span className="font-medium text-stone-800 text-sm">{opt.label}</span>
                       {opt.requiresStereonet && (
-                        <span className="rounded-full bg-violet-100 px-2 py-0.5 text-xs text-violet-700">
+                        <span className="rounded-full bg-violet-50 px-2 py-0.5 text-[11px] font-medium text-violet-700 ring-1 ring-violet-200">
                           Stereonet required
                         </span>
                       )}
                     </div>
-                    <p className="text-sm text-stone-600">{opt.description}</p>
-                    <p className="mt-1 text-xs text-stone-400">
-                      <span className="font-medium">Hazard theme:</span> {opt.hazardTheme}
+                    <p className="text-sm text-stone-500">{opt.description}</p>
+                    <p className="mt-1.5 text-xs text-stone-400">
+                      Hazard focus: {opt.hazardTheme}
                     </p>
                   </div>
                 ))}
@@ -213,24 +209,22 @@ export default async function AssignmentPage({ params }: Props) {
             </div>
           )}
 
-          {/* CYOA proposal sections */}
+          {/* CYOA: Proposal sections */}
           {assignment.proposalSections && assignment.proposalSections.length > 0 && (
-            <div className="rounded-xl border border-stone-200 bg-white p-5 shadow-sm">
-              <h2 className="mb-1 font-semibold text-stone-700">Required Proposal Sections</h2>
-              <p className="mb-4 text-sm text-stone-500">
-                Your proposal PDF must address all eight sections below.
-              </p>
+            <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
+              <h2 className="mb-1 text-xs font-semibold uppercase tracking-widest text-stone-400">Required Proposal Sections</h2>
+              <p className="mb-4 text-sm text-stone-500">Your proposal PDF must address all eight sections below.</p>
               <div className="space-y-3">
                 {assignment.proposalSections.map((sec) => (
-                  <div key={sec.id} className="flex gap-3 rounded-lg bg-stone-50 p-3">
-                    <span className="mt-0.5 flex-shrink-0 text-sm font-semibold text-amber-600">
+                  <div key={sec.id} className="flex gap-3 rounded-xl bg-stone-50 p-3.5">
+                    <span className="shrink-0 text-xs font-bold text-amber-700 mt-0.5">
                       {sec.label.split('.')[0]}.
                     </span>
                     <div>
                       <div className="text-sm font-medium text-stone-700">
                         {sec.label.split('. ').slice(1).join('. ')}
                       </div>
-                      <div className="text-sm text-stone-500">{sec.description}</div>
+                      <div className="text-sm text-stone-500 mt-0.5">{sec.description}</div>
                     </div>
                   </div>
                 ))}
@@ -239,35 +233,35 @@ export default async function AssignmentPage({ params }: Props) {
           )}
         </div>
 
-        {/* Right column — deliverables, rubric, submission */}
-        <div className="space-y-6 lg:col-span-2">
+        {/* Right column */}
+        <div className="space-y-5 lg:col-span-2">
 
           {/* Deliverables */}
           {assignment.deliverables && assignment.deliverables.length > 0 && (
-            <div className="rounded-xl border border-stone-200 bg-white p-5 shadow-sm">
-              <h2 className="mb-3 font-semibold text-stone-700">Deliverables</h2>
+            <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
+              <h2 className="mb-4 text-xs font-semibold uppercase tracking-widest text-stone-400">Deliverables</h2>
               <div className="space-y-3">
                 {assignment.deliverables
                   .filter((d) => !d.conditional)
                   .map((d, i) => (
                   <div key={d.id} className="flex gap-3">
-                    <div className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-amber-100 text-xs font-bold text-amber-700">
+                    <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-stone-900 text-[10px] font-bold text-white">
                       {i + 1}
                     </div>
                     <div>
                       <div className="text-sm font-medium text-stone-800">{d.label}</div>
-                      <div className="text-xs text-stone-500">{d.description}</div>
+                      <div className="text-xs text-stone-400 mt-0.5">{d.description}</div>
                     </div>
                   </div>
                 ))}
                 {assignment.deliverables.filter((d) => d.conditional).map((d) => (
-                  <div key={d.id} className="flex gap-3 rounded-lg border border-dashed border-violet-200 bg-violet-50 p-2.5">
-                    <span className="mt-0.5 flex-shrink-0 text-sm">✦</span>
+                  <div key={d.id} className="flex gap-3 rounded-xl border border-dashed border-violet-200 bg-violet-50/60 p-3">
+                    <span className="shrink-0 text-xs text-violet-400 mt-0.5">✦</span>
                     <div>
                       <div className="text-sm font-medium text-violet-800">{d.label}</div>
-                      <div className="text-xs text-violet-600">{d.description}</div>
+                      <div className="text-xs text-violet-500 mt-0.5">{d.description}</div>
                       {d.condition && (
-                        <div className="mt-0.5 text-xs text-violet-400">Condition: {d.condition}</div>
+                        <div className="text-xs text-violet-400 mt-0.5 italic">Condition: {d.condition}</div>
                       )}
                     </div>
                   </div>
@@ -277,32 +271,30 @@ export default async function AssignmentPage({ params }: Props) {
           )}
 
           {/* Rubric */}
-          <div className="rounded-xl border border-stone-200 bg-white p-5 shadow-sm">
-            <div className="mb-3 flex items-center justify-between">
-              <h2 className="font-semibold text-stone-700">Grading Rubric</h2>
-              <span className="rounded-full bg-stone-100 px-2.5 py-0.5 text-xs font-medium text-stone-600">
-                {assignment.rubric.totalPoints} pts total
+          <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-xs font-semibold uppercase tracking-widest text-stone-400">Rubric</h2>
+              <span className="text-xs font-semibold text-stone-500">
+                {assignment.rubric.totalPoints} pts
               </span>
             </div>
             <div className="space-y-2.5">
               {assignment.rubric.criteria.map((c) => (
-                <div key={c.id} className="rounded-lg bg-stone-50 p-3">
-                  <div className="mb-1 flex items-center justify-between">
+                <div key={c.id} className="rounded-xl bg-stone-50 p-3.5">
+                  <div className="mb-1 flex items-center justify-between gap-2">
                     <span className="text-sm font-medium text-stone-700">{c.label}</span>
-                    <span className="text-sm font-bold text-amber-700">{c.points} pts</span>
+                    <span className="shrink-0 text-sm font-bold text-amber-700">{c.points}</span>
                   </div>
-                  <p className="text-xs text-stone-500">{c.description}</p>
+                  <p className="text-xs text-stone-400 leading-relaxed">{c.description}</p>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Pre-submission feedback panel (always available when unlocked) */}
-          {!isLocked && (
-            <FeedbackPanel assignmentId={id} />
-          )}
+          {/* Pre-submission feedback */}
+          {!isLocked && <FeedbackPanel assignmentId={id} />}
 
-          {/* Formal submission panel */}
+          {/* Formal submission */}
           {!isLocked && (
             <SubmitPanel
               assignmentId={id}
@@ -320,11 +312,11 @@ export default async function AssignmentPage({ params }: Props) {
       </div>
 
       {/* Navigation footer */}
-      <div className="mt-10 flex items-center justify-between border-t border-stone-200 pt-6">
+      <div className="mt-12 flex items-center justify-between border-t border-stone-200 pt-6">
         {prevAssignment ? (
           <Link
             href={`/assignments/${prevAssignment.id}`}
-            className="flex items-center gap-2 text-sm font-medium text-stone-500 hover:text-stone-800"
+            className="flex items-center gap-2 text-sm text-stone-400 hover:text-stone-700 transition-colors"
           >
             <span>←</span>
             <span className="hidden sm:inline">{prevAssignment.title}</span>
@@ -332,14 +324,14 @@ export default async function AssignmentPage({ params }: Props) {
           </Link>
         ) : <div />}
 
-        <Link href="/dashboard" className="text-sm text-stone-400 hover:text-stone-700">
-          Back to Dashboard
+        <Link href="/dashboard" className="text-sm text-stone-400 hover:text-stone-700 transition-colors">
+          ↑ Dashboard
         </Link>
 
         {nextAssignment ? (
           <Link
             href={`/assignments/${nextAssignment.id}`}
-            className="flex items-center gap-2 text-sm font-medium text-stone-500 hover:text-stone-800"
+            className="flex items-center gap-2 text-sm text-stone-400 hover:text-stone-700 transition-colors"
           >
             <span className="hidden sm:inline">{nextAssignment.title}</span>
             <span className="sm:hidden">Next</span>
