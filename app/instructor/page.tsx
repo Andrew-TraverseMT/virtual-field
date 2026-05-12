@@ -5,13 +5,23 @@ import { getDB } from '@/lib/db'
 import { getAssignment } from '@/lib/assignments'
 import type { Submission, Student } from '@/lib/db'
 import GradeActions from './GradeActions'
+import ReGradeButton from './ReGradeButton'
 
 type FullSubmission = Submission & { student_name: string; student_email: string }
 
-const STATUS_CONFIG: Record<string, { label: string; className: string }> = {
-  pending: { label: 'Pending Review', className: 'bg-sky-100 text-sky-700' },
-  graded: { label: 'AI Graded', className: 'bg-violet-100 text-violet-700' },
-  approved: { label: 'Approved', className: 'bg-emerald-100 text-emerald-700' },
+type RubricScore = {
+  criterion_id: string
+  label: string
+  points_earned: number
+  points_available: number
+  justification: string
+}
+
+const STATUS_CONFIG: Record<string, { label: string; className: string; note?: string }> = {
+  pending:    { label: 'Pending', className: 'bg-sky-100 text-sky-700', note: 'Awaiting AI grading' },
+  ai_graded:  { label: 'AI Graded', className: 'bg-violet-100 text-violet-700', note: 'Review & approve before student sees grade' },
+  graded:     { label: 'Grade Modified', className: 'bg-amber-100 text-amber-700' },
+  approved:   { label: 'Approved', className: 'bg-emerald-100 text-emerald-700' },
   revision_requested: { label: 'Revision Requested', className: 'bg-orange-100 text-orange-700' },
 }
 
@@ -45,7 +55,7 @@ export default async function InstructorPage({
   const counts = {
     all: submissionsRaw.length,
     pending: submissionsRaw.filter((s) => s.status === 'pending').length,
-    graded: submissionsRaw.filter((s) => s.status === 'graded').length,
+    ai_graded: submissionsRaw.filter((s) => s.status === 'ai_graded').length,
     approved: submissionsRaw.filter((s) => s.status === 'approved').length,
     revision_requested: submissionsRaw.filter((s) => s.status === 'revision_requested').length,
   }
@@ -53,7 +63,7 @@ export default async function InstructorPage({
   const FILTER_TABS = [
     { key: '', label: 'All', count: counts.all },
     { key: 'pending', label: 'Pending', count: counts.pending },
-    { key: 'graded', label: 'AI Graded', count: counts.graded },
+    { key: 'ai_graded', label: 'Needs Review', count: counts.ai_graded },
     { key: 'approved', label: 'Approved', count: counts.approved },
     { key: 'revision_requested', label: 'Revision Requested', count: counts.revision_requested },
   ]
@@ -73,9 +83,9 @@ export default async function InstructorPage({
           <div className="text-2xl font-bold text-stone-800">{counts.all}</div>
           <div className="text-xs text-stone-500">Total submissions</div>
         </div>
-        <div className="rounded-xl border border-sky-200 bg-sky-50 p-4 text-center">
-          <div className="text-2xl font-bold text-sky-700">{counts.pending}</div>
-          <div className="text-xs text-sky-600">Awaiting review</div>
+        <div className="rounded-xl border border-violet-200 bg-violet-50 p-4 text-center">
+          <div className="text-2xl font-bold text-violet-700">{counts.ai_graded}</div>
+          <div className="text-xs text-violet-600">Needs review</div>
         </div>
         <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-center">
           <div className="text-2xl font-bold text-emerald-700">{counts.approved}</div>
@@ -126,6 +136,9 @@ export default async function InstructorPage({
               day: 'numeric',
               year: 'numeric',
             })
+            const rubricScores: RubricScore[] = sub.ai_rubric_scores
+              ? (JSON.parse(sub.ai_rubric_scores) as RubricScore[])
+              : []
 
             return (
               <div
@@ -133,14 +146,15 @@ export default async function InstructorPage({
                 className="rounded-xl border border-stone-200 bg-white p-5 shadow-sm"
               >
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                  <div className="flex-1">
+                  <div className="flex-1 min-w-0">
                     {/* Header */}
                     <div className="mb-2 flex flex-wrap items-center gap-2">
-                      <span
-                        className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusCfg.className}`}
-                      >
+                      <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusCfg.className}`}>
                         {statusCfg.label}
                       </span>
+                      {statusCfg.note && (
+                        <span className="text-xs text-stone-400 italic">{statusCfg.note}</span>
+                      )}
                       <span className="text-xs text-stone-400">Submitted {submittedDate}</span>
                       {sub.file_name && (
                         <span className="text-xs text-stone-400">📄 {sub.file_name}</span>
@@ -155,7 +169,8 @@ export default async function InstructorPage({
                       </span>
                     </h3>
                     <p className="text-sm text-stone-500">
-                      Student: <span className="font-medium text-stone-700">{sub.student_name}</span>
+                      Student:{' '}
+                      <span className="font-medium text-stone-700">{sub.student_name}</span>
                       <span className="ml-2 text-stone-400">{sub.student_email}</span>
                     </p>
 
@@ -166,28 +181,55 @@ export default async function InstructorPage({
                         <span className="font-bold text-stone-800">
                           {displayGrade}/{assignment.rubric.totalPoints}
                         </span>
+                        {sub.status === 'ai_graded' && (
+                          <span className="ml-2 text-xs text-violet-600">(not yet visible to student)</span>
+                        )}
                       </p>
                     )}
 
-                    {/* AI feedback preview */}
+                    {/* AI rubric breakdown */}
+                    {rubricScores.length > 0 && (
+                      <div className="mt-3 rounded-lg border border-violet-100 bg-violet-50 p-3">
+                        <div className="mb-2 text-xs font-semibold text-violet-700">AI Rubric Breakdown</div>
+                        <div className="space-y-1.5">
+                          {rubricScores.map((score) => (
+                            <div key={score.criterion_id} className="flex gap-2 text-xs">
+                              <span className="shrink-0 font-semibold text-violet-800 w-10 text-right">
+                                {score.points_earned}/{score.points_available}
+                              </span>
+                              <span className="text-stone-600">
+                                <span className="font-medium text-stone-700">{score.label}</span>
+                                {' — '}{score.justification}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* AI overall feedback */}
                     {sub.ai_feedback && (
-                      <div className="mt-2 rounded-lg bg-violet-50 p-2.5">
-                        <div className="mb-1 text-xs font-semibold text-violet-600">AI Feedback</div>
-                        <p className="line-clamp-3 text-xs text-stone-600">{sub.ai_feedback}</p>
+                      <div className="mt-2 rounded-lg bg-stone-50 p-2.5">
+                        <div className="mb-1 text-xs font-semibold text-stone-500">AI Overall Feedback</div>
+                        <p className="text-xs text-stone-600 whitespace-pre-line">{sub.ai_feedback}</p>
                       </div>
                     )}
 
                     {/* Instructor notes */}
                     {sub.instructor_notes && (
-                      <div className="mt-2 rounded-lg bg-stone-50 p-2.5">
-                        <div className="mb-1 text-xs font-semibold text-stone-500">Your notes</div>
+                      <div className="mt-2 rounded-lg bg-amber-50 p-2.5">
+                        <div className="mb-1 text-xs font-semibold text-amber-600">Your notes</div>
                         <p className="text-xs text-stone-600">{sub.instructor_notes}</p>
                       </div>
                     )}
                   </div>
 
-                  {/* Action buttons */}
-                  <div className="flex-shrink-0 sm:w-48">
+                  {/* Action panel */}
+                  <div className="flex-shrink-0 sm:w-52 space-y-2">
+                    {/* Re-run AI grading button — shown for pending submissions with a file */}
+                    {sub.status === 'pending' && sub.file_name && (
+                      <ReGradeButton submissionId={sub.id} />
+                    )}
                     <GradeActions
                       submissionId={sub.id}
                       currentStatus={sub.status}

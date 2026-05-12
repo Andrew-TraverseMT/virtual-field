@@ -32,7 +32,7 @@ export default function SubmitPanel({
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
 
-  const parsedRubric: Record<string, number> | null = (() => {
+  const parsedRubric: Array<{ criterion_id: string; label: string; points_earned: number; points_available: number; justification: string }> | null = (() => {
     try {
       return aiRubricScores ? JSON.parse(aiRubricScores) : null
     } catch {
@@ -85,10 +85,28 @@ export default function SubmitPanel({
   const canResubmit = existingStatus === 'revision_requested'
   const submitted = existingStatus && !canResubmit
 
+  // Only show grade/feedback after instructor has approved or modified it.
+  // 'ai_graded' and 'pending' are held from the student view.
+  const gradeVisible = existingStatus === 'approved' || existingStatus === 'graded' || canResubmit
+
   return (
     <div className="space-y-6">
-      {/* Feedback panel — shown when graded or approved */}
-      {(aiGrade !== null || instructorGrade !== null) && (
+      {/* Grading-in-progress notice */}
+      {(existingStatus === 'pending' || existingStatus === 'ai_graded') && (
+        <div className="rounded-xl border border-violet-200 bg-violet-50 p-4 text-sm text-violet-700">
+          <div className="font-semibold mb-0.5">
+            {existingStatus === 'pending' ? '⏳ Grading in progress…' : '✦ AI grading complete'}
+          </div>
+          <p className="text-violet-600">
+            {existingStatus === 'pending'
+              ? 'Your submission is being graded by AI. Your instructor will review and confirm the grade before it is released to you.'
+              : 'Your work has been graded by AI and is awaiting your instructor\'s review. Your grade will be released once confirmed.'}
+          </p>
+        </div>
+      )}
+
+      {/* Feedback panel — shown only after instructor has approved/graded */}
+      {gradeVisible && (aiGrade !== null || instructorGrade !== null) && (
         <div className="rounded-xl border border-stone-200 bg-white p-5 shadow-sm">
           <h3 className="mb-4 font-semibold text-stone-700">Grading Feedback</h3>
 
@@ -132,16 +150,19 @@ export default function SubmitPanel({
             </div>
           )}
 
-          {parsedRubric && (
+          {parsedRubric && parsedRubric.length > 0 && (
             <div className="mt-3">
               <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-stone-500">
                 Criterion Scores
               </div>
-              <div className="space-y-1">
-                {Object.entries(parsedRubric).map(([criterion, score]) => (
-                  <div key={criterion} className="flex justify-between text-sm">
-                    <span className="text-stone-600">{criterion}</span>
-                    <span className="font-medium text-stone-800">{score}</span>
+              <div className="space-y-2">
+                {parsedRubric.map((score) => (
+                  <div key={score.criterion_id} className="rounded-lg bg-stone-50 p-2.5">
+                    <div className="flex justify-between text-sm mb-0.5">
+                      <span className="font-medium text-stone-700">{score.label}</span>
+                      <span className="font-bold text-amber-700">{score.points_earned}/{score.points_available}</span>
+                    </div>
+                    <p className="text-xs text-stone-500">{score.justification}</p>
                   </div>
                 ))}
               </div>

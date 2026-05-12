@@ -65,7 +65,12 @@ export type Submission = {
   assignment_id: string
   submitted_at: number
   file_name: string | null
-  status: 'pending' | 'graded' | 'approved' | 'revision_requested'
+  // 'pending'        → saved, AI grading in progress
+  // 'ai_graded'      → AI grade stored, awaiting instructor review (hidden from student)
+  // 'approved'       → instructor approved AI grade (student can see)
+  // 'graded'         → instructor modified grade (student can see)
+  // 'revision_requested' → instructor asked for resubmission
+  status: 'pending' | 'ai_graded' | 'graded' | 'approved' | 'revision_requested'
   ai_grade: number | null
   ai_feedback: string | null
   ai_rubric_scores: string | null

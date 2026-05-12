@@ -6,6 +6,7 @@ import { assignments, getAssignment } from '@/lib/assignments'
 import type { Submission } from '@/lib/db'
 import Link from 'next/link'
 import SubmitPanel from './SubmitPanel'
+import FeedbackPanel from './FeedbackPanel'
 
 type Props = { params: Promise<{ id: string }> }
 
@@ -296,7 +297,12 @@ export default async function AssignmentPage({ params }: Props) {
             </div>
           </div>
 
-          {/* Submission panel */}
+          {/* Pre-submission feedback panel (always available when unlocked) */}
+          {!isLocked && (
+            <FeedbackPanel assignmentId={id} />
+          )}
+
+          {/* Formal submission panel */}
           {!isLocked && (
             <SubmitPanel
               assignmentId={id}
