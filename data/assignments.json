@@ -1,0 +1,525 @@
+{
+  "assignments": [
+    {
+      "id": "leeds-topo-map",
+      "sequence": 1,
+      "unit": "Leeds Virtual Landscapes",
+      "type": "virtual-landscape",
+      "title": "Reading 3D Topographic Maps",
+      "subtitle": "Relate contour maps to real three-dimensional topography",
+      "description": "Use the Leeds Virtual Landscapes 3D Topographic Map to explore how elevation contours on a printed map correspond to hills, valleys, ridges, and spurs in a real landscape. Navigate the 3D model, identify terrain features, and build the spatial reasoning skills that underpin all subsequent mapping assignments.",
+      "url": "https://www.see.leeds.ac.uk/virtual-landscapes/minimaps/index.html",
+      "embedUrl": "https://www.see.leeds.ac.uk/virtual-landscapes/minimaps/index.html",
+      "canEmbed": false,
+      "materials": [],
+      "learningGoals": [
+        "Read contour intervals and identify terrain features (ridge, valley, spur, col, hill) from a map",
+        "Correlate map symbols with features observed in the 3D virtual landscape",
+        "Use correct topographic terminology in written descriptions"
+      ],
+      "deliverables": [
+        {
+          "id": "topo-sketch",
+          "label": "Annotated map sketch",
+          "description": "A labelled sketch (hand-drawn or digital) identifying at least five terrain features on the 3D topo map. Each feature must be labelled with its name and a one-sentence description of its contour pattern."
+        },
+        {
+          "id": "topo-reflection",
+          "label": "Written reflection (200–300 words)",
+          "description": "Describe how the contour pattern changes around each terrain feature. Explain how you would use a topographic map to plan a route or assess slope hazard in the field."
+        }
+      ],
+      "rubric": {
+        "totalPoints": 20,
+        "criteria": [
+          { "id": "terrain-id", "label": "Terrain feature identification", "points": 8, "description": "Correctly identifies and labels all five terrain features with accurate names." },
+          { "id": "contour-interp", "label": "Contour interpretation", "points": 6, "description": "Accurately describes contour spacing and what it indicates about slope angle and aspect." },
+          { "id": "reflection", "label": "Written reflection quality", "points": 6, "description": "Clearly links map symbols to 3D landscape; uses correct topographic terminology throughout." }
+        ]
+      },
+      "estimatedHours": 1.5,
+      "week": 1
+    },
+    {
+      "id": "leeds-dip-maps",
+      "sequence": 2,
+      "unit": "Leeds Virtual Landscapes",
+      "type": "virtual-landscape",
+      "title": "Dip and Map Patterns",
+      "subtitle": "How angle of dip controls the shape of outcrop bands on a geological map",
+      "description": "Using the Leeds 3D Geological Map block model, systematically change the angle of dip (keys 1–6) and observe how the outcrop pattern changes on the map surface. Record your observations on the provided dip-map field slip and write an analysis explaining the V-in-valleys rule. Consider how dip angles affect groundwater flow and slope stability as a practical application.",
+      "url": "https://www.see.leeds.ac.uk/virtual-landscapes/block/index.html",
+      "embedUrl": "https://www.see.leeds.ac.uk/virtual-landscapes/block/index.html",
+      "canEmbed": false,
+      "materials": ["02_Dip-maps.pdf"],
+      "learningGoals": [
+        "Understand how dip angle affects outcrop band width and the V-pattern in valleys",
+        "Read and correctly apply dip symbols on a geological map",
+        "Predict outcrop pattern from given dip data",
+        "Connect dip angle to practical hazard contexts (slope stability, groundwater)"
+      ],
+      "deliverables": [
+        {
+          "id": "dip-fieldslip",
+          "label": "Completed dip-maps field slip",
+          "description": "Annotate the provided field slip (02_Dip-maps.pdf) for each of the six dip angles shown in the model. Include measured dip values, correct dip symbols, and a sketch of the outcrop band shape for each."
+        },
+        {
+          "id": "dip-analysis",
+          "label": "Written analysis (250–350 words)",
+          "description": "Explain the relationship between dip angle and: (a) outcrop band width, (b) the direction the V-pattern points in valleys, and (c) the special case of vertical dip. Conclude with one sentence on how dip data would inform a slope stability or groundwater assessment."
+        }
+      ],
+      "rubric": {
+        "totalPoints": 25,
+        "criteria": [
+          { "id": "fieldslip-completeness", "label": "Field slip completeness", "points": 10, "description": "All six dip angles annotated with correct symbols, values, and outcrop band sketches." },
+          { "id": "v-pattern", "label": "V-pattern rule application", "points": 8, "description": "Correctly describes and illustrates the V-in-valleys rule for at least four dip scenarios." },
+          { "id": "analysis-quality", "label": "Written analysis quality", "points": 7, "description": "Uses correct geological vocabulary; logic is clear; practical application is geologically sound." }
+        ]
+      },
+      "estimatedHours": 2,
+      "week": 1
+    },
+    {
+      "id": "leeds-strike-maps",
+      "sequence": 3,
+      "unit": "Leeds Virtual Landscapes",
+      "type": "virtual-landscape",
+      "title": "Strike and Map Patterns",
+      "subtitle": "How the direction of strike controls outcrop orientation on a map",
+      "description": "Return to the Leeds 3D Geological Map block model and vary the strike direction (keys 1–6). Record how rotating strike changes the orientation of outcrop bands relative to the topography. You will then construct a simple geological cross section to reinforce the 3D geometry of dipping layers, and write a short note on how strike/dip data informs a real-world hazard or engineering scenario.",
+      "url": "https://www.see.leeds.ac.uk/virtual-landscapes/block/index.html",
+      "embedUrl": "https://www.see.leeds.ac.uk/virtual-landscapes/block/index.html",
+      "canEmbed": false,
+      "materials": ["02_Strike-maps.pdf"],
+      "learningGoals": [
+        "Define strike and explain its geometric relationship to dip direction",
+        "Predict how rotating strike changes the map outcrop pattern",
+        "Construct a simple geological cross section perpendicular to strike",
+        "Apply strike/dip knowledge to a real-world hazard or engineering problem"
+      ],
+      "deliverables": [
+        {
+          "id": "strike-fieldslip",
+          "label": "Completed strike-maps field slip",
+          "description": "Annotate the field slip (02_Strike-maps.pdf) for all six strike orientations. Include compass bearings and sketch the outcrop band orientation for each."
+        },
+        {
+          "id": "strike-crosssection",
+          "label": "Geological cross section",
+          "description": "Draw a simple cross section perpendicular to strike for two of the six orientations, showing the dipping layers projected below the ground surface. Label the dip angle and indicate north."
+        },
+        {
+          "id": "strike-hazard-note",
+          "label": "Hazard/engineering note (150–200 words)",
+          "description": "Describe a real-world scenario where knowing the strike and dip of a rock layer would be important — for example, slope stability assessment, road cutting, dam foundation design, or groundwater flow prediction."
+        }
+      ],
+      "rubric": {
+        "totalPoints": 30,
+        "criteria": [
+          { "id": "fieldslip-completeness", "label": "Field slip completeness", "points": 10, "description": "All six strike orientations annotated correctly with compass bearings and sketches." },
+          { "id": "cross-section", "label": "Cross section accuracy", "points": 10, "description": "Cross sections correctly show layer orientation, dip angle, and are at approximate scale." },
+          { "id": "hazard-link", "label": "Hazard/engineering connection", "points": 10, "description": "Provides a clear, geologically sound explanation of how strike/dip data informs a real hazard or engineering scenario." }
+        ]
+      },
+      "estimatedHours": 2.5,
+      "week": 1
+    },
+    {
+      "id": "leeds-lighthouse-bay",
+      "sequence": 4,
+      "unit": "Leeds Virtual Landscapes",
+      "type": "virtual-landscape",
+      "title": "Geological Mapping — Lighthouse Bay",
+      "subtitle": "Introductory full mapping exercise on a virtual coastal landscape",
+      "description": "Lighthouse Bay is an entry-level virtual mapping landscape. Navigate the 3D environment, identify rock unit boundaries and structural features, plot your observations on the provided field slip, and produce a completed geological map with a cross section. Conclude with a brief geohazard commentary identifying any coastal or slope instability risks associated with the mapped geology.",
+      "url": "https://www.see.leeds.ac.uk/virtual-landscapes/schools/index.html",
+      "embedUrl": "https://www.see.leeds.ac.uk/virtual-landscapes/schools/index.html",
+      "canEmbed": false,
+      "materials": [
+        "03_Lighthouse Bay field slip no outcrops.png",
+        "03_Lighthouse Bay field slip with outcrops.pdf"
+      ],
+      "learningGoals": [
+        "Plot rock unit boundaries from virtual field observations onto a base map",
+        "Apply correct strike/dip symbols at observed outcrop locations",
+        "Construct a geological cross section A–B from a completed geological map",
+        "Identify and explain potential geohazards from the mapped geology"
+      ],
+      "deliverables": [
+        {
+          "id": "lhb-map",
+          "label": "Completed geological map",
+          "description": "Filled-in Lighthouse Bay field slip (no outcrops version) with all rock unit boundaries, strike/dip symbols, formation colours, a legend, north arrow, scale bar, and section line A–B. Submit as a PDF scan or photograph."
+        },
+        {
+          "id": "lhb-crosssection",
+          "label": "Geological cross section A–B",
+          "description": "A cross section constructed perpendicular to the regional strike. Must include a topographic profile as the top of the section, all mapped units projected to depth, and correct dip angles."
+        },
+        {
+          "id": "lhb-hazard",
+          "label": "Geohazard commentary (150–200 words)",
+          "description": "Identify one geohazard relevant to the Lighthouse Bay geology (e.g., cliff instability, landslide susceptibility, coastal erosion) and explain the specific geological controls — including which rock units or structures are responsible."
+        }
+      ],
+      "rubric": {
+        "totalPoints": 50,
+        "criteria": [
+          { "id": "map-accuracy", "label": "Map accuracy", "points": 20, "description": "Unit boundaries, symbols, and colours correctly placed and internally consistent with virtual landscape observations." },
+          { "id": "cross-section", "label": "Cross section quality", "points": 15, "description": "Section line clearly marked on map; topo profile accurate; units correctly projected below surface at consistent dip." },
+          { "id": "hazard", "label": "Geohazard identification and reasoning", "points": 10, "description": "Hazard is geologically plausible; specific geological controls are correctly explained." },
+          { "id": "presentation", "label": "Cartographic presentation", "points": 5, "description": "Map has north arrow, scale bar, legend, section line, and title." }
+        ]
+      },
+      "estimatedHours": 4,
+      "week": 2
+    },
+    {
+      "id": "leeds-three-river-hills",
+      "sequence": 5,
+      "unit": "Leeds Virtual Landscapes",
+      "type": "virtual-landscape",
+      "title": "Geological Mapping — Three River Hills",
+      "subtitle": "Intermediate mapping exercise with varied strike, dip, and structural complexity",
+      "description": "Three River Hills is the original Leeds Virtual Landscapes geological mapping exercise. The landscape contains multiple rock units with varied dip and strike. Map the geology, produce a cross section revealing the subsurface geometry, and write a structural analysis identifying any folds or unconformities visible in the map pattern. Conclude with a human-impacts note on how the structural geology could affect land use or infrastructure.",
+      "url": "https://www.see.leeds.ac.uk/virtual-landscapes/demo/index.html",
+      "embedUrl": "https://www.see.leeds.ac.uk/virtual-landscapes/demo/index.html",
+      "canEmbed": false,
+      "materials": ["05_Three_River_Hills_Fieldslip.pdf"],
+      "learningGoals": [
+        "Map a multi-unit geology with varying strike and dip across a 3D landscape",
+        "Identify structural patterns (folds, unconformities) from map patterns",
+        "Construct a cross section that reveals subsurface geometry",
+        "Apply structural geology knowledge to human-impact and geohazard contexts"
+      ],
+      "deliverables": [
+        {
+          "id": "trh-map",
+          "label": "Completed geological map",
+          "description": "Filled-in Three River Hills field slip with all unit boundaries, strike/dip symbols, formation colours, north arrow, scale bar, legend, and section line clearly marked."
+        },
+        {
+          "id": "trh-crosssection",
+          "label": "Geological cross section",
+          "description": "Cross section through the map area showing all mapped units at depth. Include a topographic profile. Add a brief caption explaining the subsurface geometry revealed by the section."
+        },
+        {
+          "id": "trh-structural",
+          "label": "Structural analysis (200–300 words)",
+          "description": "Describe the structural geology of Three River Hills: identify any folds, faults, or unconformities evident in the map pattern and explain what they reveal about the deformation history."
+        },
+        {
+          "id": "trh-impact",
+          "label": "Human-impacts note (100–150 words)",
+          "description": "Briefly describe how the structural geology could affect land use, infrastructure siting (roads, buildings), or natural hazard risk in the Three River Hills area. Reference specific map features."
+        }
+      ],
+      "rubric": {
+        "totalPoints": 60,
+        "criteria": [
+          { "id": "map-accuracy", "label": "Map accuracy", "points": 20, "description": "All boundaries and symbols are correct and internally consistent across the map." },
+          { "id": "cross-section", "label": "Cross section", "points": 15, "description": "Section accurately portrays subsurface structure consistent with the map pattern." },
+          { "id": "structural-analysis", "label": "Structural analysis", "points": 15, "description": "Correctly identifies structures present; deformation history interpretation is geologically reasonable." },
+          { "id": "impact-hazard", "label": "Human impacts / hazard note", "points": 10, "description": "Demonstrates applied geology reasoning; specific features are referenced; risk assessment is credible." }
+        ]
+      },
+      "estimatedHours": 5,
+      "week": 2
+    },
+    {
+      "id": "leeds-rhoscolyn",
+      "sequence": 6,
+      "unit": "Leeds Virtual Landscapes",
+      "type": "virtual-landscape",
+      "title": "Geological Mapping — Rhoscolyn",
+      "subtitle": "Advanced mapping on a real complexly deformed coastal landscape",
+      "description": "Rhoscolyn is a real location on Anglesey, Wales, with complexly deformed Precambrian metasediments. This is the most challenging Leeds mapping exercise. In addition to producing a geological map and cross section, you will construct a stereonet (pi-diagram) from your bedding measurements to analyse fold geometry. The assignment concludes with a coastal geohazard assessment evaluating how structural weaknesses contribute to cliff instability and landslide risk.",
+      "url": "https://www.see.leeds.ac.uk/virtual-landscapes/rhoscolyn/index.html",
+      "embedUrl": "https://www.see.leeds.ac.uk/virtual-landscapes/rhoscolyn/index.html",
+      "canEmbed": false,
+      "materials": [
+        "04_Rhoscolyn mapping slip no outcrops.pdf",
+        "04_Rhoscolyn mapping slip with outcrops.png",
+        "04_Rhoscolyn whole area no outcrops.pdf",
+        "04_Rhoscolyn whole area with outcrops.pdf"
+      ],
+      "learningGoals": [
+        "Map complexly deformed metasediments in a real virtual landscape",
+        "Construct and interpret an equal-area lower-hemisphere stereonet from bedding data",
+        "Derive fold axis orientation (plunge and trend) from a pi-diagram",
+        "Evaluate coastal geohazard risk informed by structural geology observations"
+      ],
+      "deliverables": [
+        {
+          "id": "rhoscolyn-map",
+          "label": "Completed geological map",
+          "description": "Filled-in Rhoscolyn field slip with all unit boundaries, structural symbols (strike/dip, fold axes, foliation if observed), legend, north arrow, and scale bar. Use the whole-area slip for context."
+        },
+        {
+          "id": "rhoscolyn-crosssection",
+          "label": "Geological cross section",
+          "description": "A cross section through the mapped area showing folded units and any inferred faults. The section must be internally consistent with both your map and your stereonet analysis."
+        },
+        {
+          "id": "rhoscolyn-stereonet",
+          "label": "Stereonet analysis",
+          "description": "A pi-diagram or beta-diagram constructed from your bedding measurements. Identify the fold axis orientation (plunge and trend) and classify the fold (upright / inclined / recumbent; plunging / non-plunging). Include the plotted stereonet as a figure."
+        },
+        {
+          "id": "rhoscolyn-hazard",
+          "label": "Coastal geohazard assessment (250–350 words)",
+          "description": "Assess the coastal geohazard risk at Rhoscolyn. Explain how the orientation of structural weaknesses (cleavage planes, fold limbs, inferred faults) relative to the coastal cliffs could contribute to rockfall or landslide. Suggest at least one practical mitigation measure and note any human infrastructure that could be at risk."
+        }
+      ],
+      "rubric": {
+        "totalPoints": 80,
+        "criteria": [
+          { "id": "map-accuracy", "label": "Map accuracy", "points": 25, "description": "Boundaries, unit patterns, and structural symbols are correct and consistent with outcrop observations." },
+          { "id": "cross-section", "label": "Cross section", "points": 15, "description": "Correctly projects folded layers to depth; internally consistent with both the map and stereonet." },
+          { "id": "stereonet", "label": "Stereonet quality and interpretation", "points": 20, "description": "Poles plotted at correct positions; pi-girdle drawn and interpreted correctly; fold axis read accurately; fold classified." },
+          { "id": "hazard-assessment", "label": "Geohazard assessment", "points": 15, "description": "Structurally informed; identifies specific failure mechanisms tied to mapped features; mitigation is appropriate and specific." },
+          { "id": "presentation", "label": "Cartographic presentation", "points": 5, "description": "All cartographic conventions followed; work is clearly labelled and well-organised." }
+        ]
+      },
+      "estimatedHours": 7,
+      "week": 2
+    },
+    {
+      "id": "visiblegeology-stereonets",
+      "sequence": 7,
+      "unit": "Visible Geology",
+      "type": "visible-geology",
+      "title": "Stereonets and Fold Map Patterns",
+      "subtitle": "Explore how stereonets and geological map patterns relate to each other",
+      "description": "Using the Visible Geology Geology Explorer and Stereonet tools (Blatchford, EMU), investigate how the map pattern of folded layers corresponds to equal-area stereographic projections of the same structural data. Work through the pre-loaded fold models to build stereonet construction and interpretation skills that are essential for the Rhoscolyn assignment and the CYOA project.",
+      "url": "https://www.visiblegeology.com",
+      "embedUrl": "https://www.visiblegeology.com?sharecode=Y7AFxxTPw4C5zufoR9bn5D",
+      "canEmbed": true,
+      "materials": [
+        "Exploring relationships between map patterns of cylindrically folded layers and their stereonets.pdf"
+      ],
+      "learningGoals": [
+        "Plot planar and linear data on an equal-area lower-hemisphere stereonet",
+        "Construct a pi-diagram from fold limb bedding measurements",
+        "Derive fold axis plunge and trend from a stereonet pi-girdle",
+        "Articulate what aspects of fold geometry a stereonet cannot communicate"
+      ],
+      "deliverables": [
+        {
+          "id": "vg-stereonet-worksheet",
+          "label": "Completed activity worksheet",
+          "description": "Work through all models in the activity PDF. For each model include: (a) a sketch of the relevant map-face pattern with strike/dip symbols; (b) a photograph or export of your constructed stereonet; (c) written answers to the interpretation questions in the activity."
+        },
+        {
+          "id": "vg-stereonet-summary",
+          "label": "Synthesis paragraph (150–200 words)",
+          "description": "Summarise the key geometric relationship between a pi-girdle on a stereonet and the fold axis in 3D. Include one concrete example of how you would apply this to your Rhoscolyn dataset or to a structural project involving real field data."
+        }
+      ],
+      "rubric": {
+        "totalPoints": 40,
+        "criteria": [
+          { "id": "stereonet-accuracy", "label": "Stereonet accuracy", "points": 20, "description": "Poles plotted at correct positions; pi-girdle drawn correctly; fold axis read accurately with correct plunge/trend." },
+          { "id": "block-sketches", "label": "Block face sketches", "points": 10, "description": "Map patterns correctly reproduced with appropriate structural symbols." },
+          { "id": "synthesis", "label": "Synthesis and application", "points": 10, "description": "Accurately describes the geometric relationship; application example is geologically sound and specific." }
+        ]
+      },
+      "estimatedHours": 3,
+      "week": 3
+    },
+    {
+      "id": "visiblegeology-3d-model",
+      "sequence": 8,
+      "unit": "Visible Geology",
+      "type": "visible-geology",
+      "title": "Building a 3D Geological Model",
+      "subtitle": "Synthesise your map and cross section into a Visible Geology 3D model",
+      "description": "Using your completed Rhoscolyn map and cross section as input, construct a 3D geological model in the Visible Geology Geology Explorer. Apply deformation events (tilting, folding, faulting, erosion) in the correct sequence to reproduce the observed geology. Annotate screenshots for submission and write a geological history narrative that concludes with a note on whether any aspect of the geology poses a hazard or has been affected by human activity.",
+      "url": "https://www.visiblegeology.com",
+      "embedUrl": "https://www.visiblegeology.com",
+      "canEmbed": true,
+      "materials": [
+        "Combining Map and Cross Section Results into a VisibleGeology model.pdf"
+      ],
+      "learningGoals": [
+        "Translate 2D map and cross section data into a 3D digital geological model",
+        "Apply deformation events (tilt, fold, fault, erosion) in the correct geological sequence",
+        "Evaluate the internal consistency of a geological interpretation across 2D and 3D representations",
+        "Communicate geological structure and history in a clear written narrative"
+      ],
+      "deliverables": [
+        {
+          "id": "vg-model-screenshots",
+          "label": "Annotated 3D model screenshots (×3 minimum)",
+          "description": "At least three screenshots of your model: (1) plan/top view, (2) cross-section face matching your drawn section, (3) oblique 3D view. Each screenshot must be annotated with unit labels and key structural features (fold hinge, fault trace, etc.)."
+        },
+        {
+          "id": "vg-events-list",
+          "label": "Events history table",
+          "description": "A table or bulleted list of every event added to the model (e.g., 'Added 4 horizontal sedimentary layers', 'Tilted 35° NW', 'Tight anticlinal fold') with a brief justification for each, tied to evidence from your map or cross section."
+        },
+        {
+          "id": "vg-geological-history",
+          "label": "Geological history narrative (200–300 words)",
+          "description": "A chronological geological history of the field area as interpreted from your model, map, and cross section. Conclude with a brief note on whether the geology poses any hazard or has been affected by human activity in the area."
+        }
+      ],
+      "rubric": {
+        "totalPoints": 50,
+        "criteria": [
+          { "id": "model-consistency", "label": "Model–map–section consistency", "points": 20, "description": "3D model matches the map pattern and cross section; deformation sequence is geologically valid." },
+          { "id": "screenshots", "label": "Screenshot annotations", "points": 10, "description": "All key features clearly labelled; views chosen effectively communicate 3D structure." },
+          { "id": "geo-history", "label": "Geological history narrative", "points": 15, "description": "Events in correct chronological order; correct terminology used; hazard/human-impact note is geologically plausible." },
+          { "id": "events-justification", "label": "Event justification", "points": 5, "description": "Each modelling choice is clearly tied to evidence from the map or cross section." }
+        ]
+      },
+      "estimatedHours": 4,
+      "week": 3
+    },
+    {
+      "id": "cyoa-proposal",
+      "sequence": 9,
+      "unit": "CYOA Final Project",
+      "type": "cyoa",
+      "title": "Independent Mapping Project — Proposal",
+      "subtitle": "Design your own geology mapping project",
+      "description": "Design and propose an original geological mapping project on a topic of your choosing. Projects may be conducted entirely online using remote-sensing data (satellite imagery, LiDAR, published maps) or in the field on public land (all risks assumed by the student). Every project must produce a geological map, a geological cross section, and a human-impacts or geohazard assessment. Structurally complex projects must also include a stereonet analysis. Submit your proposal as a PDF covering all eight required sections.",
+      "url": null,
+      "embedUrl": null,
+      "canEmbed": false,
+      "materials": ["Choose Your Own Adventure Final Mapping Project.pdf"],
+      "locationOptions": [
+        {
+          "id": "remote-structural",
+          "label": "Remote Structural Geology",
+          "description": "Map folds, faults, or joints in a selected area using satellite imagery, Lidar from OpenTopography, and published datasets. Analyse structural data with a stereonet.",
+          "requiresStereonet": true,
+          "hazardTheme": "Seismic hazard, slope stability assessment, or dam/reservoir siting"
+        },
+        {
+          "id": "remote-geomorphic",
+          "label": "Remote Geomorphic / Quaternary Mapping",
+          "description": "Map landslide deposits, glacial landforms, paleo-shorelines, river terraces, or alluvial fans using DEMs (e.g., OpenTopography) and satellite imagery.",
+          "requiresStereonet": false,
+          "hazardTheme": "Landslide or flood hazard, coastal erosion, or infrastructure vulnerability"
+        },
+        {
+          "id": "remote-lithologic",
+          "label": "Remote Lithologic Mapping",
+          "description": "Map rock unit boundaries using multispectral imagery (Sentinel-2, ASTER, Google Earth) and published geological maps. Validate against the published literature.",
+          "requiresStereonet": false,
+          "hazardTheme": "Resource extraction impacts, groundwater contamination, or land subsidence"
+        },
+        {
+          "id": "field-structural",
+          "label": "Field Structural Geology",
+          "description": "Conduct field mapping of a structurally complex area on public land. Collect strike/dip measurements, plot on a field slip, construct a stereonet. All safety regulations apply; field work is entirely voluntary and all risks are assumed by the student.",
+          "requiresStereonet": true,
+          "hazardTheme": "Rockfall hazard, slope stability, or fault proximity to infrastructure"
+        },
+        {
+          "id": "field-geomorphic",
+          "label": "Field Geomorphic / Engineering Geology",
+          "description": "Map geomorphic hazards or engineering geology features (soil creep, erosion gullies, frost-heave terrain) at a local site on public land.",
+          "requiresStereonet": false,
+          "hazardTheme": "Erosion, ground subsidence, or foundation conditions for structures"
+        }
+      ],
+      "milestones": [
+        { "id": "topic-selection", "label": "Topic and study area selected", "week": 3 },
+        { "id": "proposal-submitted", "label": "Proposal submitted", "week": 3 }
+      ],
+      "proposalSections": [
+        { "id": "summary", "label": "1. Project summary", "description": "A brief overview of what you will map, where, and why it is geologically interesting." },
+        { "id": "location", "label": "2. Location / study area", "description": "Describe the location; include coordinates or a map extract. If field-based, confirm the site is on public land." },
+        { "id": "hypothesis", "label": "3. Hypothesis to be tested", "description": "A clear, testable geological hypothesis your map will address (e.g., 'The landslide deposits at X are controlled by the dip of underlying bedding')." },
+        { "id": "data-type", "label": "4. Type of data to be collected", "description": "Specify all data types: outcrop observations, strike/dip measurements, Lidar DEMs, satellite imagery, published maps, etc." },
+        { "id": "data-method", "label": "5. Method of data collection", "description": "How will data be collected? Name specific tools (Google Earth Engine, OpenTopography, compass-clinometer, QGIS, etc.)." },
+        { "id": "equipment", "label": "6. Equipment list", "description": "List all required equipment. If field-based, include safety equipment (first-aid kit, communication device, etc.)." },
+        { "id": "deliverables", "label": "7. Expected deliverables", "description": "List all outputs: geological map (type and scale), cross section, stereonet if applicable, hazard/impact assessment." },
+        { "id": "safety", "label": "8. Safety acknowledgement (field projects only)", "description": "If conducting any field work, confirm you have read the relevant field safety guide and understand that all risks are your responsibility." }
+      ],
+      "deliverables": [
+        {
+          "id": "cyoa-proposal-pdf",
+          "label": "Proposal PDF covering all 8 sections",
+          "description": "A single PDF document covering all eight proposal sections listed above. Be concise but specific: a good proposal is typically 1–2 pages."
+        }
+      ],
+      "rubric": {
+        "totalPoints": 30,
+        "criteria": [
+          { "id": "scope", "label": "Project scope and feasibility", "points": 10, "description": "Project is achievable within the remaining camp timeframe; hypothesis is clear, specific, and testable." },
+          { "id": "methodology", "label": "Methodology and deliverables", "points": 10, "description": "Data collection methods are appropriate for the project type; all required deliverables are explicitly listed." },
+          { "id": "hazard-integration", "label": "Hazard / human-impacts integration", "points": 10, "description": "A specific, relevant geohazard or human-impacts theme is explicitly incorporated into the project design." }
+        ]
+      },
+      "estimatedHours": 2,
+      "week": 3
+    },
+    {
+      "id": "cyoa-final",
+      "sequence": 10,
+      "unit": "CYOA Final Project",
+      "type": "cyoa",
+      "title": "Independent Mapping Project — Final Submission",
+      "subtitle": "Submit your completed self-designed geology mapping project",
+      "description": "Submit your completed mapping project as a single PDF. All projects must include: a geological map (at the scale specified in your proposal), a geological cross section with topographic profile, and a human-impacts or geohazard assessment referencing specific map features. Projects with significant structural data must also include a stereonet analysis. Your PDF should contain all deliverables specified in your approved proposal.",
+      "url": null,
+      "embedUrl": null,
+      "canEmbed": false,
+      "materials": ["Choose Your Own Adventure Final Mapping Project.pdf"],
+      "locationOptions": null,
+      "milestones": [
+        { "id": "map-draft", "label": "Map draft complete", "week": 3 },
+        { "id": "section-complete", "label": "Cross section complete", "week": 3 },
+        { "id": "stereonet-complete", "label": "Stereonet complete (if required by project type)", "week": 3 },
+        { "id": "final-submitted", "label": "Final project submitted", "week": 3 }
+      ],
+      "deliverables": [
+        {
+          "id": "cyoa-map",
+          "label": "Completed geological map",
+          "description": "Your geological map at the scale specified in your proposal. Must include: legend, north arrow, scale bar, section line(s), and at least 5 structural symbols (strike/dip, fold axes, fault traces) where applicable to your project type."
+        },
+        {
+          "id": "cyoa-crosssection",
+          "label": "Geological cross section",
+          "description": "At least one cross section through your map area with a topographic profile and correctly projected units. Include a brief caption explaining what the section reveals about subsurface geometry."
+        },
+        {
+          "id": "cyoa-stereonet",
+          "label": "Stereonet analysis (required for structural projects)",
+          "description": "Required if your project is 'Remote Structural Geology' or 'Field Structural Geology'. Include plotted poles/planes, interpreted pi-girdle or best-fit great circles, fold axis orientation, and written fold classification.",
+          "conditional": true,
+          "condition": "Project type is remote-structural or field-structural"
+        },
+        {
+          "id": "cyoa-hazard",
+          "label": "Human-impacts / geohazard assessment (300–500 words)",
+          "description": "A written assessment integrating your mapping results with your chosen geohazard or human-impacts theme. Reference at least three specific features shown on your map. Suggest at least one mitigation or management recommendation."
+        },
+        {
+          "id": "cyoa-supporting",
+          "label": "Supporting documentation",
+          "description": "Any supporting materials: field notes, GPS tracks, screenshots of remote-sensing tools, data sources, or references."
+        }
+      ],
+      "rubric": {
+        "totalPoints": 100,
+        "criteria": [
+          { "id": "map-quality", "label": "Map quality and accuracy", "points": 30, "description": "Unit boundaries are geologically consistent; structural symbols are correct; all cartographic conventions followed." },
+          { "id": "cross-section", "label": "Cross section quality", "points": 20, "description": "Topographic profile is accurate; units project correctly to depth; section is consistent with the map." },
+          { "id": "stereonet", "label": "Stereonet (structural projects only, otherwise pro-rated)", "points": 15, "description": "Poles and planes plotted correctly; fold axis interpreted accurately; fold classified with correct terminology." },
+          { "id": "hazard-assessment", "label": "Hazard / human-impacts assessment", "points": 20, "description": "Grounded in mapped geology; at least three specific map features referenced; recommendations are actionable and realistic." },
+          { "id": "integration", "label": "Overall integration and geological reasoning", "points": 15, "description": "Map, section, stereonet, and narrative form a coherent, internally consistent geological interpretation." }
+        ]
+      },
+      "estimatedHours": 10,
+      "week": 3
+    }
+  ]
+}
