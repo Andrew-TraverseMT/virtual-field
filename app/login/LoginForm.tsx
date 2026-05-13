@@ -35,7 +35,6 @@ export function LoginForm({ studentPassword, instructorPassword }: { studentPass
     }
 
     router.refresh()
-    router.push('/')
   }
 
   return (
