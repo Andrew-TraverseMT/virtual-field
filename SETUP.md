@@ -106,7 +106,9 @@ The app uses `@vercel/postgres` (Neon-backed, included with Pro). The code migra
 
 ### 6b. Initialize the schema
 
-After your first deploy (Step 7), run the one-time setup endpoint to create tables and seed the demo student:
+The app now initializes the schema automatically on first database access, including seeding the demo student.
+
+If you want to initialize it explicitly right after deploy, you can still run the one-time setup endpoint:
 
 ```powershell
 Invoke-RestMethod -Method Post -Uri "https://your-app.vercel.app/api/setup" `

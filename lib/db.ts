@@ -1,6 +1,31 @@
-import { sql } from '@vercel/postgres'
+import {
+  sql as vercelSql,
+  type QueryResult,
+  type QueryResultRow,
+} from '@vercel/postgres'
 
-export { sql }
+type Primitive = string | number | boolean | undefined | null
+
+let schemaInitPromise: Promise<void> | null = null
+
+export async function sql<O extends QueryResultRow>(
+  strings: TemplateStringsArray,
+  ...values: Primitive[]
+): Promise<QueryResult<O>> {
+  await ensureSchema()
+  return vercelSql<O>(strings, ...values)
+}
+
+export function ensureSchema(): Promise<void> {
+  if (!schemaInitPromise) {
+    schemaInitPromise = initSchema().catch((error) => {
+      schemaInitPromise = null
+      throw error
+    })
+  }
+
+  return schemaInitPromise
+}
 
 /**
  * Run once after provisioning the Vercel Postgres database.
@@ -8,7 +33,7 @@ export { sql }
  * All statements are idempotent (IF NOT EXISTS / ON CONFLICT DO NOTHING).
  */
 export async function initSchema(): Promise<void> {
-  await sql`
+  await vercelSql`
     CREATE TABLE IF NOT EXISTS registered_users (
       id                  TEXT PRIMARY KEY,
       name                TEXT NOT NULL,
@@ -20,7 +45,7 @@ export async function initSchema(): Promise<void> {
       created_at          BIGINT NOT NULL
     )
   `
-  await sql`
+  await vercelSql`
     CREATE TABLE IF NOT EXISTS students (
       id          TEXT PRIMARY KEY,
       name        TEXT NOT NULL,
@@ -29,14 +54,14 @@ export async function initSchema(): Promise<void> {
       deadline_at BIGINT NOT NULL
     )
   `
-  await sql`
+  await vercelSql`
     CREATE TABLE IF NOT EXISTS password_reset_tokens (
       token      TEXT PRIMARY KEY,
       user_id    TEXT NOT NULL,
       created_at BIGINT NOT NULL
     )
   `
-  await sql`
+  await vercelSql`
     CREATE TABLE IF NOT EXISTS submissions (
       id                     TEXT PRIMARY KEY,
       student_id             TEXT NOT NULL,
@@ -59,7 +84,7 @@ export async function initSchema(): Promise<void> {
   // Seed the hardcoded test student
   const now = Math.floor(Date.now() / 1000)
   const threeWeeks = 21 * 24 * 60 * 60
-  await sql`
+  await vercelSql`
     INSERT INTO students (id, name, email, enrolled_at, deadline_at)
     VALUES ('student-001', 'Test Student', 'student@virtualfield.dev', ${now}, ${now + threeWeeks})
     ON CONFLICT (id) DO NOTHING
