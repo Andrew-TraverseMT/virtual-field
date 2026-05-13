@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Suspense } from 'react'
 
-function LoginForm() {
+function LoginForm({ studentPassword, instructorPassword }: { studentPassword: string; instructorPassword: string }) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [email, setEmail] = useState('')
@@ -143,8 +143,8 @@ function LoginForm() {
         {/* Demo credentials */}
         <div className="mt-4 rounded-lg border border-dashed border-stone-200 bg-white/60 px-4 py-3">
           <p className="text-xs font-medium text-stone-500 mb-1">Demo credentials</p>
-          <p className="text-xs text-stone-400 font-mono">student@virtualfield.dev / test1234</p>
-          <p className="text-xs text-stone-400 font-mono mt-0.5">instructor@virtualfield.dev / instructor1234</p>
+          <p className="text-xs text-stone-400 font-mono">student@virtualfield.dev / {studentPassword}</p>
+          <p className="text-xs text-stone-400 font-mono mt-0.5">instructor@virtualfield.dev / {instructorPassword}</p>
         </div>
       </div>
     </div>
@@ -152,9 +152,11 @@ function LoginForm() {
 }
 
 export default function LoginPage() {
+  const studentPassword = process.env.STUDENT_PASSWORD ?? 'test1234'
+  const instructorPassword = process.env.INSTRUCTOR_PASSWORD ?? 'instructor1234'
   return (
     <Suspense>
-      <LoginForm />
+      <LoginForm studentPassword={studentPassword} instructorPassword={instructorPassword} />
     </Suspense>
   )
 }
