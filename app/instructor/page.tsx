@@ -3,7 +3,7 @@ import { authOptions } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import { sql } from '@/lib/db'
 import { getAssignment } from '@/lib/assignments'
-import type { Submission, Student } from '@/lib/db'
+import type { Submission } from '@/lib/db'
 import GradeActions from './GradeActions'
 import ReGradeButton from './ReGradeButton'
 

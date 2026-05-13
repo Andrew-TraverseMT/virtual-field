@@ -91,6 +91,7 @@ export default async function DashboardPage() {
     return { assignment: a, uiStatus, sub: sub ?? null }
   })
 
+  // eslint-disable-next-line react-hooks/purity
   const now = Math.floor(Date.now() / 1000)
   const enrolledAt = student?.enrolled_at ?? now
   const deadlineAt = student?.deadline_at ?? now + 21 * 24 * 60 * 60

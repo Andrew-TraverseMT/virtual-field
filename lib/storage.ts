@@ -12,7 +12,7 @@ import { put } from '@vercel/blob'
 import { writeFile, mkdir, readFile } from 'fs/promises'
 import path from 'path'
 
-function useBlob(): boolean {
+function blobEnabled(): boolean {
   return !!process.env.BLOB_READ_WRITE_TOKEN
 }
 
@@ -25,7 +25,7 @@ export async function storeFile(
   key: string,
   filename: string
 ): Promise<string> {
-  if (useBlob()) {
+  if (blobEnabled()) {
     const { url } = await put(`submissions/${key}/${filename}`, buffer, {
       access: 'public',
       contentType: 'application/pdf',
