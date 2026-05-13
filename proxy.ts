@@ -1,26 +1,8 @@
 import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
-import { getToken } from 'next-auth/jwt'
 
-export async function proxy(request: NextRequest) {
-  const token = await getToken({ req: request })
-  const { pathname } = request.nextUrl
-
-  if (pathname.startsWith('/dashboard') || pathname.startsWith('/assignments') || pathname.startsWith('/account')) {
-    if (!token) {
-      return NextResponse.redirect(new URL('/login', request.url))
-    }
-  }
-
-  if (pathname.startsWith('/instructor')) {
-    if (!token || (token as { role?: string }).role !== 'instructor') {
-      return NextResponse.redirect(new URL('/login', request.url))
-    }
-  }
-
+// Route protection is handled inside the app's server components and API routes.
+// Keeping auth redirects out of the edge proxy avoids token/session mismatches
+// that can produce redirect loops in production.
+export function proxy() {
   return NextResponse.next()
-}
-
-export const config = {
-  matcher: ['/dashboard/:path*', '/assignments/:path*', '/instructor/:path*', '/account/:path*'],
 }
