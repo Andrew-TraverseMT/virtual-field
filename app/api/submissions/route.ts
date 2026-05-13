@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
-import { getDB } from '@/lib/db'
+import { sql } from '@/lib/db'
 import { assignments } from '@/lib/assignments'
 import { gradeSubmission } from '@/lib/gemini'
 import { storeFile } from '@/lib/storage'
@@ -34,14 +34,11 @@ export async function POST(request: NextRequest) {
   }
 
   // Enforce sequential unlocking
-  const db = getDB()
   if (assignment.sequence > 1) {
     const prevAssignment = assignments.find((a) => a.sequence === assignment.sequence - 1)
     if (prevAssignment) {
-      const prevSub = db
-        .prepare('SELECT id FROM submissions WHERE student_id = ? AND assignment_id = ?')
-        .get(studentId, prevAssignment.id)
-      if (!prevSub) {
+      const { rows: prevRows } = await sql`SELECT id FROM submissions WHERE student_id = ${studentId} AND assignment_id = ${prevAssignment.id}`
+      if (prevRows.length === 0) {
         return NextResponse.json(
           { error: 'Complete the previous assignment first' },
           { status: 403 }
@@ -53,9 +50,8 @@ export async function POST(request: NextRequest) {
   // Enforce submission deadline (skip for instructors)
   const callerRole = (session.user as { role?: string }).role
   if (callerRole !== 'instructor') {
-    const stu = db
-      .prepare('SELECT deadline_at FROM students WHERE id = ?')
-      .get(studentId) as { deadline_at: number | null } | undefined
+    const { rows: stuRows } = await sql`SELECT deadline_at FROM students WHERE id = ${studentId}`
+    const stu = stuRows[0] as { deadline_at: number | null } | undefined
     const nowSec = Math.floor(Date.now() / 1000)
     if (stu?.deadline_at && stu.deadline_at < nowSec) {
       return NextResponse.json(
@@ -90,24 +86,23 @@ export async function POST(request: NextRequest) {
   const now = Math.floor(Date.now() / 1000)
 
   // Get the real submission id (may already exist on resubmission)
-  const existing = db
-    .prepare('SELECT id FROM submissions WHERE student_id = ? AND assignment_id = ?')
-    .get(studentId, assignmentId) as { id: string } | undefined
+  const { rows: existingRows } = await sql`SELECT id FROM submissions WHERE student_id = ${studentId} AND assignment_id = ${assignmentId}`
+  const existing = existingRows[0] as { id: string } | undefined
 
   const effectiveId = existing?.id ?? submissionId
 
-  db.prepare(
-    `INSERT INTO submissions (id, student_id, assignment_id, submitted_at, file_name, file_url, status)
-     VALUES (?, ?, ?, ?, ?, ?, 'pending')
-     ON CONFLICT(student_id, assignment_id) DO UPDATE SET
-       submitted_at = excluded.submitted_at,
-       file_name = excluded.file_name,
-       file_url = excluded.file_url,
-       status = 'pending',
-       ai_grade = NULL,
-       ai_feedback = NULL,
-       ai_rubric_scores = NULL`
-  ).run(submissionId, studentId, assignmentId, now, fileName, fileUrl)
+  await sql`
+    INSERT INTO submissions (id, student_id, assignment_id, submitted_at, file_name, file_url, status)
+    VALUES (${submissionId}, ${studentId}, ${assignmentId}, ${now}, ${fileName}, ${fileUrl}, 'pending')
+    ON CONFLICT(student_id, assignment_id) DO UPDATE SET
+      submitted_at = EXCLUDED.submitted_at,
+      file_name = EXCLUDED.file_name,
+      file_url = EXCLUDED.file_url,
+      status = 'pending',
+      ai_grade = NULL,
+      ai_feedback = NULL,
+      ai_rubric_scores = NULL
+  `
 
   // Fire-and-forget AI grading — runs in the background after response is sent.
   // The grade route updates status to 'ai_graded' when complete.
@@ -119,23 +114,17 @@ export async function POST(request: NextRequest) {
     ;(async () => {
       try {
         const result = await gradeSubmission(bufferForGrade, assignmentForGrade)
-        const db2 = getDB()
-        db2
-          .prepare(
-            `UPDATE submissions
-             SET status = 'ai_graded',
-                 ai_grade = ?,
-                 ai_feedback = ?,
-                 ai_rubric_scores = ?
-             WHERE id = ?`
-          )
-          .run(
-            result.total_score,
-            result.overall_feedback +
-              (result.confidence_notes !== 'None' ? `\n\nNote: ${result.confidence_notes}` : ''),
-            JSON.stringify(result.rubric_scores),
-            idToGrade
-          )
+        const feedback =
+          result.overall_feedback +
+          (result.confidence_notes !== 'None' ? `\n\nNote: ${result.confidence_notes}` : '')
+        await sql`
+          UPDATE submissions
+          SET status = 'ai_graded',
+              ai_grade = ${result.total_score},
+              ai_feedback = ${feedback},
+              ai_rubric_scores = ${JSON.stringify(result.rubric_scores)}
+          WHERE id = ${idToGrade}
+        `
       } catch (err) {
         console.error('[submissions] Background grading failed:', err)
       }

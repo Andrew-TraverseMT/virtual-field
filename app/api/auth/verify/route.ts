@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getDB } from '@/lib/db'
+import { sql } from '@/lib/db'
 import type { RegisteredUser } from '@/lib/db'
 
 export const runtime = 'nodejs'
@@ -11,10 +11,8 @@ export async function GET(req: NextRequest) {
     return NextResponse.redirect(new URL('/login?error=invalid_token', req.url))
   }
 
-  const db = getDB()
-  const user = db
-    .prepare('SELECT * FROM registered_users WHERE verification_token = ?')
-    .get(token) as RegisteredUser | undefined
+  const { rows } = await sql`SELECT * FROM registered_users WHERE verification_token = ${token}`
+  const user = rows[0] as RegisteredUser | undefined
 
   if (!user) {
     return NextResponse.redirect(new URL('/login?error=invalid_token', req.url))
@@ -31,22 +29,18 @@ export async function GET(req: NextRequest) {
   }
 
   // Mark verified and clear token
-  db.prepare(
-    'UPDATE registered_users SET verified = 1, verification_token = NULL WHERE id = ?'
-  ).run(user.id)
+  await sql`UPDATE registered_users SET verified = 1, verification_token = NULL WHERE id = ${user.id}`
 
   // Create student record so the rest of the app works
   const now = Math.floor(Date.now() / 1000)
   const threeWeeks = 21 * 24 * 60 * 60
-  const existingStudent = db
-    .prepare('SELECT id FROM students WHERE email = ?')
-    .get(user.email)
+  const { rows: existingStudentRows } = await sql`SELECT id FROM students WHERE email = ${user.email}`
 
-  if (!existingStudent) {
-    db.prepare(
-      `INSERT INTO students (id, name, email, enrolled_at, deadline_at)
-       VALUES (?, ?, ?, ?, ?)`
-    ).run(user.id, user.name, user.email, now, now + threeWeeks)
+  if (existingStudentRows.length === 0) {
+    await sql`
+      INSERT INTO students (id, name, email, enrolled_at, deadline_at)
+      VALUES (${user.id}, ${user.name}, ${user.email}, ${now}, ${now + threeWeeks})
+    `
   }
 
   return NextResponse.redirect(new URL('/login?verified=1', req.url))

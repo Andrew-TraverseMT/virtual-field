@@ -1,88 +1,69 @@
-import Database from 'better-sqlite3'
-import path from 'path'
+import { sql } from '@vercel/postgres'
 
-let db: Database.Database | null = null
+export { sql }
 
-export function getDB(): Database.Database {
-  if (!db) {
-    const dbPath = path.join(process.cwd(), 'dev.db')
-    db = new Database(dbPath)
-    db.pragma('journal_mode = WAL')
-    db.pragma('foreign_keys = ON')
-    initSchema(db)
-  }
-  return db
-}
-
-function initSchema(database: Database.Database): void {
-  database.exec(`
+/**
+ * Run once after provisioning the Vercel Postgres database.
+ * Call via POST /api/setup (protected by CRON_SECRET) or run manually.
+ * All statements are idempotent (IF NOT EXISTS / ON CONFLICT DO NOTHING).
+ */
+export async function initSchema(): Promise<void> {
+  await sql`
     CREATE TABLE IF NOT EXISTS registered_users (
       id                  TEXT PRIMARY KEY,
       name                TEXT NOT NULL,
       email               TEXT NOT NULL UNIQUE,
       password_hash       TEXT NOT NULL,
-      verified            INTEGER NOT NULL DEFAULT 0,
+      verified            SMALLINT NOT NULL DEFAULT 0,
+      email_bounced       SMALLINT NOT NULL DEFAULT 0,
       verification_token  TEXT UNIQUE,
-      created_at          INTEGER NOT NULL
-    );
-
+      created_at          BIGINT NOT NULL
+    )
+  `
+  await sql`
     CREATE TABLE IF NOT EXISTS students (
       id          TEXT PRIMARY KEY,
       name        TEXT NOT NULL,
       email       TEXT NOT NULL UNIQUE,
-      enrolled_at INTEGER NOT NULL,
-      deadline_at INTEGER NOT NULL
-    );
-
+      enrolled_at BIGINT NOT NULL,
+      deadline_at BIGINT NOT NULL
+    )
+  `
+  await sql`
     CREATE TABLE IF NOT EXISTS password_reset_tokens (
       token      TEXT PRIMARY KEY,
       user_id    TEXT NOT NULL,
-      created_at INTEGER NOT NULL
-    );
-
+      created_at BIGINT NOT NULL
+    )
+  `
+  await sql`
     CREATE TABLE IF NOT EXISTS submissions (
-      id                    TEXT PRIMARY KEY,
-      student_id            TEXT NOT NULL,
-      assignment_id         TEXT NOT NULL,
-      submitted_at          INTEGER NOT NULL,
-      file_name             TEXT,
-      file_url              TEXT,
-      status                TEXT NOT NULL DEFAULT 'pending',
-      ai_grade              INTEGER,
-      ai_feedback           TEXT,
-      ai_rubric_scores      TEXT,
-      instructor_grade      INTEGER,
-      instructor_notes      TEXT,
-      instructor_reviewed_at INTEGER,
+      id                     TEXT PRIMARY KEY,
+      student_id             TEXT NOT NULL,
+      assignment_id          TEXT NOT NULL,
+      submitted_at           BIGINT NOT NULL,
+      file_name              TEXT,
+      file_url               TEXT,
+      status                 TEXT NOT NULL DEFAULT 'pending',
+      ai_grade               INTEGER,
+      ai_feedback            TEXT,
+      ai_rubric_scores       TEXT,
+      instructor_grade       INTEGER,
+      instructor_notes       TEXT,
+      instructor_reviewed_at BIGINT,
       FOREIGN KEY (student_id) REFERENCES students(id),
       UNIQUE(student_id, assignment_id)
-    );
-  `)
-
-  // Migrate existing databases: add new columns (no-op if already present)
-  const migrations = [
-    `ALTER TABLE submissions ADD COLUMN file_url TEXT`,
-    `ALTER TABLE registered_users ADD COLUMN email_bounced INTEGER NOT NULL DEFAULT 0`,
-  ]
-  for (const sql of migrations) {
-    try { database.exec(sql) } catch { /* column already exists */ }
-  }
+    )
+  `
 
   // Seed the hardcoded test student
-  const existing = database
-    .prepare('SELECT id FROM students WHERE email = ?')
-    .get('student@virtualfield.dev')
-
-  if (!existing) {
-    const now = Math.floor(Date.now() / 1000)
-    const threeWeeks = 21 * 24 * 60 * 60
-    database
-      .prepare(
-        `INSERT INTO students (id, name, email, enrolled_at, deadline_at)
-         VALUES (?, ?, ?, ?, ?)`
-      )
-      .run('student-001', 'Test Student', 'student@virtualfield.dev', now, now + threeWeeks)
-  }
+  const now = Math.floor(Date.now() / 1000)
+  const threeWeeks = 21 * 24 * 60 * 60
+  await sql`
+    INSERT INTO students (id, name, email, enrolled_at, deadline_at)
+    VALUES ('student-001', 'Test Student', 'student@virtualfield.dev', ${now}, ${now + threeWeeks})
+    ON CONFLICT (id) DO NOTHING
+  `
 }
 
 export type Submission = {

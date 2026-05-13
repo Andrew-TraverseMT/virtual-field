@@ -1,7 +1,7 @@
 import type { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import bcrypt from 'bcryptjs'
-import { getDB } from '@/lib/db'
+import { sql } from '@/lib/db'
 import type { RegisteredUser } from '@/lib/db'
 
 export const authOptions: NextAuthOptions = {
@@ -42,10 +42,8 @@ export const authOptions: NextAuthOptions = {
         }
 
         // Check registered @montana.edu users
-        const db = getDB()
-        const dbUser = db
-          .prepare('SELECT * FROM registered_users WHERE email = ? AND verified = 1')
-          .get(credentials.email.toLowerCase()) as RegisteredUser | undefined
+        const { rows } = await sql`SELECT * FROM registered_users WHERE email = ${credentials.email.toLowerCase()} AND verified = 1`
+        const dbUser = rows[0] as RegisteredUser | undefined
 
         if (!dbUser) return null
 

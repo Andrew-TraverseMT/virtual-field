@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getDB } from '@/lib/db'
+import { sql } from '@/lib/db'
 
 /**
  * Resend webhook endpoint.
@@ -25,10 +25,7 @@ export async function POST(req: NextRequest) {
   if (event.type === 'email.bounced' || event.type === 'email.complained') {
     const email = event.data?.to?.[0]
     if (email) {
-      const db = getDB()
-      db.prepare('UPDATE registered_users SET email_bounced = 1 WHERE email = ?').run(
-        email.toLowerCase()
-      )
+      await sql`UPDATE registered_users SET email_bounced = 1 WHERE email = ${email.toLowerCase()}`
     }
   }
 

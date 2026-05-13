@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { randomBytes } from 'crypto'
 import bcrypt from 'bcryptjs'
-import { getDB } from '@/lib/db'
+import { sql } from '@/lib/db'
 import { sendVerificationEmail } from '@/lib/email'
 import { rateLimit, getClientIp } from '@/lib/rateLimit'
 
@@ -42,13 +42,11 @@ export async function POST(req: NextRequest) {
     )
   }
 
-  const db = getDB()
   const normalizedEmail = email.toLowerCase().trim()
 
   // Check for existing verified account
-  const existing = db
-    .prepare('SELECT id, verified FROM registered_users WHERE email = ?')
-    .get(normalizedEmail) as { id: string; verified: number } | undefined
+  const { rows } = await sql`SELECT id, verified FROM registered_users WHERE email = ${normalizedEmail}`
+  const existing = rows[0] as { id: string; verified: number } | undefined
 
   if (existing?.verified) {
     return NextResponse.json(
@@ -63,17 +61,17 @@ export async function POST(req: NextRequest) {
 
   if (existing) {
     // Re-send verification for an unverified account
-    db.prepare(
-      `UPDATE registered_users
-       SET name = ?, password_hash = ?, verification_token = ?, created_at = ?
-       WHERE id = ?`
-    ).run(name.trim(), passwordHash, token, now, existing.id)
+    await sql`
+      UPDATE registered_users
+      SET name = ${name.trim()}, password_hash = ${passwordHash}, verification_token = ${token}, created_at = ${now}
+      WHERE id = ${existing.id}
+    `
   } else {
     const id = `user-${randomBytes(8).toString('hex')}`
-    db.prepare(
-      `INSERT INTO registered_users (id, name, email, password_hash, verification_token, created_at)
-       VALUES (?, ?, ?, ?, ?, ?)`
-    ).run(id, name.trim(), normalizedEmail, passwordHash, token, now)
+    await sql`
+      INSERT INTO registered_users (id, name, email, password_hash, verification_token, created_at)
+      VALUES (${id}, ${name.trim()}, ${normalizedEmail}, ${passwordHash}, ${token}, ${now})
+    `
   }
 
   await sendVerificationEmail(normalizedEmail, name.trim(), token)

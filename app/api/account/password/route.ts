@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import bcrypt from 'bcryptjs'
 import { authOptions } from '@/lib/auth'
-import { getDB } from '@/lib/db'
+import { sql } from '@/lib/db'
 import type { RegisteredUser } from '@/lib/db'
 
 export async function POST(req: NextRequest) {
@@ -22,10 +22,8 @@ export async function POST(req: NextRequest) {
     )
   }
 
-  const db = getDB()
-  const user = db
-    .prepare('SELECT * FROM registered_users WHERE email = ?')
-    .get(session.user.email) as RegisteredUser | undefined
+  const { rows } = await sql`SELECT * FROM registered_users WHERE email = ${session.user.email}`
+  const user = rows[0] as RegisteredUser | undefined
 
   if (!user) {
     return NextResponse.json(
@@ -40,7 +38,7 @@ export async function POST(req: NextRequest) {
   }
 
   const hash = await bcrypt.hash(newPassword, 12)
-  db.prepare('UPDATE registered_users SET password_hash = ? WHERE id = ?').run(hash, user.id)
+  await sql`UPDATE registered_users SET password_hash = ${hash} WHERE id = ${user.id}`
 
   return NextResponse.json({ message: 'Password updated successfully.' })
 }

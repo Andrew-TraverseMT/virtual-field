@@ -1,7 +1,7 @@
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import { redirect } from 'next/navigation'
-import { getDB } from '@/lib/db'
+import { sql } from '@/lib/db'
 import { assignments } from '@/lib/assignments'
 import Link from 'next/link'
 
@@ -62,21 +62,12 @@ export default async function DashboardPage() {
 
   const studentId = (session.user as { id?: string }).id ?? 'student-001'
 
-  const db = getDB()
-  const submissions = db
-    .prepare(
-      'SELECT assignment_id, status, ai_grade, instructor_grade FROM submissions WHERE student_id = ?'
-    )
-    .all(studentId) as Array<{
-    assignment_id: string
-    status: string
-    ai_grade: number | null
-    instructor_grade: number | null
-  }>
+  const { rows: submissions } = await sql`
+    SELECT assignment_id, status, ai_grade, instructor_grade FROM submissions WHERE student_id = ${studentId}
+  ` as { rows: Array<{ assignment_id: string; status: string; ai_grade: number | null; instructor_grade: number | null }> }
 
-  const student = db
-    .prepare('SELECT enrolled_at, deadline_at FROM students WHERE id = ?')
-    .get(studentId) as { enrolled_at: number; deadline_at: number } | undefined
+  const { rows: studentRows } = await sql`SELECT enrolled_at, deadline_at FROM students WHERE id = ${studentId}`
+  const student = studentRows[0] as { enrolled_at: number; deadline_at: number } | undefined
 
   // Build submission map
   const subMap: Record<string, (typeof submissions)[number]> = {}

@@ -1,7 +1,7 @@
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import { notFound, redirect } from 'next/navigation'
-import { getDB } from '@/lib/db'
+import { sql } from '@/lib/db'
 import { assignments, getAssignment } from '@/lib/assignments'
 import type { Submission } from '@/lib/db'
 import Link from 'next/link'
@@ -25,23 +25,19 @@ export default async function AssignmentPage({ params }: Props) {
   if (!assignment) notFound()
 
   const studentId = (session.user as { id?: string }).id ?? 'student-001'
-  const db = getDB()
 
   // Check if this assignment is accessible
   let isLocked = false
   if (assignment.sequence > 1) {
     const prevAssignment = assignments.find((a) => a.sequence === assignment.sequence - 1)
     if (prevAssignment) {
-      const prevSub = db
-        .prepare('SELECT id FROM submissions WHERE student_id = ? AND assignment_id = ?')
-        .get(studentId, prevAssignment.id)
-      if (!prevSub) isLocked = true
+      const { rows: prevRows } = await sql`SELECT id FROM submissions WHERE student_id = ${studentId} AND assignment_id = ${prevAssignment.id}`
+      if (prevRows.length === 0) isLocked = true
     }
   }
 
-  const sub = db
-    .prepare('SELECT * FROM submissions WHERE student_id = ? AND assignment_id = ?')
-    .get(studentId, id) as Submission | undefined
+  const { rows: subRows } = await sql`SELECT * FROM submissions WHERE student_id = ${studentId} AND assignment_id = ${id}`
+  const sub = subRows[0] as Submission | undefined
 
   const prevAssignment =
     assignment.sequence > 1

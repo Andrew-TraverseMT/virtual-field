@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
-import { getDB } from '@/lib/db'
+import { sql } from '@/lib/db'
 
 type Params = { params: Promise<{ submissionId: string }> }
 
@@ -26,11 +26,8 @@ export async function PATCH(request: NextRequest, { params }: Params) {
 
   const { action, grade, notes } = body
 
-  const db = getDB()
-  const existing = db
-    .prepare('SELECT id FROM submissions WHERE id = ?')
-    .get(submissionId)
-  if (!existing) {
+  const { rows } = await sql`SELECT id FROM submissions WHERE id = ${submissionId}`
+  if (rows.length === 0) {
     return NextResponse.json({ error: 'Submission not found' }, { status: 404 })
   }
 
@@ -42,14 +39,14 @@ export async function PATCH(request: NextRequest, { params }: Params) {
     request_revision: 'revision_requested',
   } as const
 
-  db.prepare(
-    `UPDATE submissions
-     SET status = ?,
-         instructor_grade = ?,
-         instructor_notes = ?,
-         instructor_reviewed_at = ?
-     WHERE id = ?`
-  ).run(statusMap[action], grade ?? null, notes ?? null, now, submissionId)
+  await sql`
+    UPDATE submissions
+    SET status = ${statusMap[action]},
+        instructor_grade = ${grade ?? null},
+        instructor_notes = ${notes ?? null},
+        instructor_reviewed_at = ${now}
+    WHERE id = ${submissionId}
+  `
 
   return NextResponse.json({ ok: true })
 }

@@ -1,7 +1,7 @@
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import { redirect } from 'next/navigation'
-import { getDB } from '@/lib/db'
+import { sql } from '@/lib/db'
 import { getAssignment } from '@/lib/assignments'
 import type { Submission, Student } from '@/lib/db'
 import GradeActions from './GradeActions'
@@ -37,16 +37,13 @@ export default async function InstructorPage({
 
   const { filter } = await searchParams
 
-  const db = getDB()
-
-  const submissionsRaw = db
-    .prepare(
-      `SELECT s.*, st.name as student_name, st.email as student_email
-       FROM submissions s
-       JOIN students st ON st.id = s.student_id
-       ORDER BY s.submitted_at DESC`
-    )
-    .all() as FullSubmission[]
+  const { rows } = await sql`
+    SELECT s.*, st.name as student_name, st.email as student_email
+    FROM submissions s
+    JOIN students st ON st.id = s.student_id
+    ORDER BY s.submitted_at DESC
+  `
+  const submissionsRaw = rows as FullSubmission[]
 
   const submissions = filter
     ? submissionsRaw.filter((s) => s.status === filter)

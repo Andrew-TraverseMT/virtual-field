@@ -2,7 +2,7 @@ import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { authOptions } from '@/lib/auth'
-import { getDB } from '@/lib/db'
+import { sql } from '@/lib/db'
 
 interface StudentRow {
   id: string
@@ -18,22 +18,19 @@ export default async function StudentsPage() {
   const role = (session?.user as { role?: string } | undefined)?.role
   if (role !== 'instructor') redirect('/dashboard')
 
-  const db = getDB()
-  const students = db
-    .prepare(
-      `SELECT
-         s.id,
-         s.name,
-         s.email,
-         s.enrolled_at,
-         s.deadline_at,
-         COUNT(sub.id) AS submission_count
-       FROM students s
-       LEFT JOIN submissions sub ON sub.student_id = s.id
-       GROUP BY s.id
-       ORDER BY s.enrolled_at DESC`
-    )
-    .all() as StudentRow[]
+  const { rows: students } = await sql`
+    SELECT
+      s.id,
+      s.name,
+      s.email,
+      s.enrolled_at,
+      s.deadline_at,
+      COUNT(sub.id) AS submission_count
+    FROM students s
+    LEFT JOIN submissions sub ON sub.student_id = s.id
+    GROUP BY s.id
+    ORDER BY s.enrolled_at DESC
+  ` as { rows: StudentRow[] }
 
   function formatDate(ts: number | null) {
     if (!ts) return '—'

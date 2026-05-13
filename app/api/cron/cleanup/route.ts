@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getDB } from '@/lib/db'
+import { sql } from '@/lib/db'
 
 const SEVEN_DAYS_SEC = 7 * 24 * 60 * 60
 const ONE_HOUR_SEC = 60 * 60
@@ -10,22 +10,17 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized.' }, { status: 401 })
   }
 
-  const db = getDB()
   const now = Math.floor(Date.now() / 1000)
 
   // Delete expired password reset tokens (older than 1 hour)
-  const deletedTokens = db
-    .prepare('DELETE FROM password_reset_tokens WHERE created_at < ?')
-    .run(now - ONE_HOUR_SEC)
+  const r1 = await sql`DELETE FROM password_reset_tokens WHERE created_at < ${now - ONE_HOUR_SEC}`
 
   // Delete unverified registered_users older than 7 days
-  const deletedUsers = db
-    .prepare('DELETE FROM registered_users WHERE verified = 0 AND created_at < ?')
-    .run(now - SEVEN_DAYS_SEC)
+  const r2 = await sql`DELETE FROM registered_users WHERE verified = 0 AND created_at < ${now - SEVEN_DAYS_SEC}`
 
   return NextResponse.json({
-    deletedTokens: deletedTokens.changes,
-    deletedUnverifiedUsers: deletedUsers.changes,
+    deletedTokens: r1.rowCount ?? 0,
+    deletedUnverifiedUsers: r2.rowCount ?? 0,
     ranAt: new Date().toISOString(),
   })
 }

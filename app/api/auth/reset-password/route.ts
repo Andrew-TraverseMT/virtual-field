@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
-import { getDB } from '@/lib/db'
+import { sql } from '@/lib/db'
 
 const TOKEN_TTL_SEC = 60 * 60 // 1 hour
 
@@ -17,10 +17,8 @@ export async function POST(req: NextRequest) {
     )
   }
 
-  const db = getDB()
-  const row = db
-    .prepare('SELECT * FROM password_reset_tokens WHERE token = ?')
-    .get(token) as { token: string; user_id: string; created_at: number } | undefined
+  const { rows } = await sql`SELECT * FROM password_reset_tokens WHERE token = ${token}`
+  const row = rows[0] as { token: string; user_id: string; created_at: number } | undefined
 
   if (!row) {
     return NextResponse.json(
@@ -31,7 +29,7 @@ export async function POST(req: NextRequest) {
 
   const nowSec = Math.floor(Date.now() / 1000)
   if (nowSec - row.created_at > TOKEN_TTL_SEC) {
-    db.prepare('DELETE FROM password_reset_tokens WHERE token = ?').run(token)
+    await sql`DELETE FROM password_reset_tokens WHERE token = ${token}`
     return NextResponse.json(
       { error: 'This reset link has expired. Please request a new one.' },
       { status: 400 }
@@ -39,8 +37,8 @@ export async function POST(req: NextRequest) {
   }
 
   const hash = await bcrypt.hash(password, 12)
-  db.prepare('UPDATE registered_users SET password_hash = ? WHERE id = ?').run(hash, row.user_id)
-  db.prepare('DELETE FROM password_reset_tokens WHERE token = ?').run(token)
+  await sql`UPDATE registered_users SET password_hash = ${hash} WHERE id = ${row.user_id}`
+  await sql`DELETE FROM password_reset_tokens WHERE token = ${token}`
 
   return NextResponse.json({ message: 'Password updated. You can now log in.' })
 }

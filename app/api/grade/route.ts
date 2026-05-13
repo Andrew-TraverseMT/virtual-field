@@ -20,7 +20,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
-import { getDB } from '@/lib/db'
+import { sql } from '@/lib/db'
 import { assignments } from '@/lib/assignments'
 import { gradeSubmission } from '@/lib/gemini'
 import { getFileBuffer } from '@/lib/storage'
@@ -46,10 +46,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'submissionId required' }, { status: 400 })
   }
 
-  const db = getDB()
-  const submission = db
-    .prepare('SELECT * FROM submissions WHERE id = ?')
-    .get(submissionId) as
+  const { rows } = await sql`SELECT * FROM submissions WHERE id = ${submissionId}`
+  const submission = rows[0] as
     | {
         id: string
         student_id: string
@@ -88,19 +86,18 @@ export async function POST(request: NextRequest) {
     const buffer = await getFileBuffer(filePointer)
     const result = await gradeSubmission(buffer, assignment)
 
-    db.prepare(
-      `UPDATE submissions
-       SET status = 'ai_graded',
-           ai_grade = ?,
-           ai_feedback = ?,
-           ai_rubric_scores = ?
-       WHERE id = ?`
-    ).run(
-      result.total_score,
-      result.overall_feedback + (result.confidence_notes !== 'None' ? `\n\nNote: ${result.confidence_notes}` : ''),
-      JSON.stringify(result.rubric_scores),
-      submissionId
-    )
+    const feedback =
+      result.overall_feedback +
+      (result.confidence_notes !== 'None' ? `\n\nNote: ${result.confidence_notes}` : '')
+
+    await sql`
+      UPDATE submissions
+      SET status = 'ai_graded',
+          ai_grade = ${result.total_score},
+          ai_feedback = ${feedback},
+          ai_rubric_scores = ${JSON.stringify(result.rubric_scores)}
+      WHERE id = ${submissionId}
+    `
 
     return NextResponse.json({ ok: true, result })
   } catch (err) {
