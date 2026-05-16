@@ -188,6 +188,23 @@ export default async function AssignmentPage({ params }: Props) {
                   </div>
                 </a>
               )}
+
+              {/* Pre-built model link — shown when a specific sharecode URL is provided */}
+              {assignment.embedUrl?.includes('sharecode') && !assignment.urlOffline && (
+                <a
+                  href={assignment.embedUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-2 flex items-center gap-3 rounded-xl border border-violet-200 bg-violet-50 px-4 py-3 text-sm font-medium text-violet-800 transition hover:border-violet-300 hover:bg-violet-100 group"
+                >
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-violet-100 text-violet-700 group-hover:bg-violet-200 transition-colors text-base">★</span>
+                  <div className="min-w-0">
+                    <div className="font-medium text-violet-900">Load prebuilt model</div>
+                    <div className="text-xs text-violet-500">Opens the model referenced in the assignment</div>
+                  </div>
+                  <span className="text-xs text-violet-400 shrink-0 ml-auto">↗</span>
+                </a>
+              )}
             </div>
           )}
 

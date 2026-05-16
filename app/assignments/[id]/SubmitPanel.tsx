@@ -96,12 +96,12 @@ export default function SubmitPanel({
       {(existingStatus === 'pending' || existingStatus === 'ai_graded') && (
         <div className="rounded-2xl border border-violet-100 bg-violet-50/80 p-5">
           <p className="text-sm font-medium text-violet-800 mb-1">
-            {existingStatus === 'pending' ? 'Grading in progress' : 'AI grading complete'}
+            {existingStatus === 'pending' ? 'Submission received' : 'Review in progress'}
           </p>
           <p className="text-sm text-violet-600 leading-relaxed">
             {existingStatus === 'pending'
-              ? 'Your submission is being reviewed by AI. Your instructor will confirm the grade before it\'s released.'
-              : 'Graded by AI — awaiting instructor review before your grade is released.'}
+              ? 'Your submission has been received and is being reviewed. Your instructor will release your grade once review is complete.'
+              : 'Your work is being reviewed. Your grade will be released once the instructor has confirmed it.'}
           </p>
         </div>
       )}
