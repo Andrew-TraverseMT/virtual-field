@@ -678,9 +678,7 @@
       "url": "https://www.visiblegeology.com",
       "embedUrl": "https://www.visiblegeology.com",
       "canEmbed": true,
-      "materials": [
-        "Combining Map and Cross Section Results into a VisibleGeology model.pdf"
-      ],
+      "materials": [],
       "learningGoals": [
         "Translate 2D map and cross section data into a 3D digital geological model",
         "Apply deformation events (tilt, fold, fault, erosion) in the correct geological sequence",
