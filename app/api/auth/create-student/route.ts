@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import { sql } from '@/lib/db'
-import { sendNewStudentEmail } from '@/lib/email'
+
 
 export const runtime = 'nodejs'
 
@@ -24,10 +24,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
-  const { name, email } = await req.json() as { name?: string; email?: string }
+  const { name, email, startDate } = await req.json() as { name?: string; email?: string; startDate?: string }
 
   if (!name?.trim() || !email?.trim()) {
     return NextResponse.json({ error: 'Name and email are required.' }, { status: 400 })
+  }
+
+  // Compute deadline: 3 weeks from startDate (YYYY-MM-DD) if provided, else from now
+  const baseTs = startDate
+    ? Math.floor(new Date(startDate + 'T00:00:00').getTime() / 1000)
+    : Math.floor(Date.now() / 1000)
+  if (startDate && isNaN(baseTs * 1000)) {
+    return NextResponse.json({ error: 'Invalid start date.' }, { status: 400 })
   }
 
   const normalizedEmail = email.toLowerCase().trim()
@@ -55,11 +63,9 @@ export async function POST(req: NextRequest) {
   // Create enrollment record (drives submission FK and student roster)
   await sql`
     INSERT INTO students (id, name, email, enrolled_at, deadline_at)
-    VALUES (${id}, ${name.trim()}, ${normalizedEmail}, ${now}, ${now + threeWeeks})
+    VALUES (${id}, ${name.trim()}, ${normalizedEmail}, ${now}, ${baseTs + threeWeeks})
     ON CONFLICT (id) DO NOTHING
   `
 
-  await sendNewStudentEmail(name.trim(), normalizedEmail, tempPassword)
-
-  return NextResponse.json({ ok: true })
+  return NextResponse.json({ ok: true, tempPassword })
 }

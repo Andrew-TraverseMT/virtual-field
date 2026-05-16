@@ -5,26 +5,35 @@ import { useRouter } from 'next/navigation'
 
 // ── Add Student Form ──────────────────────────────────────────────────────────
 
+function todayIso() {
+  return new Date().toISOString().slice(0, 10)
+}
+
 export function AddStudentForm() {
   const router = useRouter()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
+  const [startDate, setStartDate] = useState(todayIso())
   const [status, setStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle')
   const [error, setError] = useState('')
+  const [createdPassword, setCreatedPassword] = useState('')
+  const [copied, setCopied] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setStatus('loading')
     setError('')
+    setCreatedPassword('')
 
     const res = await fetch('/api/auth/create-student', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: name.trim(), email: email.trim() }),
+      body: JSON.stringify({ name: name.trim(), email: email.trim(), startDate }),
     })
 
+    const data = await res.json().catch(() => ({}))
+
     if (!res.ok) {
-      const data = await res.json().catch(() => ({}))
       setError(data.error ?? 'Something went wrong.')
       setStatus('error')
       return
@@ -32,9 +41,16 @@ export function AddStudentForm() {
 
     setName('')
     setEmail('')
+    setStartDate(todayIso())
+    setCreatedPassword(data.tempPassword ?? '')
     setStatus('done')
     router.refresh()
-    setTimeout(() => setStatus('idle'), 3000)
+  }
+
+  async function copyPassword() {
+    await navigator.clipboard.writeText(createdPassword)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
   }
 
   return (
@@ -59,18 +75,38 @@ export function AddStudentForm() {
           onChange={(e) => setEmail(e.target.value)}
           className="flex-1 rounded-lg border border-stone-200 bg-stone-50 px-3.5 py-2.5 text-sm text-stone-900 placeholder:text-stone-400 outline-none transition focus:border-amber-500 focus:bg-white focus:ring-2 focus:ring-amber-100"
         />
+        <div className="flex flex-col gap-1">
+          <label className="text-[11px] font-medium text-stone-400 pl-0.5">Course start date</label>
+          <input
+            type="date"
+            required
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            className="rounded-lg border border-stone-200 bg-stone-50 px-3.5 py-2.5 text-sm text-stone-900 outline-none transition focus:border-amber-500 focus:bg-white focus:ring-2 focus:ring-amber-100"
+          />
+        </div>
         <button
           type="submit"
           disabled={status === 'loading'}
-          className="rounded-lg bg-amber-700 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-amber-800 disabled:opacity-60 whitespace-nowrap"
+          className="self-end rounded-lg bg-amber-700 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-amber-800 disabled:opacity-60 whitespace-nowrap"
         >
           {status === 'loading' ? 'Creating…' : 'Create account'}
         </button>
       </form>
-      {status === 'done' && (
-        <p className="mt-3 text-sm text-emerald-600">
-          Account created — credentials emailed to you.
-        </p>
+
+      {status === 'done' && createdPassword && (
+        <div className="mt-4 flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3">
+          <div className="flex-1 min-w-0">
+            <div className="text-[11px] font-semibold uppercase tracking-widest text-emerald-600 mb-0.5">Temporary password</div>
+            <div className="font-mono text-base font-bold text-emerald-900 tracking-wide">{createdPassword}</div>
+          </div>
+          <button
+            onClick={copyPassword}
+            className="flex-none rounded-lg border border-emerald-200 bg-white px-3 py-1.5 text-xs font-semibold text-emerald-700 hover:bg-emerald-100 transition"
+          >
+            {copied ? 'Copied!' : 'Copy'}
+          </button>
+        </div>
       )}
       {status === 'error' && (
         <p className="mt-3 text-sm text-red-600">{error}</p>
