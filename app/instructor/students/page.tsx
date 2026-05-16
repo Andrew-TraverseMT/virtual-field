@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { authOptions } from '@/lib/auth'
 import { sql } from '@/lib/db'
-import { AddStudentForm, ResetPasswordButton } from './StudentActions'
+import { AddStudentForm, PasswordCell, DeleteStudentButton } from './StudentActions'
 
 interface StudentRow {
   id: string
@@ -12,6 +12,7 @@ interface StudentRow {
   enrolled_at: number
   deadline_at: number | null
   submission_count: number
+  temp_password: string | null
 }
 
 export default async function StudentsPage() {
@@ -26,6 +27,7 @@ export default async function StudentsPage() {
       s.email,
       s.enrolled_at,
       s.deadline_at,
+      s.temp_password,
       COUNT(sub.id) AS submission_count
     FROM students s
     LEFT JOIN submissions sub ON sub.student_id = s.id
@@ -85,6 +87,9 @@ export default async function StudentsPage() {
                   <th className="text-right px-5 py-3 text-xs font-semibold uppercase tracking-widest text-stone-400">
                     Submissions
                   </th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-widest text-stone-400">
+                    Password
+                  </th>
                   <th className="px-5 py-3" />
                 </tr>
               </thead>
@@ -103,8 +108,11 @@ export default async function StudentsPage() {
                         {student.submission_count}
                       </span>
                     </td>
-                    <td className="px-5 py-3 text-right">
-                      <ResetPasswordButton studentId={student.id} studentName={student.name} />
+                    <td className="px-5 py-3">
+                      <PasswordCell studentId={student.id} initialPassword={student.temp_password} />
+                    </td>
+                    <td className="px-5 py-3">
+                      <DeleteStudentButton studentId={student.id} studentName={student.name} />
                     </td>
                   </tr>
                 ))}

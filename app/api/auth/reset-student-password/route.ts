@@ -4,7 +4,6 @@ import bcrypt from 'bcryptjs'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import { sql } from '@/lib/db'
-import { sendPasswordResetEmail } from '@/lib/email'
 import type { RegisteredUser } from '@/lib/db'
 
 export const runtime = 'nodejs'
@@ -40,11 +39,8 @@ export async function POST(req: NextRequest) {
   const passwordHash = await bcrypt.hash(tempPassword, 12)
 
   await sql`UPDATE registered_users SET password_hash = ${passwordHash} WHERE id = ${studentId}`
-
-  // Clean up any outstanding reset tokens for this user
+  await sql`UPDATE students SET temp_password = ${tempPassword} WHERE id = ${studentId}`
   await sql`DELETE FROM password_reset_tokens WHERE user_id = ${studentId}`
 
-  await sendPasswordResetEmail(user.name, user.email, tempPassword)
-
-  return NextResponse.json({ ok: true })
+  return NextResponse.json({ ok: true, tempPassword })
 }

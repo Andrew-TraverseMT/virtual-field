@@ -62,8 +62,8 @@ export async function POST(req: NextRequest) {
 
   // Create enrollment record (drives submission FK and student roster)
   await sql`
-    INSERT INTO students (id, name, email, enrolled_at, deadline_at)
-    VALUES (${id}, ${name.trim()}, ${normalizedEmail}, ${now}, ${baseTs + threeWeeks})
+    INSERT INTO students (id, name, email, enrolled_at, deadline_at, temp_password)
+    VALUES (${id}, ${name.trim()}, ${normalizedEmail}, ${now}, ${baseTs + threeWeeks}, ${tempPassword})
     ON CONFLICT (id) DO NOTHING
   `
 

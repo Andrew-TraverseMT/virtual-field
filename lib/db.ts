@@ -47,12 +47,17 @@ export async function initSchema(): Promise<void> {
   `
   await vercelSql`
     CREATE TABLE IF NOT EXISTS students (
-      id          TEXT PRIMARY KEY,
-      name        TEXT NOT NULL,
-      email       TEXT NOT NULL UNIQUE,
-      enrolled_at BIGINT NOT NULL,
-      deadline_at BIGINT NOT NULL
+      id           TEXT PRIMARY KEY,
+      name         TEXT NOT NULL,
+      email        TEXT NOT NULL UNIQUE,
+      enrolled_at  BIGINT NOT NULL,
+      deadline_at  BIGINT NOT NULL,
+      temp_password TEXT
     )
+  `
+  // Migration: add temp_password to existing deployments
+  await vercelSql`
+    ALTER TABLE students ADD COLUMN IF NOT EXISTS temp_password TEXT
   `
   await vercelSql`
     CREATE TABLE IF NOT EXISTS password_reset_tokens (

@@ -115,35 +115,152 @@ export function AddStudentForm() {
   )
 }
 
-// ── Reset Password Button ─────────────────────────────────────────────────────
+// ── Password Cell ─────────────────────────────────────────────────────────────
 
-export function ResetPasswordButton({ studentId, studentName }: { studentId: string; studentName: string }) {
-  const [status, setStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle')
+export function PasswordCell({ studentId, initialPassword }: { studentId: string; initialPassword: string | null }) {
+  const [password, setPassword] = useState(initialPassword ?? '')
+  const [visible, setVisible] = useState(false)
+  const [resetting, setResetting] = useState(false)
+  const [copied, setCopied] = useState(false)
 
   async function handleReset() {
-    if (!confirm(`Reset password for ${studentName}? A new temporary password will be emailed to you.`)) return
-    setStatus('loading')
-
+    setResetting(true)
     const res = await fetch('/api/auth/reset-student-password', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ studentId }),
     })
-
-    setStatus(res.ok ? 'done' : 'error')
-    if (res.ok) setTimeout(() => setStatus('idle'), 4000)
+    if (res.ok) {
+      const data = await res.json()
+      setPassword(data.tempPassword ?? '')
+      setVisible(true)
+    }
+    setResetting(false)
   }
 
-  if (status === 'done') return <span className="text-xs text-emerald-600 font-medium">Sent ✓</span>
-  if (status === 'error') return <span className="text-xs text-red-500 font-medium">Failed</span>
+  async function handleCopy() {
+    if (!password) return
+    await navigator.clipboard.writeText(password)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
 
   return (
-    <button
-      onClick={handleReset}
-      disabled={status === 'loading'}
-      className="text-xs text-stone-400 hover:text-amber-700 font-medium transition disabled:opacity-50"
-    >
-      {status === 'loading' ? 'Resetting…' : 'Reset password'}
-    </button>
+    <div className="flex items-center gap-1.5">
+      <span className="font-mono text-xs text-stone-700 min-w-[80px]">
+        {password ? (visible ? password : '••••••••••') : <span className="text-stone-300 italic">none</span>}
+      </span>
+      {password && (
+        <>
+          <button
+            onClick={() => setVisible((v) => !v)}
+            title={visible ? 'Hide' : 'Show'}
+            className="text-stone-300 hover:text-stone-500 transition"
+          >
+            {visible ? (
+              <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M10 3C5 3 1.73 7.11 1 10c.73 2.89 4 7 9 7s8.27-4.11 9-7c-.73-2.89-4-7-9-7zm0 12a5 5 0 110-10 5 5 0 010 10zm0-8a3 3 0 100 6 3 3 0 000-6z"/>
+              </svg>
+            ) : (
+              <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M2.93 3.93a1 1 0 011.41 0l11.73 11.73a1 1 0 01-1.41 1.41L13 15.41A9.26 9.26 0 0110 16c-5 0-8.27-4.11-9-7a9.26 9.26 0 012.55-4.14L2.93 5.34a1 1 0 010-1.41zM10 6a4 4 0 013.87 5l-5.23-5.23A4 4 0 0110 6zm0 8a4 4 0 01-3.87-3L10 14.87A4 4 0 0110 14z"/>
+              </svg>
+            )}
+          </button>
+          <button
+            onClick={handleCopy}
+            title="Copy password"
+            className="text-stone-300 hover:text-stone-500 transition text-[10px] font-semibold"
+          >
+            {copied ? '✓' : (
+              <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M8 2a2 2 0 00-2 2H5a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-1a2 2 0 002-2V6l-4-4H8zm0 2h4v3h3v1H8V4zm-3 4h2v8H5V8zm4 0h6v8H9V8z"/>
+              </svg>
+            )}
+          </button>
+        </>
+      )}
+      <button
+        onClick={handleReset}
+        disabled={resetting}
+        title="Reset password"
+        className="text-stone-300 hover:text-amber-600 transition disabled:opacity-40 text-[10px] font-semibold"
+      >
+        {resetting ? '…' : (
+          <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M4 10a6 6 0 016-6 6 6 0 014.47 2H13a1 1 0 100 2h4a1 1 0 001-1V3a1 1 0 10-2 0v1.28A8 8 0 002 10a1 1 0 102 0zm12 0a1 1 0 10-2 0 6 6 0 01-6 6 6 6 0 01-4.47-2H5a1 1 0 100-2H1a1 1 0 00-1 1v4a1 1 0 102 0v-1.28A8 8 0 0018 10z"/>
+          </svg>
+        )}
+      </button>
+    </div>
+  )
+}
+
+// ── Delete Student Button ─────────────────────────────────────────────────────
+
+export function DeleteStudentButton({ studentId, studentName }: { studentId: string; studentName: string }) {
+  const router = useRouter()
+  const [step, setStep] = useState<'idle' | 'confirm'>('idle')
+  const [typed, setTyped] = useState('')
+  const [deleting, setDeleting] = useState(false)
+  const [error, setError] = useState('')
+
+  async function handleDelete() {
+    if (typed !== studentName) return
+    setDeleting(true)
+    setError('')
+    const res = await fetch('/api/auth/delete-student', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ studentId }),
+    })
+    if (res.ok) {
+      router.refresh()
+    } else {
+      const data = await res.json().catch(() => ({}))
+      setError(data.error ?? 'Failed to delete.')
+      setDeleting(false)
+    }
+  }
+
+  if (step === 'idle') {
+    return (
+      <button
+        onClick={() => setStep('confirm')}
+        className="text-stone-300 hover:text-red-500 transition"
+        title="Delete student"
+      >
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
+          <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 112 0v6a1 1 0 11-2 0V8z" clipRule="evenodd"/>
+        </svg>
+      </button>
+    )
+  }
+
+  return (
+    <div className="flex items-center gap-2">
+      <input
+        autoFocus
+        type="text"
+        placeholder={`Type "${studentName}" to confirm`}
+        value={typed}
+        onChange={(e) => setTyped(e.target.value)}
+        className="rounded border border-red-200 bg-red-50 px-2 py-1 text-xs text-stone-800 outline-none focus:border-red-400 w-44"
+      />
+      <button
+        onClick={handleDelete}
+        disabled={typed !== studentName || deleting}
+        className="rounded bg-red-600 px-2 py-1 text-xs font-semibold text-white hover:bg-red-700 disabled:opacity-40 transition"
+      >
+        {deleting ? '…' : 'Delete'}
+      </button>
+      <button
+        onClick={() => { setStep('idle'); setTyped(''); setError('') }}
+        className="text-xs text-stone-400 hover:text-stone-600"
+      >
+        Cancel
+      </button>
+      {error && <span className="text-xs text-red-500">{error}</span>}
+    </div>
   )
 }
