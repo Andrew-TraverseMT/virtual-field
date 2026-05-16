@@ -153,19 +153,24 @@ export default async function InstructorPreviewAssignmentPage({ params }: Props)
               )}
 
               {assignment.embedUrl?.includes('sharecode') && !assignment.urlOffline && (
-                <a
-                  href={assignment.embedUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-2 flex items-center gap-3 rounded-xl border border-violet-200 bg-violet-50 px-4 py-3 text-sm font-medium text-violet-800 transition hover:border-violet-300 hover:bg-violet-100 group"
-                >
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-violet-100 text-violet-700 group-hover:bg-violet-200 transition-colors text-base">★</span>
-                  <div className="min-w-0">
-                    <div className="font-medium text-violet-900">Load prebuilt model</div>
-                    <div className="text-xs text-violet-500">Opens the model referenced in the assignment</div>
+                <div className="mt-2 rounded-xl border border-violet-200 bg-violet-50 p-4">
+                  <div className="mb-3 flex items-center gap-2">
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-violet-100 text-violet-700 text-sm">★</span>
+                    <span className="text-sm font-semibold text-violet-900">Import the prebuilt model</span>
                   </div>
-                  <span className="text-xs text-violet-400 shrink-0 ml-auto">↗</span>
-                </a>
+                  <ol className="space-y-1.5 text-sm text-violet-800">
+                    <li className="flex gap-2"><span className="shrink-0 font-bold text-violet-400">1.</span><span>Open <a href="https://www.visiblegeology.com" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-violet-900">visiblegeology.com</a> and sign in with a Seequent or Google account.</span></li>
+                    <li className="flex gap-2"><span className="shrink-0 font-bold text-violet-400">2.</span><span>Click <strong>Input via code</strong>.</span></li>
+                    <li className="flex gap-2"><span className="shrink-0 font-bold text-violet-400">3.</span><span>Paste the share code below, then select <strong>Project</strong>.</span></li>
+                    <li className="flex gap-2"><span className="shrink-0 font-bold text-violet-400">4.</span><span>Click <strong>Import</strong> — the model is saved to your library and ready to edit.</span></li>
+                  </ol>
+                  <div className="mt-3 flex items-center gap-3 rounded-lg border border-violet-200 bg-white px-3 py-2">
+                    <code className="flex-1 select-all font-mono text-sm text-violet-900">
+                      {assignment.embedUrl.split('sharecode=')[1]}
+                    </code>
+                    <span className="shrink-0 text-xs text-violet-400">share code</span>
+                  </div>
+                </div>
               )}
             </div>
           )}

@@ -11,7 +11,9 @@
       "url": "https://www.visiblegeology.com",
       "embedUrl": "https://www.visiblegeology.com",
       "canEmbed": true,
-      "materials": [],
+      "materials": [
+        "01_Topo map detailed.png"
+      ],
       "learningGoals": [
         "Navigate the Visible Geology Geology Explorer (rotate, pan, switch 2D/3D views, use Layers and Topography tools)",
         "Explain why horizontal rock layers produce map contacts that parallel topographic contour lines",
@@ -69,11 +71,14 @@
       "type": "visible-geology",
       "title": "Dip Angle and Map Patterns",
       "subtitle": "How the angle of dip controls V-patterns and outcrop band width in a valley",
-      "description": "Using a pre-built valley topography in Visible Geology, systematically tilt the six horizontal beds from the previous assignment and observe how dip angle changes the shape and orientation of outcrop bands in map view. Open the embedded model below (it loads a valley topography with horizontal beds). Use the Events tool → Tilt to apply each scenario; delete the previous Tilt event from the History panel before adding a new one so tilts do not compound. Test: upstream dip at 20° (Strike 0°, Dip 20° RHR), upstream dip at 60° (Strike 0°, Dip 60°), and vertical bedding (Dip 90°). Screenshot both map and 3D views after each change.",
+      "description": "Using a pre-built valley topography in Visible Geology, systematically tilt the six horizontal beds from the previous assignment and observe how dip angle changes the shape and orientation of outcrop bands in map view. Open the embedded model below (it loads a valley topography with horizontal beds). Use the Events tool → Tilt to apply each scenario; delete the previous Tilt event from the History panel before adding a new one so tilts do not compound. Test: upstream dip at 20° (Strike 0°, Dip 20° RHR), upstream dip at 60° (Strike 0°, Dip 60°), and vertical bedding (Dip 90°). Screenshot the 2D map view after each change.",
       "url": "https://www.visiblegeology.com",
       "embedUrl": "https://www.visiblegeology.com?sharecode=ejKwZmhrQDkKxVHz5Nwxbr",
       "canEmbed": true,
-      "materials": [],
+      "materials": [
+        "rule_of_vs_activity.pdf",
+        "02_Dip-maps.pdf"
+      ],
       "learningGoals": [
         "Use the Visible Geology Events tool to apply Tilt events with specified strike and dip (RHR azimuthal notation)",
         "Describe how dip angle controls outcrop band width and the sharpness of V-patterns in a valley",
@@ -130,7 +135,10 @@
       "url": "https://www.visiblegeology.com",
       "embedUrl": "https://www.visiblegeology.com?sharecode=ejKwZmhrQDkKxVHz5Nwxbr",
       "canEmbed": true,
-      "materials": [],
+      "materials": [
+        "rule_of_vs_activity.pdf",
+        "02_Strike-maps.pdf"
+      ],
       "learningGoals": [
         "Distinguish map patterns produced by beds dipping upstream versus downstream at the same dip angle",
         "Explain how dip angle affects V-pattern width when beds dip downstream at rates above and below the valley floor gradient",
@@ -269,7 +277,10 @@
       },
       "estimatedHours": 4,
       "week": 1,
-      "attribution": "Virtual landscape environment developed by the University of Leeds, School of Earth and Environment (see.leeds.ac.uk/virtual-landscapes). Exercise format adapted for this course."
+      "attribution": "Virtual landscape environment developed by the University of Leeds, School of Earth and Environment (see.leeds.ac.uk/virtual-landscapes). Exercise format adapted for this course.",
+      "gradingMaterials": [
+        "03_Lighthouse Bay answer map.png"
+      ]
     },
     {
       "id": "leeds-three-river-hills",
@@ -357,7 +368,11 @@
       },
       "estimatedHours": 5,
       "week": 1,
-      "attribution": "Virtual landscape environment developed by the University of Leeds, School of Earth and Environment (see.leeds.ac.uk/virtual-landscapes). Exercise format adapted for this course."
+      "attribution": "Virtual landscape environment developed by the University of Leeds, School of Earth and Environment (see.leeds.ac.uk/virtual-landscapes). Exercise format adapted for this course.",
+      "gradingMaterials": [
+        "05_Three River Hills map answer.jpg",
+        "05_Three River Hills section answer.png"
+      ]
     },
     {
       "id": "visiblegeology-stereonets",
@@ -593,13 +608,12 @@
       "type": "visible-geology",
       "title": "Reservoir Geology and CO₂ Sequestration",
       "subtitle": "Construct stratigraphic columns, model lateral facies variability, and evaluate subsurface CO₂ storage sites",
-      "description": "Carbon capture and underground storage (CCS) is a key strategy for reducing atmospheric CO₂ from industrial point sources. In this three-part assignment you assess potential storage sites in the Upper Devonian Hampshire Formation of the Appalachian basin using real archived core descriptions, Visible Geology block models, and structural analysis.\n\nPart 1 — Stratigraphic column construction: A detailed bed-by-bed description of a 30 ft Hampshire Formation core from Northern WV is provided in the assignment materials (Table 1). The core is divided into three stratigraphic units: Unit 1 (offshore shale/mudstone, 0–6.7 ft), Unit 2 (nearshore fine-grained sandstone, 6.7–18.05 ft), and Unit 3 (delta-plain coarse-grained sandstone, 18.05–30.05 ft). Using the blank log template and symbol legend in the materials, construct a formal sedimentary log. Identify whether the stacking pattern records overall shoreline transgression or regression.\n\nPart 2 — Lateral facies modeling: The Hampshire Formation was deposited by a delta system prograding from eastern Pennsylvania westward toward Ohio. Build representative core models in Visible Geology for Central OH (distal) and Western MD (proximal). Adjust the proportion of each facies unit accordingly: Central OH should show a greater proportion of offshore mudstone; Western MD should include delta-plain or alluvial-plain units. Layer colours: offshore = grey, nearshore = light yellow, delta plain = dark orange, alluvial plain = green.\n\nPart 3 — Structural trapping analysis: A thick mudstone overlies the Hampshire Formation, forming an impermeable seal. Modify your Central OH model (tilt 5° east, 2× vertical exaggeration) and Western MD model (fold: axis trend/plunge 022/10°, amplitude 16, wavelength 20, no vertical exaggeration). Annotate fluid migration directions on screenshots, then rank all three locations — Northern WV, Central OH, Western MD — for CO₂ storage viability and recommend one site.",
+      "description": "Carbon capture and underground storage (CCS) is a key strategy for reducing atmospheric CO₂ from industrial point sources. In this three-part assignment you assess potential storage sites in the Upper Devonian Hampshire Formation of the Appalachian basin using real archived core descriptions, Visible Geology block models, and structural analysis.\n\nPart 1 — Stratigraphic column construction: A detailed bed-by-bed description of a 30 ft Hampshire Formation core from Northern WV is provided in the assignment materials (Table 1). The core is divided into three stratigraphic units: Unit 1 (offshore shale/mudstone, 0–6.7 ft), Unit 2 (nearshore fine-grained sandstone, 6.7–18.05 ft), and Unit 3 (delta-plain coarse-grained sandstone, 18.05–30.05 ft). Using the blank log template and symbol legend in the assignment PDF, construct a formal sedimentary log. Identify whether the stacking pattern records overall shoreline transgression or regression.\n\nPart 2 — Lateral facies modeling: The Hampshire Formation was deposited by a delta system prograding from eastern Pennsylvania westward toward Ohio. Build representative core models in Visible Geology for Central OH (distal) and Western MD (proximal). Adjust the proportion of each facies unit accordingly: Central OH should show a greater proportion of offshore mudstone; Western MD should include delta-plain or alluvial-plain units. Layer colours: offshore = grey, nearshore = light yellow, delta plain = dark orange, alluvial plain = green.\n\nPart 3 — Structural trapping analysis: A thick mudstone overlies the Hampshire Formation, forming an impermeable seal. Modify your Central OH model (tilt 5° east, 2× vertical exaggeration) and Western MD model (fold: axis trend/plunge 022/10°, amplitude 16, wavelength 20, no vertical exaggeration). Annotate fluid migration directions on screenshots, then rank all three locations — Northern WV, Central OH, Western MD — for CO₂ storage viability and recommend one site.",
       "url": "https://www.visiblegeology.com",
       "embedUrl": "https://www.visiblegeology.com",
       "canEmbed": true,
       "materials": [
-        "Reservoir_Sandstone_Correlation_Activity.pdf",
-        "Hampshire_Fm_Core_Log_Template.pdf"
+        "Reservoir_Sandstone_Correlation_Activity.pdf"
       ],
       "attribution": "Adapted from Weislogel, A.L. (West Virginia University). “Reservoir Sandstone Stratigraphic Correlation.” Visible Geology Activities Collection (visiblegeology.com). Hampshire Formation core description archived by the West Virginia Geological and Economic Survey.",
       "learningGoals": [

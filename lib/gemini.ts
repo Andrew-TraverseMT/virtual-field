@@ -14,6 +14,7 @@
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import { GoogleAIFileManager } from '@google/generative-ai/server'
 import { readFile } from 'fs/promises'
+import path from 'path'
 import type { Assignment } from '@/lib/assignments'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -161,18 +162,32 @@ export async function gradeSubmission(
 ): Promise<GradeResult> {
   const { genAI } = getClients()
 
-  const prompt = buildGradePrompt(assignment)
+  const gradingMaterials = assignment.gradingMaterials ?? []
+  let prompt = buildGradePrompt(assignment)
+  if (gradingMaterials.length > 0) {
+    prompt +=
+      '\n\nREFERENCE ANSWER MAPS: The image(s) attached immediately before the student PDF are the instructor answer maps. Use them to assess the spatial accuracy of the student\'s mapped contacts, orientations, and patterns.'
+  }
 
   const model = genAI.getGenerativeModel({ model: 'gemini-2.5-pro' })
-  const result = await model.generateContent([
-    prompt,
-    {
-      inlineData: {
-        mimeType: 'application/pdf',
-        data: fileBuffer.toString('base64'),
-      },
-    },
-  ])
+
+  type InlineDataPart = { inlineData: { mimeType: string; data: string } }
+  const parts: (string | InlineDataPart)[] = [prompt]
+
+  for (const filename of gradingMaterials) {
+    const filePath = path.join(process.cwd(), 'materials', filename)
+    const data = await readFile(filePath)
+    const ext = path.extname(filename).toLowerCase()
+    const mimeType =
+      ext === '.jpg' || ext === '.jpeg' ? 'image/jpeg' :
+      ext === '.pdf' ? 'application/pdf' :
+      'image/png'
+    parts.push({ inlineData: { mimeType, data: data.toString('base64') } })
+  }
+
+  parts.push({ inlineData: { mimeType: 'application/pdf', data: fileBuffer.toString('base64') } })
+
+  const result = await model.generateContent(parts)
 
   return JSON.parse(cleanJson(result.response.text())) as GradeResult
 }

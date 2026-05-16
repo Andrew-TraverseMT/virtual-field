@@ -55,6 +55,7 @@ export type Assignment = {
   urlOffline?: boolean
   downloads?: Download[]
   materials: string[]
+  gradingMaterials?: string[]
   attribution?: string
   learningGoals?: string[]
   deliverables?: Deliverable[]
