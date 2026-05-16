@@ -276,7 +276,7 @@ export function DeleteStudentButton({ studentId, studentName }: { studentId: str
             disabled={typed !== studentName || deleting}
             className="rounded-lg bg-red-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700 disabled:opacity-40 transition"
           >
-            {Deleting...'Deleting...' : 'Delete'}
+            {deleting ? 'Deleting...' : 'Delete'}
           </button>
         </div>
       </dialog>
