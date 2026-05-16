@@ -5,7 +5,7 @@ import { signIn } from 'next-auth/react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 
-export function LoginForm({ studentPassword, instructorPassword }: { studentPassword: string; instructorPassword: string }) {
+export function LoginForm() {
   const searchParams = useSearchParams()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -107,12 +107,7 @@ export function LoginForm({ studentPassword, instructorPassword }: { studentPass
                 className="w-full rounded-lg border border-stone-200 bg-stone-50 px-3.5 py-2.5 text-sm text-stone-900 placeholder:text-stone-400 outline-none transition focus:border-amber-500 focus:bg-white focus:ring-2 focus:ring-amber-100"
                 placeholder="••••••••"
               />
-              <div className="mt-1.5 text-right">
-                <Link href="/forgot-password"
-                  className="text-xs text-amber-700 hover:text-amber-800 font-medium">
-                  Forgot password?
-                </Link>
-              </div>
+
             </div>
 
             {error && (
@@ -131,19 +126,9 @@ export function LoginForm({ studentPassword, instructorPassword }: { studentPass
           </form>
         </div>
 
-        <p className="mt-4 text-center text-sm text-stone-400">
-          Montana University student?{' '}
-          <Link href="/register" className="font-medium text-amber-700 hover:text-amber-800">
-            Create an account
-          </Link>
+        <p className="mt-4 text-center text-xs text-stone-400">
+          Contact your instructor for account access.
         </p>
-
-        {/* Demo credentials */}
-        <div className="mt-4 rounded-lg border border-dashed border-stone-200 bg-white/60 px-4 py-3">
-          <p className="text-xs font-medium text-stone-500 mb-1">Demo credentials</p>
-          <p className="text-xs text-stone-400 font-mono">student@virtualfield.dev / {studentPassword}</p>
-          <p className="text-xs text-stone-400 font-mono mt-0.5">instructor@virtualfield.dev / {instructorPassword}</p>
-        </div>
       </div>
     </div>
   )

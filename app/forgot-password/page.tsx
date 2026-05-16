@@ -1,12 +1,8 @@
-'use client'
-
-import { useState } from 'react'
-import Link from 'next/link'
+import { redirect } from 'next/navigation'
 
 export default function ForgotPasswordPage() {
-  const [email, setEmail] = useState('')
-  const [status, setStatus] = useState<'idle' | 'loading' | 'sent' | 'error'>('idle')
-  const [error, setError] = useState('')
+  redirect('/login')
+}
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()

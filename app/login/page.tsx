@@ -11,11 +11,9 @@ export default async function LoginPage() {
     redirect(role === 'instructor' ? '/instructor' : '/dashboard')
   }
 
-  const studentPassword = process.env.STUDENT_PASSWORD ?? 'test1234'
-  const instructorPassword = process.env.INSTRUCTOR_PASSWORD ?? 'instructor1234'
   return (
     <Suspense>
-      <LoginForm studentPassword={studentPassword} instructorPassword={instructorPassword} />
+      <LoginForm />
     </Suspense>
   )
 }

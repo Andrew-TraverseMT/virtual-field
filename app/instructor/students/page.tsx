@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { authOptions } from '@/lib/auth'
 import { sql } from '@/lib/db'
+import { AddStudentForm, ResetPasswordButton } from './StudentActions'
 
 interface StudentRow {
   id: string
@@ -58,6 +59,8 @@ export default async function StudentsPage() {
           </div>
         </div>
 
+        <AddStudentForm />
+
         {students.length === 0 ? (
           <div className="rounded-2xl border border-stone-200 bg-white shadow-sm p-8 text-center">
             <p className="text-sm text-stone-400">No students enrolled yet.</p>
@@ -82,6 +85,7 @@ export default async function StudentsPage() {
                   <th className="text-right px-5 py-3 text-xs font-semibold uppercase tracking-widest text-stone-400">
                     Submissions
                   </th>
+                  <th className="px-5 py-3" />
                 </tr>
               </thead>
               <tbody>
@@ -98,6 +102,9 @@ export default async function StudentsPage() {
                       <span className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset ring-stone-200 text-stone-600">
                         {student.submission_count}
                       </span>
+                    </td>
+                    <td className="px-5 py-3 text-right">
+                      <ResetPasswordButton studentId={student.id} studentName={student.name} />
                     </td>
                   </tr>
                 ))}

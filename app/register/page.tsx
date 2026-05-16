@@ -1,13 +1,8 @@
-'use client'
-
-import { useState } from 'react'
-import Link from 'next/link'
+import { redirect } from 'next/navigation'
 
 export default function RegisterPage() {
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
+  redirect('/login')
+}
   const [sent, setSent] = useState(false)
   const [loading, setLoading] = useState(false)
 
