@@ -59,6 +59,14 @@ export async function initSchema(): Promise<void> {
   await vercelSql`
     ALTER TABLE students ADD COLUMN IF NOT EXISTS temp_password TEXT
   `
+  // Migration: add deadline_at to existing deployments (default 1 year from now)
+  await vercelSql`
+    ALTER TABLE students ADD COLUMN IF NOT EXISTS deadline_at BIGINT NOT NULL DEFAULT (EXTRACT(EPOCH FROM NOW())::BIGINT + 31536000)
+  `
+  // Migration: add enrolled_at to existing deployments (default to now)
+  await vercelSql`
+    ALTER TABLE students ADD COLUMN IF NOT EXISTS enrolled_at BIGINT NOT NULL DEFAULT (EXTRACT(EPOCH FROM NOW())::BIGINT)
+  `
   await vercelSql`
     CREATE TABLE IF NOT EXISTS password_reset_tokens (
       token      TEXT PRIMARY KEY,
@@ -86,13 +94,14 @@ export async function initSchema(): Promise<void> {
     )
   `
 
-  // Seed the hardcoded test student
+  // Seed the hardcoded test student — always refresh deadline so it stays ~3 weeks out
   const now = Math.floor(Date.now() / 1000)
   const threeWeeks = 21 * 24 * 60 * 60
   await vercelSql`
     INSERT INTO students (id, name, email, enrolled_at, deadline_at)
     VALUES ('student-001', 'Test Student', 'student@virtualfield.dev', ${now}, ${now + threeWeeks})
-    ON CONFLICT (id) DO NOTHING
+    ON CONFLICT (id) DO UPDATE SET
+      deadline_at = GREATEST(students.deadline_at, EXCLUDED.deadline_at)
   `
 }
 

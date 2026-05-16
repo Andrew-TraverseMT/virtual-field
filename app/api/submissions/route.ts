@@ -7,6 +7,8 @@ import { gradeSubmission } from '@/lib/gemini'
 import { storeFile } from '@/lib/storage'
 import { randomUUID } from 'crypto'
 
+export const runtime = 'nodejs'
+
 export async function POST(request: NextRequest) {
   const session = await getServerSession(authOptions)
   if (!session) {
@@ -78,7 +80,12 @@ export async function POST(request: NextRequest) {
 
     const safeBase = `${assignmentId}-${Date.now()}.pdf`
     gradeBuffer = Buffer.from(await file.arrayBuffer())
-    fileUrl = await storeFile(gradeBuffer, studentId, safeBase)
+    try {
+      fileUrl = await storeFile(gradeBuffer, studentId, safeBase)
+    } catch (err) {
+      console.error('[submissions] File storage failed:', err)
+      return NextResponse.json({ error: 'File storage failed. Please try again.' }, { status: 500 })
+    }
     fileName = file.name
   }
 
@@ -91,18 +98,23 @@ export async function POST(request: NextRequest) {
 
   const effectiveId = existing?.id ?? submissionId
 
-  await sql`
-    INSERT INTO submissions (id, student_id, assignment_id, submitted_at, file_name, file_url, status)
-    VALUES (${submissionId}, ${studentId}, ${assignmentId}, ${now}, ${fileName}, ${fileUrl}, 'pending')
-    ON CONFLICT(student_id, assignment_id) DO UPDATE SET
-      submitted_at = EXCLUDED.submitted_at,
-      file_name = EXCLUDED.file_name,
-      file_url = EXCLUDED.file_url,
-      status = 'pending',
-      ai_grade = NULL,
-      ai_feedback = NULL,
-      ai_rubric_scores = NULL
-  `
+  try {
+    await sql`
+      INSERT INTO submissions (id, student_id, assignment_id, submitted_at, file_name, file_url, status)
+      VALUES (${submissionId}, ${studentId}, ${assignmentId}, ${now}, ${fileName}, ${fileUrl}, 'pending')
+      ON CONFLICT(student_id, assignment_id) DO UPDATE SET
+        submitted_at = EXCLUDED.submitted_at,
+        file_name = EXCLUDED.file_name,
+        file_url = EXCLUDED.file_url,
+        status = 'pending',
+        ai_grade = NULL,
+        ai_feedback = NULL,
+        ai_rubric_scores = NULL
+    `
+  } catch (err) {
+    console.error('[submissions] DB insert failed:', err)
+    return NextResponse.json({ error: 'Failed to save submission. Please try again.' }, { status: 500 })
+  }
 
   // Fire-and-forget AI grading — runs in the background after response is sent.
   // The grade route updates status to 'ai_graded' when complete.
