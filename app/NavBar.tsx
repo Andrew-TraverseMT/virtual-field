@@ -41,6 +41,12 @@ export default function NavBar() {
               >
                 Students
               </Link>
+              <Link
+                href="/instructor/preview"
+                className="rounded-md px-3 py-1.5 text-sm font-medium text-stone-500 hover:bg-stone-100 hover:text-stone-900 transition-colors"
+              >
+                Preview
+              </Link>
             </>
           )}
           {role === 'student' && (
