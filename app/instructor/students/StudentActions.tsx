@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 // ── Add Student Form ──────────────────────────────────────────────────────────
@@ -204,7 +204,7 @@ export function PasswordCell({ studentId, initialPassword }: { studentId: string
 
 export function DeleteStudentButton({ studentId, studentName }: { studentId: string; studentName: string }) {
   const router = useRouter()
-  const [step, setStep] = useState<'idle' | 'confirm'>('idle')
+  const dialogRef = useRef<HTMLDialogElement>(null)
   const [typed, setTyped] = useState('')
   const [deleting, setDeleting] = useState(false)
   const [error, setError] = useState('')
@@ -219,6 +219,7 @@ export function DeleteStudentButton({ studentId, studentName }: { studentId: str
       body: JSON.stringify({ studentId }),
     })
     if (res.ok) {
+      dialogRef.current?.close()
       router.refresh()
     } else {
       const data = await res.json().catch(() => ({}))
@@ -227,10 +228,16 @@ export function DeleteStudentButton({ studentId, studentName }: { studentId: str
     }
   }
 
-  if (step === 'idle') {
-    return (
+  function close() {
+    dialogRef.current?.close()
+    setTyped('')
+    setError('')
+  }
+
+  return (
+    <>
       <button
-        onClick={() => setStep('confirm')}
+        onClick={() => dialogRef.current?.showModal()}
         className="text-stone-300 hover:text-red-500 transition"
         title="Delete student"
       >
@@ -238,33 +245,41 @@ export function DeleteStudentButton({ studentId, studentName }: { studentId: str
           <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 112 0v6a1 1 0 11-2 0V8z" clipRule="evenodd"/>
         </svg>
       </button>
-    )
-  }
-
-  return (
-    <div className="flex items-center gap-2">
-      <input
-        autoFocus
-        type="text"
-        placeholder={`Type "${studentName}" to confirm`}
-        value={typed}
-        onChange={(e) => setTyped(e.target.value)}
-        className="rounded border border-red-200 bg-red-50 px-2 py-1 text-xs text-stone-800 outline-none focus:border-red-400 w-44"
-      />
-      <button
-        onClick={handleDelete}
-        disabled={typed !== studentName || deleting}
-        className="rounded bg-red-600 px-2 py-1 text-xs font-semibold text-white hover:bg-red-700 disabled:opacity-40 transition"
+      <dialog
+        ref={dialogRef}
+        onClick={(e) => { if (e.target === dialogRef.current) close() }}
+        className="rounded-2xl border border-stone-200 bg-white p-6 shadow-xl backdrop:bg-black/30 w-80 max-w-[90vw]"
       >
-        {deleting ? '…' : 'Delete'}
-      </button>
-      <button
-        onClick={() => { setStep('idle'); setTyped(''); setError('') }}
-        className="text-xs text-stone-400 hover:text-stone-600"
-      >
-        Cancel
-      </button>
-      {error && <span className="text-xs text-red-500">{error}</span>}
-    </div>
+        <h2 className="text-sm font-semibold text-stone-800 mb-1">Delete student?</h2>
+        <p className="text-xs text-stone-500 mb-4">
+          This will permanently remove <span className="font-medium text-stone-700">{studentName}</span> and all their submissions. Type their name to confirm.
+        </p>
+        <input
+          autoFocus
+          type="text"
+          placeholder={`Type "${studentName}" to confirm`}
+          value={typed}
+          onChange={(e) => setTyped(e.target.value)}
+          onKeyDown={(e) => { if (e.key === 'Enter') handleDelete(); if (e.key === 'Escape') close() }}
+          className="w-full rounded-lg border border-stone-200 px-3 py-2 text-sm text-stone-800 outline-none focus:border-red-400 focus:ring-1 focus:ring-red-200 mb-3"
+        />
+        {error && <p className="text-xs text-red-500 mb-3">{error}</p>}
+        <div className="flex gap-2 justify-end">
+          <button
+            onClick={close}
+            className="rounded-lg border border-stone-200 px-3 py-1.5 text-xs font-medium text-stone-600 hover:bg-stone-50 transition"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleDelete}
+            disabled={typed !== studentName || deleting}
+            className="rounded-lg bg-red-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700 disabled:opacity-40 transition"
+          >
+            {Deleting...'Deleting...' : 'Delete'}
+          </button>
+        </div>
+      </dialog>
+    </>
   )
 }
