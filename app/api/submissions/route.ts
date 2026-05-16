@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse, after } from 'next/server'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import { sql } from '@/lib/db'
@@ -118,14 +118,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to save submission. Please try again.' }, { status: 500 })
   }
 
-  // Fire-and-forget AI grading — runs in the background after response is sent.
-  // The grade route updates status to 'ai_graded' when complete.
+  // Background AI grading — runs after response is sent using next/server `after()`
+  // which keeps the function alive on Vercel until grading completes.
   // Students won't see the grade until an instructor approves it.
   if (gradeBuffer && process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== 'your_gemini_api_key_here') {
     const bufferForGrade = gradeBuffer
     const assignmentForGrade = assignment
     const idToGrade = effectiveId
-    ;(async () => {
+    after(async () => {
       try {
         const result = await gradeSubmission(bufferForGrade, assignmentForGrade)
         const feedback =
@@ -142,7 +142,7 @@ export async function POST(request: NextRequest) {
       } catch (err) {
         console.error('[submissions] Background grading failed:', err)
       }
-    })()
+    })
   }
 
   return NextResponse.json({ ok: true, submissionId: effectiveId })

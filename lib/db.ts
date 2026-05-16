@@ -94,14 +94,21 @@ export async function initSchema(): Promise<void> {
     )
   `
 
-  // Seed the hardcoded test student — always refresh deadline so it stays ~3 weeks out
+  // Seed the hardcoded test student.
+  // ON CONFLICT DO NOTHING handles both the primary-key (id) and the unique email
+  // constraint — so re-running ensureSchema after the student was deleted (or after
+  // another account claimed that email) never crashes.
   const now = Math.floor(Date.now() / 1000)
   const threeWeeks = 21 * 24 * 60 * 60
   await vercelSql`
     INSERT INTO students (id, name, email, enrolled_at, deadline_at)
     VALUES ('student-001', 'Test Student', 'student@virtualfield.dev', ${now}, ${now + threeWeeks})
-    ON CONFLICT (id) DO UPDATE SET
-      deadline_at = GREATEST(students.deadline_at, EXCLUDED.deadline_at)
+    ON CONFLICT DO NOTHING
+  `
+  // Separately refresh the deadline so the test account never expires
+  await vercelSql`
+    UPDATE students SET deadline_at = ${now + threeWeeks}
+    WHERE id = 'student-001' AND deadline_at < ${now + threeWeeks}
   `
 }
 

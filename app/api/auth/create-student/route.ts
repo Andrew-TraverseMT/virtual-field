@@ -40,9 +40,12 @@ export async function POST(req: NextRequest) {
 
   const normalizedEmail = email.toLowerCase().trim()
 
-  // Check for existing account
+  // Check for existing account in both tables (registered_users for normal accounts,
+  // students for the hardcoded test student and any direct roster entries)
   const { rows: existing } = await sql`
     SELECT id FROM registered_users WHERE email = ${normalizedEmail}
+    UNION
+    SELECT id FROM students WHERE email = ${normalizedEmail}
   `
   if (existing.length > 0) {
     return NextResponse.json({ error: 'An account with this email already exists.' }, { status: 409 })
