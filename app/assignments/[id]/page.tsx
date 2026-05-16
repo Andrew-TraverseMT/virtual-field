@@ -175,30 +175,18 @@ export default async function AssignmentPage({ params }: Props) {
 
               {/* Online link — only shown if not offline */}
               {assignment.url && !assignment.urlOffline && (
-                <>
-                  {assignment.canEmbed && assignment.embedUrl ? (
-                    <div className="overflow-hidden rounded-xl border border-stone-200 mb-3">
-                      <iframe
-                        src={assignment.embedUrl}
-                        className="h-96 w-full"
-                        title={assignment.title}
-                        sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
-                      />
-                    </div>
-                  ) : null}
-                  <a
-                    href={assignment.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3 rounded-xl border border-stone-200 px-4 py-3 text-sm font-medium text-stone-700 transition hover:border-amber-300 hover:bg-amber-50 group"
-                  >
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-amber-700 group-hover:bg-amber-100 transition-colors text-base">↗</span>
-                    <div className="min-w-0">
-                      <div className="font-medium text-stone-800">{assignment.canEmbed ? 'Open in new tab' : 'Open activity'}</div>
-                      <div className="text-xs text-stone-400 truncate">{assignment.url}</div>
-                    </div>
-                  </a>
-                </>
+                <a
+                  href={assignment.embedUrl ?? assignment.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 rounded-xl border border-stone-200 px-4 py-3 text-sm font-medium text-stone-700 transition hover:border-violet-300 hover:bg-violet-50 group"
+                >
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-violet-50 text-violet-700 group-hover:bg-violet-100 transition-colors text-base">↗</span>
+                  <div className="min-w-0">
+                    <div className="font-medium text-stone-800">Open Visible Geology</div>
+                    <div className="text-xs text-stone-400 truncate">{assignment.embedUrl ?? assignment.url}</div>
+                  </div>
+                </a>
               )}
             </div>
           )}
