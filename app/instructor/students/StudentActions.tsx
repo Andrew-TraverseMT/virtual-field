@@ -208,22 +208,27 @@ export function DeleteStudentButton({ studentId, studentName }: { studentId: str
   const [typed, setTyped] = useState('')
   const [deleting, setDeleting] = useState(false)
   const [error, setError] = useState('')
+  const [gradedWarning, setGradedWarning] = useState<{ count: number } | null>(null)
 
-  async function handleDelete() {
+  async function handleDelete(force = false) {
     if (typed !== studentName) return
     setDeleting(true)
     setError('')
     const res = await fetch('/api/auth/delete-student', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ studentId }),
+      body: JSON.stringify({ studentId, force }),
     })
     if (res.ok) {
       dialogRef.current?.close()
       router.refresh()
     } else {
       const data = await res.json().catch(() => ({}))
-      setError(data.error ?? 'Failed to delete.')
+      if (res.status === 409 && data.gradedCount) {
+        setGradedWarning({ count: data.gradedCount })
+      } else {
+        setError(data.error ?? 'Failed to delete.')
+      }
       setDeleting(false)
     }
   }
@@ -232,6 +237,7 @@ export function DeleteStudentButton({ studentId, studentName }: { studentId: str
     dialogRef.current?.close()
     setTyped('')
     setError('')
+    setGradedWarning(null)
   }
 
   return (
@@ -260,9 +266,17 @@ export function DeleteStudentButton({ studentId, studentName }: { studentId: str
           placeholder={`Type "${studentName}" to confirm`}
           value={typed}
           onChange={(e) => setTyped(e.target.value)}
-          onKeyDown={(e) => { if (e.key === 'Enter') handleDelete(); if (e.key === 'Escape') close() }}
+          onKeyDown={(e) => { if (e.key === 'Enter' && !gradedWarning) handleDelete(); if (e.key === 'Escape') close() }}
           className="w-full rounded-lg border border-stone-200 px-3 py-2 text-sm text-stone-800 outline-none focus:border-red-400 focus:ring-1 focus:ring-red-200 mb-3"
         />
+        {gradedWarning && (
+          <div className="mb-3 rounded-xl border border-red-200 bg-red-50 p-3">
+            <p className="text-xs font-semibold text-red-700 mb-1">
+              Warning: {gradedWarning.count} graded submission{gradedWarning.count !== 1 ? 's' : ''} will be permanently lost.
+            </p>
+            <p className="text-xs text-red-600">This cannot be undone. Click &ldquo;Force delete&rdquo; to proceed anyway.</p>
+          </div>
+        )}
         {error && <p className="text-xs text-red-500 mb-3">{error}</p>}
         <div className="flex gap-2 justify-end">
           <button
@@ -271,13 +285,23 @@ export function DeleteStudentButton({ studentId, studentName }: { studentId: str
           >
             Cancel
           </button>
-          <button
-            onClick={handleDelete}
-            disabled={typed !== studentName || deleting}
-            className="rounded-lg bg-red-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700 disabled:opacity-40 transition"
-          >
-            {deleting ? 'Deleting...' : 'Delete'}
-          </button>
+          {gradedWarning ? (
+            <button
+              onClick={() => handleDelete(true)}
+              disabled={typed !== studentName || deleting}
+              className="rounded-lg bg-red-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-800 disabled:opacity-40 transition"
+            >
+              {deleting ? 'Deleting...' : 'Force delete'}
+            </button>
+          ) : (
+            <button
+              onClick={() => handleDelete(false)}
+              disabled={typed !== studentName || deleting}
+              className="rounded-lg bg-red-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700 disabled:opacity-40 transition"
+            >
+              {deleting ? 'Deleting...' : 'Delete'}
+            </button>
+          )}
         </div>
       </dialog>
     </>

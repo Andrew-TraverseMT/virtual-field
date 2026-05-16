@@ -11,9 +11,25 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
-  const { studentId } = await req.json() as { studentId?: string }
+  const { studentId, force } = await req.json() as { studentId?: string; force?: boolean }
   if (!studentId) {
     return NextResponse.json({ error: 'studentId required.' }, { status: 400 })
+  }
+
+  // Prevent accidental deletion of students with graded/approved work unless explicitly forced.
+  if (!force) {
+    const { rows: gradedRows } = await sql`
+      SELECT COUNT(*)::int AS count FROM submissions
+      WHERE student_id = ${studentId}
+        AND status IN ('approved', 'graded', 'ai_graded', 'revision_requested')
+    `
+    const gradedCount = (gradedRows[0] as { count: number }).count
+    if (gradedCount > 0) {
+      return NextResponse.json(
+        { error: `This student has ${gradedCount} graded submission(s). Pass force: true to confirm permanent deletion.`, gradedCount },
+        { status: 409 }
+      )
+    }
   }
 
   // Delete submissions first (FK constraint), then auth record, then roster entry

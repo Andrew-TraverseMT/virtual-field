@@ -94,8 +94,18 @@ export async function POST(request: NextRequest) {
   const now = Math.floor(Date.now() / 1000)
 
   // Get the real submission id (may already exist on resubmission)
-  const { rows: existingRows } = await sql`SELECT id FROM submissions WHERE student_id = ${studentId} AND assignment_id = ${assignmentId}`
-  const existing = existingRows[0] as { id: string } | undefined
+  const { rows: existingRows } = await sql`SELECT id, status FROM submissions WHERE student_id = ${studentId} AND assignment_id = ${assignmentId}`
+  const existing = existingRows[0] as { id: string; status: string } | undefined
+
+  // Block resubmission once a submission is finalized, unless revision was explicitly requested.
+  // This prevents accidental or malicious overwrites of approved/graded work.
+  const finalizedStatuses = ['approved', 'graded', 'pending', 'ai_graded']
+  if (existing && finalizedStatuses.includes(existing.status)) {
+    return NextResponse.json(
+      { error: 'This assignment has already been submitted. Resubmission is only allowed when your instructor requests a revision.' },
+      { status: 409 }
+    )
+  }
 
   const effectiveId = existing?.id ?? submissionId
 
