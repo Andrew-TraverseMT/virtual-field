@@ -69,10 +69,20 @@ export default async function InstructorPage({
     <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 py-10">
 
       <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-stone-900">Instructor Portal</h1>
-        <p className="mt-1 text-sm text-stone-400">
-          Review student submissions, approve grades, or request revisions.
-        </p>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight text-stone-900">Instructor Portal</h1>
+            <p className="mt-1 text-sm text-stone-400">
+              Review student submissions, approve grades, or request revisions.
+            </p>
+          </div>
+          <a
+            href="/instructor/assignments"
+            className="text-sm text-stone-400 hover:text-stone-700 transition-colors whitespace-nowrap"
+          >
+            View assignments →
+          </a>
+        </div>
       </div>
 
       {/* Stats row */}
