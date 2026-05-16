@@ -83,8 +83,9 @@ export async function POST(request: NextRequest) {
     try {
       fileUrl = await storeFile(gradeBuffer, studentId, safeBase)
     } catch (err) {
-      console.error('[submissions] File storage failed:', err)
-      return NextResponse.json({ error: 'File storage failed. Please try again.' }, { status: 500 })
+      // Storage is best-effort — submission and AI grading still proceed without a
+      // stored file. Re-grading by the instructor will not be possible without it.
+      console.warn('[submissions] File storage unavailable, continuing without stored file:', err)
     }
     fileName = file.name
   }
@@ -119,7 +120,7 @@ export async function POST(request: NextRequest) {
   // Fire-and-forget AI grading — runs in the background after response is sent.
   // The grade route updates status to 'ai_graded' when complete.
   // Students won't see the grade until an instructor approves it.
-  if (fileUrl && gradeBuffer && process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== 'your_gemini_api_key_here') {
+  if (gradeBuffer && process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== 'your_gemini_api_key_here') {
     const bufferForGrade = gradeBuffer
     const assignmentForGrade = assignment
     const idToGrade = effectiveId
