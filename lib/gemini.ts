@@ -59,10 +59,19 @@ export function rubricPromptBlock(assignment: Assignment): string {
   const deliverables = (assignment.deliverables ?? [])
     .map((d) => `- ${d.label}: ${d.description}`)
     .join('\n')
+
+  const proposalSectionsBlock =
+    assignment.proposalSections && assignment.proposalSections.length > 0
+      ? `\nREQUIRED PROPOSAL SECTIONS (the submission must address all of these):\n` +
+        assignment.proposalSections
+          .map((s) => `- ${s.label}: ${s.description}`)
+          .join('\n')
+      : ''
+
   return `ASSIGNMENT: ${assignment.title}
 
 DELIVERABLES EXPECTED:
-${deliverables}
+${deliverables}${proposalSectionsBlock}
 
 RUBRIC (total ${assignment.rubric.totalPoints} pts):
 ${criteria}`

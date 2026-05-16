@@ -356,12 +356,71 @@
         ]
       },
       "estimatedHours": 5,
-      "week": 2,
+      "week": 1,
       "attribution": "Virtual landscape environment developed by the University of Leeds, School of Earth and Environment (see.leeds.ac.uk/virtual-landscapes). Exercise format adapted for this course."
     },
     {
-      "id": "leeds-rhoscolyn",
+      "id": "visiblegeology-stereonets",
       "sequence": 6,
+      "unit": "Visible Geology",
+      "type": "visible-geology",
+      "title": "Stereonets and Fold Map Patterns",
+      "subtitle": "Explore how stereonets and geological map patterns relate to each other",
+      "description": "Using the Visible Geology Geology Explorer and Stereonet tools (Blatchford, EMU), investigate how the map pattern of folded layers corresponds to equal-area stereographic projections of the same structural data. Work through the pre-loaded fold models to build stereonet construction and interpretation skills that are essential for the Rhoscolyn assignment and the CYOA project.",
+      "url": "https://www.visiblegeology.com",
+      "embedUrl": "https://www.visiblegeology.com?sharecode=Y7AFxxTPw4C5zufoR9bn5D",
+      "canEmbed": true,
+      "materials": [
+        "Exploring relationships between map patterns of cylindrically folded layers and their stereonets.pdf"
+      ],
+      "learningGoals": [
+        "Plot planar and linear data on an equal-area lower-hemisphere stereonet",
+        "Construct a pi-diagram from fold limb bedding measurements",
+        "Derive fold axis plunge and trend from a stereonet pi-girdle",
+        "Articulate what aspects of fold geometry a stereonet cannot communicate"
+      ],
+      "deliverables": [
+        {
+          "id": "vg-stereonet-worksheet",
+          "label": "Completed activity worksheet",
+          "description": "Work through all models in the activity PDF. For each model include: (a) a sketch of the relevant map-face pattern with strike/dip symbols; (b) a photograph or export of your constructed stereonet; (c) written answers to the interpretation questions in the activity."
+        },
+        {
+          "id": "vg-stereonet-summary",
+          "label": "Synthesis paragraph (150–200 words)",
+          "description": "Summarise the key geometric relationship between a pi-girdle on a stereonet and the fold axis in 3D. Include one concrete example of how you would apply this to your Rhoscolyn dataset or to a structural project involving real field data."
+        }
+      ],
+      "rubric": {
+        "totalPoints": 40,
+        "criteria": [
+          {
+            "id": "stereonet-accuracy",
+            "label": "Stereonet accuracy",
+            "points": 20,
+            "description": "Poles plotted at correct positions; pi-girdle drawn correctly; fold axis read accurately with correct plunge/trend."
+          },
+          {
+            "id": "block-sketches",
+            "label": "Block face sketches",
+            "points": 10,
+            "description": "Map patterns correctly reproduced with appropriate structural symbols."
+          },
+          {
+            "id": "synthesis",
+            "label": "Synthesis and application",
+            "points": 10,
+            "description": "Accurately describes the geometric relationship; application example is geologically sound and specific."
+          }
+        ]
+      },
+      "estimatedHours": 3,
+      "week": 2,
+      "attribution": "Activity worksheet: Blatchford (Eastern Michigan University), “Exploring Relationships Between Map Patterns of Cylindrically Folded Layers and Their Stereonets.” Hosted on Visible Geology (visiblegeology.com, Seequent Ltd.)."
+    },
+    {
+      "id": "leeds-rhoscolyn",
+      "sequence": 7,
       "unit": "Leeds Virtual Landscapes",
       "type": "virtual-landscape",
       "title": "Geological Mapping — Rhoscolyn",
@@ -458,7 +517,7 @@
     },
     {
       "id": "basin-stratigraphy",
-      "sequence": 7,
+      "sequence": 8,
       "unit": "Visible Geology",
       "type": "visible-geology",
       "title": "Basin Stratigraphic Correlation",
@@ -518,7 +577,7 @@
           },
           {
             "id": "hypothesis",
-            "label": "Part 3 — formation hypothesis",
+            "label": "Part 4 — formation hypothesis",
             "points": 10,
             "description": "Mechanism is geologically valid; evidence from the model is explicitly cited; at least one specific, testable additional data type is identified."
           }
@@ -529,7 +588,7 @@
     },
     {
       "id": "reservoir-stratigraphy",
-      "sequence": 8,
+      "sequence": 9,
       "unit": "Visible Geology",
       "type": "visible-geology",
       "title": "Reservoir Geology and CO₂ Sequestration",
@@ -593,65 +652,6 @@
       },
       "estimatedHours": 4.5,
       "week": 2
-    },
-    {
-      "id": "visiblegeology-stereonets",
-      "sequence": 9,
-      "unit": "Visible Geology",
-      "type": "visible-geology",
-      "title": "Stereonets and Fold Map Patterns",
-      "subtitle": "Explore how stereonets and geological map patterns relate to each other",
-      "description": "Using the Visible Geology Geology Explorer and Stereonet tools (Blatchford, EMU), investigate how the map pattern of folded layers corresponds to equal-area stereographic projections of the same structural data. Work through the pre-loaded fold models to build stereonet construction and interpretation skills that are essential for the Rhoscolyn assignment and the CYOA project.",
-      "url": "https://www.visiblegeology.com",
-      "embedUrl": "https://www.visiblegeology.com?sharecode=Y7AFxxTPw4C5zufoR9bn5D",
-      "canEmbed": true,
-      "materials": [
-        "Exploring relationships between map patterns of cylindrically folded layers and their stereonets.pdf"
-      ],
-      "learningGoals": [
-        "Plot planar and linear data on an equal-area lower-hemisphere stereonet",
-        "Construct a pi-diagram from fold limb bedding measurements",
-        "Derive fold axis plunge and trend from a stereonet pi-girdle",
-        "Articulate what aspects of fold geometry a stereonet cannot communicate"
-      ],
-      "deliverables": [
-        {
-          "id": "vg-stereonet-worksheet",
-          "label": "Completed activity worksheet",
-          "description": "Work through all models in the activity PDF. For each model include: (a) a sketch of the relevant map-face pattern with strike/dip symbols; (b) a photograph or export of your constructed stereonet; (c) written answers to the interpretation questions in the activity."
-        },
-        {
-          "id": "vg-stereonet-summary",
-          "label": "Synthesis paragraph (150–200 words)",
-          "description": "Summarise the key geometric relationship between a pi-girdle on a stereonet and the fold axis in 3D. Include one concrete example of how you would apply this to your Rhoscolyn dataset or to a structural project involving real field data."
-        }
-      ],
-      "rubric": {
-        "totalPoints": 40,
-        "criteria": [
-          {
-            "id": "stereonet-accuracy",
-            "label": "Stereonet accuracy",
-            "points": 20,
-            "description": "Poles plotted at correct positions; pi-girdle drawn correctly; fold axis read accurately with correct plunge/trend."
-          },
-          {
-            "id": "block-sketches",
-            "label": "Block face sketches",
-            "points": 10,
-            "description": "Map patterns correctly reproduced with appropriate structural symbols."
-          },
-          {
-            "id": "synthesis",
-            "label": "Synthesis and application",
-            "points": 10,
-            "description": "Accurately describes the geometric relationship; application example is geologically sound and specific."
-          }
-        ]
-      },
-      "estimatedHours": 3,
-      "week": 3,
-      "attribution": "Activity worksheet: Blatchford (Eastern Michigan University), “Exploring Relationships Between Map Patterns of Cylindrically Folded Layers and Their Stereonets.” Hosted on Visible Geology (visiblegeology.com, Seequent Ltd.)."
     },
     {
       "id": "visiblegeology-3d-model",
