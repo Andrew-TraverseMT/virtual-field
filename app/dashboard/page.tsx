@@ -59,6 +59,7 @@ const STATUS_CONFIG = {
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions)
   if (!session) redirect('/login')
+  if ((session.user as { role?: string })?.role === 'instructor') redirect('/instructor')
 
   const studentId = (session.user as { id?: string }).id ?? 'student-001'
 

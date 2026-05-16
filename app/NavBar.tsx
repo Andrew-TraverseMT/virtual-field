@@ -12,7 +12,7 @@ export default function NavBar() {
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 sm:px-6 h-14">
         {/* Wordmark */}
         <Link
-          href="/dashboard"
+          href={role === 'instructor' ? '/instructor' : '/dashboard'}
           className="flex items-center gap-2.5 group"
         >
           <span className="flex h-7 w-7 items-center justify-center rounded-md bg-amber-700 text-white text-sm font-bold select-none">

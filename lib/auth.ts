@@ -41,7 +41,7 @@ export const authOptions: NextAuthOptions = {
           return { id: match.id, name: match.name, email: match.email, role: match.role }
         }
 
-        // Check registered @montana.edu users
+        // Check registered users
         const { rows } = await sql`SELECT * FROM registered_users WHERE email = ${credentials.email.toLowerCase()} AND verified = 1`
         const dbUser = rows[0] as RegisteredUser | undefined
 
@@ -50,11 +50,19 @@ export const authOptions: NextAuthOptions = {
         const passwordOk = await bcrypt.compare(credentials.password, dbUser.password_hash)
         if (!passwordOk) return null
 
+        // Allow registered users to hold instructor role via INSTRUCTOR_EMAILS env var
+        // (comma-separated list of emails, e.g. "alice@example.com,bob@example.com")
+        const instructorEmails = (process.env.INSTRUCTOR_EMAILS ?? '')
+          .split(',')
+          .map((e) => e.trim().toLowerCase())
+          .filter(Boolean)
+        const role = instructorEmails.includes(dbUser.email.toLowerCase()) ? 'instructor' : 'student'
+
         return {
           id: dbUser.id,
           name: dbUser.name,
           email: dbUser.email,
-          role: 'student' as const,
+          role: role as 'student' | 'instructor',
         }
       },
     }),
