@@ -66,6 +66,7 @@ export async function POST(request: NextRequest) {
   const file = formData.get('file') as File | null
   let fileName: string | null = null
   let fileUrl: string | null = null
+  let storageError: string | null = null
   let gradeBuffer: Buffer | null = null
 
   if (file && file.size > 0) {
@@ -83,10 +84,8 @@ export async function POST(request: NextRequest) {
     try {
       fileUrl = await storeFile(gradeBuffer, studentId, safeBase)
     } catch (err) {
-      // Storage is best-effort — submission and AI grading still proceed without a
-      // stored file. Re-grading by the instructor will not be possible without it.
-      const errMsg = err instanceof Error ? `${err.name}: ${err.message}` : String(err)
-      console.error('[submissions] File storage failed:', errMsg, err)
+      storageError = err instanceof Error ? `${err.name}: ${err.message}` : String(err)
+      console.error('[submissions] File storage failed:', storageError, err)
     }
     fileName = file.name
   }
@@ -145,5 +144,5 @@ export async function POST(request: NextRequest) {
     })
   }
 
-  return NextResponse.json({ ok: true, submissionId: effectiveId })
+  return NextResponse.json({ ok: true, submissionId: effectiveId, stored: !!fileUrl, storageError })
 }
