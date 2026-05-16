@@ -35,6 +35,12 @@ export type ProposalSection = {
   description: string
 }
 
+export type Download = {
+  platform: 'windows' | 'mac'
+  label: string
+  url: string
+}
+
 export type Assignment = {
   id: string
   sequence: number
@@ -46,7 +52,10 @@ export type Assignment = {
   url: string | null
   embedUrl: string | null
   canEmbed: boolean
+  urlOffline?: boolean
+  downloads?: Download[]
   materials: string[]
+  attribution?: string
   learningGoals?: string[]
   deliverables?: Deliverable[]
   rubric: {

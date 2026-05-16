@@ -100,6 +100,12 @@ export default async function AssignmentPage({ params }: Props) {
         <h1 className="mb-1.5 text-2xl font-semibold tracking-tight text-stone-900">{assignment.title}</h1>
         <p className="mb-4 text-base text-stone-400 font-medium">{assignment.subtitle}</p>
         <p className="text-sm leading-relaxed text-stone-600">{assignment.description}</p>
+        {assignment.attribution && (
+          <p className="mt-4 border-t border-stone-100 pt-3 text-[11px] leading-relaxed text-stone-400">
+            <span className="font-semibold uppercase tracking-wide text-stone-300">Attribution </span>
+            {assignment.attribution}
+          </p>
+        )}
       </div>
 
       <div className="grid gap-6 lg:grid-cols-5">
@@ -122,35 +128,78 @@ export default async function AssignmentPage({ params }: Props) {
           )}
 
           {/* Activity / Tool */}
-          {assignment.url && (
+          {(assignment.url || (assignment.downloads && assignment.downloads.length > 0)) && (
             <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
               <h2 className="mb-4 text-xs font-semibold uppercase tracking-widest text-stone-400">
                 {assignment.type === 'virtual-landscape' ? 'Virtual Landscape' : 'Visible Geology Tool'}
               </h2>
 
-              {assignment.canEmbed && assignment.embedUrl ? (
-                <div className="overflow-hidden rounded-xl border border-stone-200 mb-3">
-                  <iframe
-                    src={assignment.embedUrl}
-                    className="h-96 w-full"
-                    title={assignment.title}
-                    sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
-                  />
+              {/* Offline notice */}
+              {assignment.urlOffline && (
+                <div className="mb-4 flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+                  <span className="mt-0.5 shrink-0 text-amber-600 text-base">⚠</span>
+                  <div className="text-sm">
+                    <p className="font-medium text-amber-800">Online version unavailable</p>
+                    <p className="text-amber-700">The hosted version of this activity is currently offline. Download the desktop app below to complete the exercise.</p>
+                  </div>
                 </div>
-              ) : null}
+              )}
 
-              <a
-                href={assignment.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 rounded-xl border border-stone-200 px-4 py-3 text-sm font-medium text-stone-700 transition hover:border-amber-300 hover:bg-amber-50 group"
-              >
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-amber-700 group-hover:bg-amber-100 transition-colors text-base">↗</span>
-                <div className="min-w-0">
-                  <div className="font-medium text-stone-800">{assignment.canEmbed ? 'Open in new tab' : 'Open activity'}</div>
-                  <div className="text-xs text-stone-400 truncate">{assignment.url}</div>
+              {/* Download buttons */}
+              {assignment.downloads && assignment.downloads.length > 0 && (
+                <div className="space-y-2 mb-3">
+                  {assignment.downloads.map((dl) => (
+                    <a
+                      key={dl.platform}
+                      href={dl.url}
+                      download
+                      className="flex items-center gap-3 rounded-xl border border-stone-200 px-4 py-3 text-sm font-medium text-stone-700 transition hover:border-sky-300 hover:bg-sky-50 group"
+                    >
+                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-sky-50 text-sky-700 group-hover:bg-sky-100 transition-colors text-base">
+                        {dl.platform === 'windows' ? '⊞' : ''}
+                      </span>
+                      <div className="min-w-0">
+                        <div className="font-medium text-stone-800">{dl.label}</div>
+                        <div className="text-xs text-stone-400">Desktop app · ZIP archive</div>
+                      </div>
+                      <span className="text-xs text-stone-400 shrink-0 ml-auto">↓</span>
+                    </a>
+                  ))}
+                  {assignment.downloads.some((dl) => dl.platform === 'mac') && (
+                    <p className="text-xs text-stone-400 px-1">
+                      Mac users: if macOS blocks the app, go to System Settings → Privacy &amp; Security and click &quot;Open Anyway&quot;.
+                    </p>
+                  )}
                 </div>
-              </a>
+              )}
+
+              {/* Online link — only shown if not offline */}
+              {assignment.url && !assignment.urlOffline && (
+                <>
+                  {assignment.canEmbed && assignment.embedUrl ? (
+                    <div className="overflow-hidden rounded-xl border border-stone-200 mb-3">
+                      <iframe
+                        src={assignment.embedUrl}
+                        className="h-96 w-full"
+                        title={assignment.title}
+                        sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+                      />
+                    </div>
+                  ) : null}
+                  <a
+                    href={assignment.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 rounded-xl border border-stone-200 px-4 py-3 text-sm font-medium text-stone-700 transition hover:border-amber-300 hover:bg-amber-50 group"
+                  >
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-amber-700 group-hover:bg-amber-100 transition-colors text-base">↗</span>
+                    <div className="min-w-0">
+                      <div className="font-medium text-stone-800">{assignment.canEmbed ? 'Open in new tab' : 'Open activity'}</div>
+                      <div className="text-xs text-stone-400 truncate">{assignment.url}</div>
+                    </div>
+                  </a>
+                </>
+              )}
             </div>
           )}
 

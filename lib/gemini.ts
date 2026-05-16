@@ -84,14 +84,24 @@ export async function gradeSubmission(
 ): Promise<GradeResult> {
   const { genAI } = getClients()
 
-  const prompt = `You are a geology TA grading a student submission. Award partial credit where deserved. For graphical deliverables (maps, cross-sections, stereonets) assess based on visual accuracy and completeness.
+  const prompt = `You are a geology teaching assistant grading a student submission.
 
 ${rubricPromptBlock(assignment)}
 
-INSTRUCTIONS:
-1. Grade each rubric criterion separately.
-2. Note any items you could not confidently evaluate (e.g. illegible scan, missing page).
-3. Write 2-3 sentences of overall constructive feedback the instructor can share with the student.
+ASSESSMENT GUIDELINES:
+- Award partial credit wherever the work demonstrates geological understanding, even if the submission is incomplete.
+- Field maps and cross sections: assess correctness of unit boundaries, strike/dip and fault symbols, legend, north arrow, scale bar, and cross-section geometry.
+- Visible Geology model screenshots: evaluate whether the model geometry (dip, strike, layer sequence, structural events) matches the geological constraints stated in the rubric. Shareable links cannot be followed — grade from screenshots only.
+- Stratigraphic columns / sedimentary logs: check grain-size axis orientation, correct lithological symbols at proportional bed thicknesses, unit labels, depositional environment interpretations, and the transgression/regression conclusion.
+- Lithostratigraphic correlation diagrams: assess whether correlation lines connect equivalent units across all locations, relative thicknesses are geologically plausible, and thickness variations are explained with a specific geological mechanism.
+- CO₂ / subsurface assessment essays: check that reservoir quality, trap geometry, and seal integrity are each addressed and that the site recommendation is backed by evidence from the model.
+- Written analyses (all types): evaluate geological accuracy, citation of specific evidence from the submitted work, and clarity of argument.
+- If a scan is illegible or a page appears missing, note it in confidence_notes and grade what you can see.
+
+GRADING INSTRUCTIONS:
+1. Grade each rubric criterion independently.
+2. Justify each score in one clear sentence citing specific evidence from the submission.
+3. Write 2–3 sentences of overall constructive feedback the instructor can share with the student.
 
 Return ONLY a raw JSON object — no markdown code blocks:
 {
@@ -148,13 +158,21 @@ ASSIGNMENT: ${assignment.title}
 LEARNING GOALS:
 ${learningGoals}
 
-DELIVERABLES THE STUDENT SHOULD COMPLETE:
+WHAT A STRONG SUBMISSION INCLUDES:
 ${deliverables}
+
+FEEDBACK GUIDELINES — check the following depending on what is present in the draft:
+- Field maps: complete unit boundary coverage, correct strike/dip and fault symbols, legend, north arrow, scale bar, and section line labelled A–B.
+- Visible Geology model screenshots: model geometry (dip direction, layer sequence, structural events) should reflect the geological constraints in the assignment; note if constraints appear unmet.
+- Stratigraphic columns / sedimentary logs: grain-size axis correct (clay → gravel), lithological symbols accurate and at proportional thicknesses, units labelled with depositional environments, transgression/regression conclusion stated and justified.
+- Lithostratigraphic correlation diagrams: correlation lines connect equivalent units across all locations, thicknesses are geologically plausible, at least one sentence explains lateral thickness variation.
+- CO₂ / subsurface essays: reservoir quality, structural trap, and seal integrity addressed separately; a specific site recommended with geological justification.
+- Written analyses (all types): geological evidence cited from the student's own map/model/core data, appropriate terminology, clear causal reasoning.
 
 FEEDBACK INSTRUCTIONS:
 1. Be encouraging — identify genuine strengths first.
-2. Identify the 2-3 most important things to improve or complete before formal submission.
-3. Give specific, actionable suggestions (e.g. "add a north arrow", "label the fault dip angle", "explain the V-pattern in your written analysis").
+2. Identify the 2–3 most important improvements before formal submission.
+3. Give specific, actionable suggestions (e.g. "add a north arrow to your map", "label the fault dip angle", "explain why the V-pattern closes in that direction", "include a grain-size axis on your stratigraphic column").
 4. Do NOT assign a score, grade, or percentage.
 5. Keep suggestions concise and practical.
 

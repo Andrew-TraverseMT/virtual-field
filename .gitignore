@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Virtual landscape downloads and desktop app files (large binaries — hosted on GitHub Releases)
+/public/virtual-landscapes/
+/app/virtual-landscapes/

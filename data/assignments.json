@@ -3,129 +3,189 @@
     {
       "id": "leeds-topo-map",
       "sequence": 1,
-      "unit": "Leeds Virtual Landscapes",
-      "type": "virtual-landscape",
-      "title": "Reading 3D Topographic Maps",
-      "subtitle": "Relate contour maps to real three-dimensional topography",
-      "description": "Use the Leeds Virtual Landscapes 3D Topographic Map to explore how elevation contours on a printed map correspond to hills, valleys, ridges, and spurs in a real landscape. Navigate the 3D model, identify terrain features, and build the spatial reasoning skills that underpin all subsequent mapping assignments.",
-      "url": "https://www.see.leeds.ac.uk/virtual-landscapes/minimaps/index.html",
-      "embedUrl": "https://www.see.leeds.ac.uk/virtual-landscapes/minimaps/index.html",
-      "canEmbed": false,
+      "unit": "Visible Geology",
+      "type": "visible-geology",
+      "title": "Reading Topographic Maps in 3D",
+      "subtitle": "Relate contour lines to three-dimensional landscape form using Visible Geology",
+      "description": "Using the Visible Geology Geology Explorer, build a layered geological block with valley topography and explore how elevation contours on a 2D map correspond to the 3D surface beneath them. Create six horizontal rock units using the Layers tool (Conglomerate 35 m, Sandstone 20 m, Siltstone 10 m, Shale 20 m, Limestone 25 m, Dolomite 35 m), then apply a Valley topography (Topography tool → Valley → View Contours on). Toggle between 2D map view and 3D block view to observe how horizontal beds and contours interact. This assignment also serves as your introduction to the Visible Geology interface — no prior experience required.",
+      "url": "https://www.visiblegeology.com",
+      "embedUrl": "https://www.visiblegeology.com",
+      "canEmbed": true,
       "materials": [],
       "learningGoals": [
-        "Read contour intervals and identify terrain features (ridge, valley, spur, col, hill) from a map",
-        "Correlate map symbols with features observed in the 3D virtual landscape",
-        "Use correct topographic terminology in written descriptions"
+        "Navigate the Visible Geology Geology Explorer (rotate, pan, switch 2D/3D views, use Layers and Topography tools)",
+        "Explain why horizontal rock layers produce map contacts that parallel topographic contour lines",
+        "Identify the stream location and downstream flow direction from a contour map",
+        "Use correct topographic terminology: contour interval, ridge, valley, spur, col"
       ],
       "deliverables": [
         {
-          "id": "topo-sketch",
-          "label": "Annotated map sketch",
-          "description": "A labelled sketch (hand-drawn or digital) identifying at least five terrain features on the 3D topo map. Each feature must be labelled with its name and a one-sentence description of its contour pattern."
+          "id": "topo-screenshots",
+          "label": "Annotated screenshots (2D and 3D views)",
+          "description": "Two screenshots of your finished block: one in top-down 2D map view and one in oblique 3D view. On the 2D screenshot, draw a line along the valley floor marking the stream location and add an arrow indicating downstream flow direction. Label at least one ridge and one valley in each view."
+        },
+        {
+          "id": "topo-contact-explanation",
+          "label": "Contour–contact relationship explanation (150–200 words)",
+          "description": "Explain geometrically why horizontal rock beds produce contacts that match topographic contour lines in the 2D map view. Include a description of what you observe as the contacts cross the valley and why they form a V shape pointing upstream."
         },
         {
           "id": "topo-reflection",
-          "label": "Written reflection (200–300 words)",
-          "description": "Describe how the contour pattern changes around each terrain feature. Explain how you would use a topographic map to plan a route or assess slope hazard in the field."
+          "label": "Practical application note (100–150 words)",
+          "description": "Describe how you would use a topographic map to plan a safe hiking route across hilly terrain or to assess slope hazard for a proposed infrastructure project. Reference at least two specific contour features (e.g., closely spaced contours, V-shapes pointing upstream)."
         }
       ],
       "rubric": {
         "totalPoints": 20,
         "criteria": [
-          { "id": "terrain-id", "label": "Terrain feature identification", "points": 8, "description": "Correctly identifies and labels all five terrain features with accurate names." },
-          { "id": "contour-interp", "label": "Contour interpretation", "points": 6, "description": "Accurately describes contour spacing and what it indicates about slope angle and aspect." },
-          { "id": "reflection", "label": "Written reflection quality", "points": 6, "description": "Clearly links map symbols to 3D landscape; uses correct topographic terminology throughout." }
+          {
+            "id": "screenshots",
+            "label": "Screenshots and annotations",
+            "points": 6,
+            "description": "Both 2D and 3D views captured; stream, flow direction, ridge, and valley correctly annotated."
+          },
+          {
+            "id": "contact-explanation",
+            "label": "Contour–contact explanation",
+            "points": 8,
+            "description": "Accurately explains the geometric reason horizontal beds parallel contours; V-shape in valley correctly described."
+          },
+          {
+            "id": "practical-application",
+            "label": "Practical application",
+            "points": 6,
+            "description": "Application to route planning or hazard assessment is specific and references named contour features."
+          }
         ]
       },
       "estimatedHours": 1.5,
-      "week": 1
+      "week": 1,
+      "attribution": "Exercise design inspired by Abbey, A.L. (California State University, Long Beach). Hosted using Visible Geology (visiblegeology.com, Seequent Ltd.)."
     },
     {
       "id": "leeds-dip-maps",
       "sequence": 2,
-      "unit": "Leeds Virtual Landscapes",
-      "type": "virtual-landscape",
-      "title": "Dip and Map Patterns",
-      "subtitle": "How angle of dip controls the shape of outcrop bands on a geological map",
-      "description": "Using the Leeds 3D Geological Map block model, systematically change the angle of dip (keys 1–6) and observe how the outcrop pattern changes on the map surface. Record your observations on the provided dip-map field slip and write an analysis explaining the V-in-valleys rule. Consider how dip angles affect groundwater flow and slope stability as a practical application.",
-      "url": "https://www.see.leeds.ac.uk/virtual-landscapes/block/index.html",
-      "embedUrl": "https://www.see.leeds.ac.uk/virtual-landscapes/block/index.html",
-      "canEmbed": false,
-      "materials": ["02_Dip-maps.pdf"],
+      "unit": "Visible Geology",
+      "type": "visible-geology",
+      "title": "Dip Angle and Map Patterns",
+      "subtitle": "How the angle of dip controls V-patterns and outcrop band width in a valley",
+      "description": "Using a pre-built valley topography in Visible Geology, systematically tilt the six horizontal beds from the previous assignment and observe how dip angle changes the shape and orientation of outcrop bands in map view. Open the embedded model below (it loads a valley topography with horizontal beds). Use the Events tool → Tilt to apply each scenario; delete the previous Tilt event from the History panel before adding a new one so tilts do not compound. Test: upstream dip at 20° (Strike 0°, Dip 20° RHR), upstream dip at 60° (Strike 0°, Dip 60°), and vertical bedding (Dip 90°). Screenshot both map and 3D views after each change.",
+      "url": "https://www.visiblegeology.com",
+      "embedUrl": "https://www.visiblegeology.com?sharecode=ejKwZmhrQDkKxVHz5Nwxbr",
+      "canEmbed": true,
+      "materials": [],
       "learningGoals": [
-        "Understand how dip angle affects outcrop band width and the V-pattern in valleys",
-        "Read and correctly apply dip symbols on a geological map",
-        "Predict outcrop pattern from given dip data",
-        "Connect dip angle to practical hazard contexts (slope stability, groundwater)"
+        "Use the Visible Geology Events tool to apply Tilt events with specified strike and dip (RHR azimuthal notation)",
+        "Describe how dip angle controls outcrop band width and the sharpness of V-patterns in a valley",
+        "Explain why vertical beds produce contacts that are independent of topography",
+        "Predict the outcrop pattern for a given dip angle and dip direction relative to a valley"
       ],
       "deliverables": [
         {
-          "id": "dip-fieldslip",
-          "label": "Completed dip-maps field slip",
-          "description": "Annotate the provided field slip (02_Dip-maps.pdf) for each of the six dip angles shown in the model. Include measured dip values, correct dip symbols, and a sketch of the outcrop band shape for each."
+          "id": "dip-screenshots",
+          "label": "Screenshot set — three dip scenarios",
+          "description": "For each of the three dip scenarios (upstream 20°, upstream 60°, vertical 90°) provide a 2D map-view screenshot with the tilt parameters labelled (strike, dip). Annotate each to indicate the direction the V’s point and whether the V’s are wider or narrower than the topographic contours."
         },
         {
           "id": "dip-analysis",
-          "label": "Written analysis (250–350 words)",
-          "description": "Explain the relationship between dip angle and: (a) outcrop band width, (b) the direction the V-pattern points in valleys, and (c) the special case of vertical dip. Conclude with one sentence on how dip data would inform a slope stability or groundwater assessment."
+          "label": "Comparative analysis (250–350 words)",
+          "description": "Compare all three dip scenarios and address: (a) how outcrop band width changes as dip increases from 20° to 60° to 90°; (b) why vertical beds produce straight contacts regardless of topography; (c) how the V-pattern of tilted beds compares with the topographic V. Conclude with one sentence connecting dip angle data to a slope stability or groundwater context."
         }
       ],
       "rubric": {
         "totalPoints": 25,
         "criteria": [
-          { "id": "fieldslip-completeness", "label": "Field slip completeness", "points": 10, "description": "All six dip angles annotated with correct symbols, values, and outcrop band sketches." },
-          { "id": "v-pattern", "label": "V-pattern rule application", "points": 8, "description": "Correctly describes and illustrates the V-in-valleys rule for at least four dip scenarios." },
-          { "id": "analysis-quality", "label": "Written analysis quality", "points": 7, "description": "Uses correct geological vocabulary; logic is clear; practical application is geologically sound." }
+          {
+            "id": "screenshots",
+            "label": "Screenshot set completeness",
+            "points": 9,
+            "description": "All three dip scenarios captured in map view; strike/dip labelled; V-direction and band width annotated on each."
+          },
+          {
+            "id": "comparative-analysis",
+            "label": "Comparative analysis",
+            "points": 10,
+            "description": "Accurately explains band width trend, vertical bed behaviour, and V-pattern vs contour comparison; reasoning is geometric and clear."
+          },
+          {
+            "id": "practical-link",
+            "label": "Practical application",
+            "points": 6,
+            "description": "Practical conclusion is geologically sound and links a specific dip scenario to a real hazard or groundwater context."
+          }
         ]
       },
       "estimatedHours": 2,
-      "week": 1
+      "week": 1,
+      "attribution": "Exercise design inspired by Abbey, A.L. (California State University, Long Beach). Hosted using Visible Geology (visiblegeology.com, Seequent Ltd.)."
     },
     {
       "id": "leeds-strike-maps",
       "sequence": 3,
-      "unit": "Leeds Virtual Landscapes",
-      "type": "virtual-landscape",
-      "title": "Strike and Map Patterns",
-      "subtitle": "How the direction of strike controls outcrop orientation on a map",
-      "description": "Return to the Leeds 3D Geological Map block model and vary the strike direction (keys 1–6). Record how rotating strike changes the orientation of outcrop bands relative to the topography. You will then construct a simple geological cross section to reinforce the 3D geometry of dipping layers, and write a short note on how strike/dip data informs a real-world hazard or engineering scenario.",
-      "url": "https://www.see.leeds.ac.uk/virtual-landscapes/block/index.html",
-      "embedUrl": "https://www.see.leeds.ac.uk/virtual-landscapes/block/index.html",
-      "canEmbed": false,
-      "materials": ["02_Strike-maps.pdf"],
+      "unit": "Visible Geology",
+      "type": "visible-geology",
+      "title": "Strike, Downstream Dip, and the Rule of V’s",
+      "subtitle": "Complete the Rule of V’s by testing downstream dipping beds and varying strike",
+      "description": "Continuing from the previous assignment, use the same Visible Geology valley model to test two remaining dip scenarios: beds dipping downstream at 60° and beds dipping downstream at 20° (in Visible Geology, reverse the RHR dip direction to point dip downstream). Then rotate the strike while keeping dip constant and observe how the orientation of outcrop bands shifts. Delete previous Tilt events from the History panel before each new test. After all experiments, synthesise your observations into a complete written summary of the Rule of V’s — a foundational concept applied in every subsequent mapping assignment.",
+      "url": "https://www.visiblegeology.com",
+      "embedUrl": "https://www.visiblegeology.com?sharecode=ejKwZmhrQDkKxVHz5Nwxbr",
+      "canEmbed": true,
+      "materials": [],
       "learningGoals": [
-        "Define strike and explain its geometric relationship to dip direction",
-        "Predict how rotating strike changes the map outcrop pattern",
-        "Construct a simple geological cross section perpendicular to strike",
-        "Apply strike/dip knowledge to a real-world hazard or engineering problem"
+        "Distinguish map patterns produced by beds dipping upstream versus downstream at the same dip angle",
+        "Explain how dip angle affects V-pattern width when beds dip downstream at rates above and below the valley floor gradient",
+        "Describe how changing strike rotates the orientation of outcrop bands in map view",
+        "Articulate the complete Rule of V’s across all five bed orientations (horizontal, vertical, upstream, downstream steep, downstream shallow)"
       ],
       "deliverables": [
         {
-          "id": "strike-fieldslip",
-          "label": "Completed strike-maps field slip",
-          "description": "Annotate the field slip (02_Strike-maps.pdf) for all six strike orientations. Include compass bearings and sketch the outcrop band orientation for each."
+          "id": "strike-downstream-screenshots",
+          "label": "Screenshot set — downstream dip scenarios",
+          "description": "Two 2D map-view screenshots: (1) beds dipping downstream at 60°, (2) beds dipping downstream at 20°. Label the dip direction and angle on each. Annotate which direction the V’s point and whether they are narrower or wider than the topographic contours."
         },
         {
-          "id": "strike-crosssection",
-          "label": "Geological cross section",
-          "description": "Draw a simple cross section perpendicular to strike for two of the six orientations, showing the dipping layers projected below the ground surface. Label the dip angle and indicate north."
+          "id": "strike-variation",
+          "label": "Strike variation screenshot and description",
+          "description": "One 2D map-view screenshot showing the beds tilted with a strike other than due North (any angle except 0° or 90°). In 2–3 sentences describe how the orientation of outcrop bands has changed compared to the north-striking model and explain why."
         },
         {
-          "id": "strike-hazard-note",
-          "label": "Hazard/engineering note (150–200 words)",
-          "description": "Describe a real-world scenario where knowing the strike and dip of a rock layer would be important — for example, slope stability assessment, road cutting, dam foundation design, or groundwater flow prediction."
+          "id": "rule-of-vs",
+          "label": "Rule of V’s written summary",
+          "description": "Write a clear summary of the Rule of V’s addressed to a fellow geology student who has not completed this exercise. Cover all five bed orientations: (a) horizontal, (b) vertical, (c) dipping upstream, (d) dipping downstream more steeply than the valley floor, (e) dipping downstream less steeply than the valley floor. For each, state which direction the V points and whether the V is wider, narrower, or identical to the topographic V. This will be a reference you carry into the Lighthouse Bay and Three River Hills mapping assignments."
         }
       ],
       "rubric": {
         "totalPoints": 30,
         "criteria": [
-          { "id": "fieldslip-completeness", "label": "Field slip completeness", "points": 10, "description": "All six strike orientations annotated correctly with compass bearings and sketches." },
-          { "id": "cross-section", "label": "Cross section accuracy", "points": 10, "description": "Cross sections correctly show layer orientation, dip angle, and are at approximate scale." },
-          { "id": "hazard-link", "label": "Hazard/engineering connection", "points": 10, "description": "Provides a clear, geologically sound explanation of how strike/dip data informs a real hazard or engineering scenario." }
+          {
+            "id": "screenshots",
+            "label": "Downstream dip screenshots",
+            "points": 8,
+            "description": "Both downstream scenarios captured; dip direction and angle labelled; V-direction and relative width correctly annotated."
+          },
+          {
+            "id": "strike-description",
+            "label": "Strike variation description",
+            "points": 6,
+            "description": "Screenshot shows a non-north strike; description correctly identifies and explains the rotation of outcrop bands."
+          },
+          {
+            "id": "rule-completeness",
+            "label": "Rule of V’s completeness",
+            "points": 10,
+            "description": "All five orientation cases addressed; V-direction and V-width statements are correct for each."
+          },
+          {
+            "id": "rule-clarity",
+            "label": "Rule of V’s clarity",
+            "points": 6,
+            "description": "Summary is written clearly enough for a student unfamiliar with the concept to apply it; correct geological vocabulary throughout."
+          }
         ]
       },
       "estimatedHours": 2.5,
-      "week": 1
+      "week": 1,
+      "attribution": "Exercise inspired by Abbey, A.L. (California State University, Long Beach), “How Geologic Beds and Other Planar Features Interact with Topography: Rule of V’s.” Hosted using Visible Geology (visiblegeology.com, Seequent Ltd.)."
     },
     {
       "id": "leeds-lighthouse-bay",
@@ -138,6 +198,19 @@
       "url": "https://www.see.leeds.ac.uk/virtual-landscapes/schools/index.html",
       "embedUrl": "https://www.see.leeds.ac.uk/virtual-landscapes/schools/index.html",
       "canEmbed": false,
+      "urlOffline": true,
+      "downloads": [
+        {
+          "platform": "windows",
+          "label": "Download for Windows",
+          "url": "https://github.com/Andrew-TraverseMT/virtual-field/releases/download/v1-landscapes/lighthouse-bay-windows.zip"
+        },
+        {
+          "platform": "mac",
+          "label": "Download for Mac",
+          "url": "https://github.com/Andrew-TraverseMT/virtual-field/releases/download/v1-landscapes/lighthouse-bay-mac.zip"
+        }
+      ],
       "materials": [
         "03_Lighthouse Bay field slip no outcrops.png",
         "03_Lighthouse Bay field slip with outcrops.pdf"
@@ -168,14 +241,35 @@
       "rubric": {
         "totalPoints": 50,
         "criteria": [
-          { "id": "map-accuracy", "label": "Map accuracy", "points": 20, "description": "Unit boundaries, symbols, and colours correctly placed and internally consistent with virtual landscape observations." },
-          { "id": "cross-section", "label": "Cross section quality", "points": 15, "description": "Section line clearly marked on map; topo profile accurate; units correctly projected below surface at consistent dip." },
-          { "id": "hazard", "label": "Geohazard identification and reasoning", "points": 10, "description": "Hazard is geologically plausible; specific geological controls are correctly explained." },
-          { "id": "presentation", "label": "Cartographic presentation", "points": 5, "description": "Map has north arrow, scale bar, legend, section line, and title." }
+          {
+            "id": "map-accuracy",
+            "label": "Map accuracy",
+            "points": 20,
+            "description": "Unit boundaries, symbols, and colours correctly placed and internally consistent with virtual landscape observations."
+          },
+          {
+            "id": "cross-section",
+            "label": "Cross section quality",
+            "points": 15,
+            "description": "Section line clearly marked on map; topo profile accurate; units correctly projected below surface at consistent dip."
+          },
+          {
+            "id": "hazard",
+            "label": "Geohazard identification and reasoning",
+            "points": 10,
+            "description": "Hazard is geologically plausible; specific geological controls are correctly explained."
+          },
+          {
+            "id": "presentation",
+            "label": "Cartographic presentation",
+            "points": 5,
+            "description": "Map has north arrow, scale bar, legend, section line, and title."
+          }
         ]
       },
       "estimatedHours": 4,
-      "week": 2
+      "week": 1,
+      "attribution": "Virtual landscape environment developed by the University of Leeds, School of Earth and Environment (see.leeds.ac.uk/virtual-landscapes). Exercise format adapted for this course."
     },
     {
       "id": "leeds-three-river-hills",
@@ -188,7 +282,22 @@
       "url": "https://www.see.leeds.ac.uk/virtual-landscapes/demo/index.html",
       "embedUrl": "https://www.see.leeds.ac.uk/virtual-landscapes/demo/index.html",
       "canEmbed": false,
-      "materials": ["05_Three_River_Hills_Fieldslip.pdf"],
+      "urlOffline": true,
+      "downloads": [
+        {
+          "platform": "windows",
+          "label": "Download for Windows",
+          "url": "https://github.com/Andrew-TraverseMT/virtual-field/releases/download/v1-landscapes/three-river-hills-windows.zip"
+        },
+        {
+          "platform": "mac",
+          "label": "Download for Mac",
+          "url": "https://github.com/Andrew-TraverseMT/virtual-field/releases/download/v1-landscapes/three-river-hills-mac.zip"
+        }
+      ],
+      "materials": [
+        "05_Three_River_Hills_Fieldslip.pdf"
+      ],
       "learningGoals": [
         "Map a multi-unit geology with varying strike and dip across a 3D landscape",
         "Identify structural patterns (folds, unconformities) from map patterns",
@@ -220,14 +329,35 @@
       "rubric": {
         "totalPoints": 60,
         "criteria": [
-          { "id": "map-accuracy", "label": "Map accuracy", "points": 20, "description": "All boundaries and symbols are correct and internally consistent across the map." },
-          { "id": "cross-section", "label": "Cross section", "points": 15, "description": "Section accurately portrays subsurface structure consistent with the map pattern." },
-          { "id": "structural-analysis", "label": "Structural analysis", "points": 15, "description": "Correctly identifies structures present; deformation history interpretation is geologically reasonable." },
-          { "id": "impact-hazard", "label": "Human impacts / hazard note", "points": 10, "description": "Demonstrates applied geology reasoning; specific features are referenced; risk assessment is credible." }
+          {
+            "id": "map-accuracy",
+            "label": "Map accuracy",
+            "points": 20,
+            "description": "All boundaries and symbols are correct and internally consistent across the map."
+          },
+          {
+            "id": "cross-section",
+            "label": "Cross section",
+            "points": 15,
+            "description": "Section accurately portrays subsurface structure consistent with the map pattern."
+          },
+          {
+            "id": "structural-analysis",
+            "label": "Structural analysis",
+            "points": 15,
+            "description": "Correctly identifies structures present; deformation history interpretation is geologically reasonable."
+          },
+          {
+            "id": "impact-hazard",
+            "label": "Human impacts / hazard note",
+            "points": 10,
+            "description": "Demonstrates applied geology reasoning; specific features are referenced; risk assessment is credible."
+          }
         ]
       },
       "estimatedHours": 5,
-      "week": 2
+      "week": 2,
+      "attribution": "Virtual landscape environment developed by the University of Leeds, School of Earth and Environment (see.leeds.ac.uk/virtual-landscapes). Exercise format adapted for this course."
     },
     {
       "id": "leeds-rhoscolyn",
@@ -240,6 +370,19 @@
       "url": "https://www.see.leeds.ac.uk/virtual-landscapes/rhoscolyn/index.html",
       "embedUrl": "https://www.see.leeds.ac.uk/virtual-landscapes/rhoscolyn/index.html",
       "canEmbed": false,
+      "urlOffline": true,
+      "downloads": [
+        {
+          "platform": "windows",
+          "label": "Download for Windows",
+          "url": "https://github.com/Andrew-TraverseMT/virtual-field/releases/download/v1-landscapes/rhoscolyn-windows.zip"
+        },
+        {
+          "platform": "mac",
+          "label": "Download for Mac",
+          "url": "https://github.com/Andrew-TraverseMT/virtual-field/releases/download/v1-landscapes/rhoscolyn-mac.zip"
+        }
+      ],
       "materials": [
         "04_Rhoscolyn mapping slip no outcrops.pdf",
         "04_Rhoscolyn mapping slip with outcrops.png",
@@ -277,19 +420,183 @@
       "rubric": {
         "totalPoints": 80,
         "criteria": [
-          { "id": "map-accuracy", "label": "Map accuracy", "points": 25, "description": "Boundaries, unit patterns, and structural symbols are correct and consistent with outcrop observations." },
-          { "id": "cross-section", "label": "Cross section", "points": 15, "description": "Correctly projects folded layers to depth; internally consistent with both the map and stereonet." },
-          { "id": "stereonet", "label": "Stereonet quality and interpretation", "points": 20, "description": "Poles plotted at correct positions; pi-girdle drawn and interpreted correctly; fold axis read accurately; fold classified." },
-          { "id": "hazard-assessment", "label": "Geohazard assessment", "points": 15, "description": "Structurally informed; identifies specific failure mechanisms tied to mapped features; mitigation is appropriate and specific." },
-          { "id": "presentation", "label": "Cartographic presentation", "points": 5, "description": "All cartographic conventions followed; work is clearly labelled and well-organised." }
+          {
+            "id": "map-accuracy",
+            "label": "Map accuracy",
+            "points": 25,
+            "description": "Boundaries, unit patterns, and structural symbols are correct and consistent with outcrop observations."
+          },
+          {
+            "id": "cross-section",
+            "label": "Cross section",
+            "points": 15,
+            "description": "Correctly projects folded layers to depth; internally consistent with both the map and stereonet."
+          },
+          {
+            "id": "stereonet",
+            "label": "Stereonet quality and interpretation",
+            "points": 20,
+            "description": "Poles plotted at correct positions; pi-girdle drawn and interpreted correctly; fold axis read accurately; fold classified."
+          },
+          {
+            "id": "hazard-assessment",
+            "label": "Geohazard assessment",
+            "points": 15,
+            "description": "Structurally informed; identifies specific failure mechanisms tied to mapped features; mitigation is appropriate and specific."
+          },
+          {
+            "id": "presentation",
+            "label": "Cartographic presentation",
+            "points": 5,
+            "description": "All cartographic conventions followed; work is clearly labelled and well-organised."
+          }
         ]
       },
       "estimatedHours": 7,
+      "week": 2,
+      "attribution": "Virtual landscape environment developed by the University of Leeds, School of Earth and Environment (see.leeds.ac.uk/virtual-landscapes). Exercise format adapted for this course."
+    },
+    {
+      "id": "basin-stratigraphy",
+      "sequence": 7,
+      "unit": "Visible Geology",
+      "type": "visible-geology",
+      "title": "Basin Stratigraphic Correlation",
+      "subtitle": "Interpret sedimentary basin structure from geological maps, virtual drill cores, and subsurface models",
+      "description": "Oil and gas exploration has generated more than 150 years of subsurface data from North American sedimentary basins. In this three-part assignment you use those data — represented through geological maps and virtual drill cores — to investigate the Appalachian basin, then build your own subsurface model of the adjacent Illinois basin.\n\nPart 1 — Appalachian basin map and model: Load the pre-built Visible Geology model below (Southern PA to SW OH transect, ~10× vertical exaggeration, actual dip ~5°). In both 2D map view and 3D block view, identify the western basin edge, the direction of regional dip, and how depth to Precambrian crystalline basement changes along the transect. Explain geometrically how these observations account for the concentric belts of progressively older surface bedrock seen on a geological map of the same area. Propose two alternative mechanisms — one involving subsidence, one involving uplift — that could produce the observed geometry.\n\nPart 2 — Drill-core correlation: The model shows virtual cores at SW OH, Central OH, and Southern PA. Using these as constraints, sketch a predicted core for Northern WV (between Central OH and Southern PA). Show all geologic periods at appropriate relative thicknesses. Construct a colour-coded lithostratigraphic correlation diagram linking all four locations and explain why Pennsylvanian strata thickness varies across the transect.\n\nPart 3 — Illinois basin model: Using the Visible Geology Geology Explorer, build a new block model of the Illinois basin. The Illinois basin contains the same Cambrian–Pennsylvanian stratigraphy as the Appalachian basin but has a circular, bowl-shaped outcrop pattern — youngest rocks at the centre, oldest at the margins. Set dip direction and magnitude to match this constraint. Add two virtual cores and correlate them, then propose a formation mechanism for this basin.",
+      "url": "https://www.visiblegeology.com",
+      "embedUrl": "https://www.visiblegeology.com?sharecode=BEYmS4xdZFtZWPmheBnapz",
+      "canEmbed": true,
+      "materials": [
+        "Basin_Stratigraphic_Correlation_Activity.pdf"
+      ],
+      "attribution": "Adapted from Weislogel, A.L. (West Virginia University). “Basin Stratigraphic Correlation.” Visible Geology Activities Collection (visiblegeology.com). Appalachian basin model courtesy of Visible Geology / Seequent Ltd.",
+      "learningGoals": [
+        "Relate the concentric surface bedrock age pattern of a sedimentary basin to regional dip direction and magnitude in the underlying strata",
+        "Apply the principle of lateral continuity to predict drill core stratigraphy at an unsampled location between two known cores",
+        "Construct a colour-coded lithostratigraphic correlation diagram across a basin transect and explain lateral thickness variations",
+        "Build a Visible Geology block model that honours geological map constraints for a new basin and add virtual drill cores to test subsurface predictions",
+        "Evaluate two competing mechanisms — regional subsidence versus flanking uplift — that could explain a sedimentary basin’s architecture"
+      ],
+      "deliverables": [
+        {
+          "id": "basin-map-analysis",
+          "label": "Part 1 — Annotated model screenshots and written explanation",
+          "description": "Two annotated screenshots of the pre-loaded model: (a) 2D map view with the western basin boundary marked and an arrow showing dip direction; (b) 3D view with the crystalline basement visible. Accompany with a written explanation (200–250 words) of how regional dip, depth-to-basement change, and surface bedrock age pattern are geometrically related, and briefly describe two alternative mechanisms (subsidence vs. uplift) that could produce this geometry."
+        },
+        {
+          "id": "basin-core-correlation",
+          "label": "Part 2 — Northern WV core prediction and lithostratigraphic correlation diagram",
+          "description": "A hand-drawn or digitally produced sketch of the predicted Northern WV drill core, placed in position between the Central OH and Southern PA cores. Include all geologic periods at appropriate relative thicknesses. Draw correlation lines connecting equivalent units across all four locations (SW OH → Central OH → Northern WV → Southern PA). Colour and label each geologic period. Add 100–150 words explaining why Pennsylvanian strata are thicker toward one end of the transect."
+        },
+        {
+          "id": "illinois-basin-model",
+          "label": "Part 3 — Illinois basin model, cores, and formation hypothesis",
+          "description": "A Visible Geology block model of the Illinois basin with the same stratigraphic units as the Appalachian model. Dip direction and magnitude must honour the bowl-shaped, concentric outcrop pattern (youngest rocks at centre). Include two virtual cores — one in an area with Pennsylvanian strata, one without — and a correlation diagram. Provide a shareable model link and at least two screenshots (2D and 3D). Add a 250–350 word formation hypothesis addressing which sense of vertical motion is involved, why sediment accumulates at the basin centre, and what one additional data type (e.g., seismic profile, palaeontological record) could test your model."
+        }
+      ],
+      "rubric": {
+        "totalPoints": 60,
+        "criteria": [
+          {
+            "id": "map-analysis",
+            "label": "Part 1 — basin map analysis and mechanism discussion",
+            "points": 15,
+            "description": "Basin boundary and dip direction correctly marked; basement visible in 3D view; written explanation accurately links dip, basement depth, and bedrock age pattern; two plausible mechanisms described."
+          },
+          {
+            "id": "core-correlation",
+            "label": "Part 2 — core prediction and correlation diagram",
+            "points": 20,
+            "description": "Northern WV core unit sequence and relative thicknesses are geologically plausible; correlation diagram correctly connects all four sites; Pennsylvanian thickness variation is explained with specific geological reasoning."
+          },
+          {
+            "id": "illinois-model",
+            "label": "Part 3 — Illinois basin model and cores",
+            "points": 15,
+            "description": "Model dip pattern matches the bowl-shaped Illinois basin map geometry; two cores positioned appropriately; correlation diagram produced; shareable link provided."
+          },
+          {
+            "id": "hypothesis",
+            "label": "Part 3 — formation hypothesis",
+            "points": 10,
+            "description": "Mechanism is geologically valid; evidence from the model is explicitly cited; at least one specific, testable additional data type is identified."
+          }
+        ]
+      },
+      "estimatedHours": 4,
+      "week": 2
+    },
+    {
+      "id": "reservoir-stratigraphy",
+      "sequence": 8,
+      "unit": "Visible Geology",
+      "type": "visible-geology",
+      "title": "Reservoir Geology and CO₂ Sequestration",
+      "subtitle": "Construct stratigraphic columns, model lateral facies variability, and evaluate subsurface CO₂ storage sites",
+      "description": "Carbon capture and underground storage (CCS) is a key strategy for reducing atmospheric CO₂ from industrial point sources. In this three-part assignment you assess potential storage sites in the Upper Devonian Hampshire Formation of the Appalachian basin using real archived core descriptions, Visible Geology block models, and structural analysis.\n\nPart 1 — Stratigraphic column construction: A detailed bed-by-bed description of a 30 ft Hampshire Formation core from Northern WV is provided in the assignment materials (Table 1). The core is divided into three stratigraphic units: Unit 1 (offshore shale/mudstone, 0–6.7 ft), Unit 2 (nearshore fine-grained sandstone, 6.7–18.05 ft), and Unit 3 (delta-plain coarse-grained sandstone, 18.05–30.05 ft). Using the blank log template and symbol legend in the materials, construct a formal sedimentary log. Identify whether the stacking pattern records overall shoreline transgression or regression.\n\nPart 2 — Lateral facies modeling: The Hampshire Formation was deposited by a delta system prograding from eastern Pennsylvania westward toward Ohio. Build representative core models in Visible Geology for Central OH (distal) and Western MD (proximal). Adjust the proportion of each facies unit accordingly: Central OH should show a greater proportion of offshore mudstone; Western MD should include delta-plain or alluvial-plain units. Layer colours: offshore = grey, nearshore = light yellow, delta plain = dark orange, alluvial plain = green.\n\nPart 3 — Structural trapping analysis: A thick mudstone overlies the Hampshire Formation, forming an impermeable seal. Modify your Central OH model (tilt 5° east, 2× vertical exaggeration) and Western MD model (fold: axis trend/plunge 022/10°, amplitude 16, wavelength 20, no vertical exaggeration). Annotate fluid migration directions on screenshots, then rank all three locations — Northern WV, Central OH, Western MD — for CO₂ storage viability and recommend one site.",
+      "url": "https://www.visiblegeology.com",
+      "embedUrl": "https://www.visiblegeology.com",
+      "canEmbed": true,
+      "materials": [
+        "Reservoir_Sandstone_Correlation_Activity.pdf",
+        "Hampshire_Fm_Core_Log_Template.pdf"
+      ],
+      "attribution": "Adapted from Weislogel, A.L. (West Virginia University). “Reservoir Sandstone Stratigraphic Correlation.” Visible Geology Activities Collection (visiblegeology.com). Hampshire Formation core description archived by the West Virginia Geological and Economic Survey.",
+      "learningGoals": [
+        "Construct a formal stratigraphic column (sedimentary log) from a bed-by-bed core description table, applying the principle of superposition",
+        "Infer overall shoreline transgression or regression from the vertical stacking of offshore, nearshore, and delta-plain facies",
+        "Predict how the proportion of offshore, nearshore, and delta-plain facies varies along the axis of a prograding delta system",
+        "Build Visible Geology core models that reflect relative position along the delta progradation direction and justify the facies proportions chosen",
+        "Apply tilt and fold events in Visible Geology and interpret the resulting structural trap geometry for subsurface CO₂ migration",
+        "Rank multiple sites for CO₂ storage viability by integrating reservoir porosity, structural trap geometry, and seal integrity"
+      ],
+      "deliverables": [
+        {
+          "id": "strat-column",
+          "label": "Part 1 — Hampshire Formation stratigraphic column and transgression/regression interpretation",
+          "description": "A completed sedimentary log for the Northern WV core using Table 1 from the materials. The column must include: the grain-size axis (clay → gravel), a depth scale (0–30 ft), the correct lithological symbol for each bed at proportional thickness, key sedimentary structures noted in the right-hand column, and the three stratigraphic units labelled with their depositional environments. Submit as a scan or digital file. Add 150–200 words identifying whether the overall stacking pattern records transgression or regression, with geological reasoning."
+        },
+        {
+          "id": "core-models",
+          "label": "Part 2 — Visible Geology core models (Central OH and Western MD)",
+          "description": "Two Visible Geology block models — one for Central OH, one for Western MD — each with at least one vertical core. Facies proportions must reflect the delta progradation direction (more offshore toward OH; more delta-plain/alluvial toward MD). Layer colours must match the standard legend. Provide one shareable link per model and a screenshot of each with the core visible. Add 50–75 words per model justifying your choice of facies proportions."
+        },
+        {
+          "id": "co2-assessment",
+          "label": "Part 3 — Structural trapping analysis and CO₂ site ranking",
+          "description": "Modified models for Central OH (tilted 5° east, 2× VE) and Western MD (fold parameters as specified) with updated shareable links and screenshots annotated with arrows showing fluid migration direction through the reservoir. A ranked assessment (350–500 words) of all three locations for CO₂ storage viability, addressing: (a) reservoir rock quality, (b) structural trap geometry, and (c) seal integrity. Conclude with a specific recommendation for one location backed by geological evidence."
+        }
+      ],
+      "rubric": {
+        "totalPoints": 55,
+        "criteria": [
+          {
+            "id": "strat-column",
+            "label": "Stratigraphic column quality",
+            "points": 20,
+            "description": "Grain-size axis correct; depth scale accurate; all beds represented with correct lithological symbol at proportional thickness; three units labelled with environments; key structures noted; transgression/regression interpretation correct and justified."
+          },
+          {
+            "id": "core-models",
+            "label": "Lateral facies models",
+            "points": 15,
+            "description": "Both models built with shareable links provided; facies proportions reflect delta progradation direction; colours match the legend; vertical cores added; proportions justified in writing."
+          },
+          {
+            "id": "co2-assessment",
+            "label": "CO₂ storage ranking and reasoning",
+            "points": 20,
+            "description": "Both models correctly modified with tilt/fold events; fluid migration annotated on screenshots; all three sites ranked; reasoning integrates reservoir quality, trap geometry, and seal integrity; recommendation is geologically justified."
+          }
+        ]
+      },
+      "estimatedHours": 4.5,
       "week": 2
     },
     {
       "id": "visiblegeology-stereonets",
-      "sequence": 7,
+      "sequence": 9,
       "unit": "Visible Geology",
       "type": "visible-geology",
       "title": "Stereonets and Fold Map Patterns",
@@ -322,17 +629,33 @@
       "rubric": {
         "totalPoints": 40,
         "criteria": [
-          { "id": "stereonet-accuracy", "label": "Stereonet accuracy", "points": 20, "description": "Poles plotted at correct positions; pi-girdle drawn correctly; fold axis read accurately with correct plunge/trend." },
-          { "id": "block-sketches", "label": "Block face sketches", "points": 10, "description": "Map patterns correctly reproduced with appropriate structural symbols." },
-          { "id": "synthesis", "label": "Synthesis and application", "points": 10, "description": "Accurately describes the geometric relationship; application example is geologically sound and specific." }
+          {
+            "id": "stereonet-accuracy",
+            "label": "Stereonet accuracy",
+            "points": 20,
+            "description": "Poles plotted at correct positions; pi-girdle drawn correctly; fold axis read accurately with correct plunge/trend."
+          },
+          {
+            "id": "block-sketches",
+            "label": "Block face sketches",
+            "points": 10,
+            "description": "Map patterns correctly reproduced with appropriate structural symbols."
+          },
+          {
+            "id": "synthesis",
+            "label": "Synthesis and application",
+            "points": 10,
+            "description": "Accurately describes the geometric relationship; application example is geologically sound and specific."
+          }
         ]
       },
       "estimatedHours": 3,
-      "week": 3
+      "week": 3,
+      "attribution": "Activity worksheet: Blatchford (Eastern Michigan University), “Exploring Relationships Between Map Patterns of Cylindrically Folded Layers and Their Stereonets.” Hosted on Visible Geology (visiblegeology.com, Seequent Ltd.)."
     },
     {
       "id": "visiblegeology-3d-model",
-      "sequence": 8,
+      "sequence": 10,
       "unit": "Visible Geology",
       "type": "visible-geology",
       "title": "Building a 3D Geological Model",
@@ -370,18 +693,39 @@
       "rubric": {
         "totalPoints": 50,
         "criteria": [
-          { "id": "model-consistency", "label": "Model–map–section consistency", "points": 20, "description": "3D model matches the map pattern and cross section; deformation sequence is geologically valid." },
-          { "id": "screenshots", "label": "Screenshot annotations", "points": 10, "description": "All key features clearly labelled; views chosen effectively communicate 3D structure." },
-          { "id": "geo-history", "label": "Geological history narrative", "points": 15, "description": "Events in correct chronological order; correct terminology used; hazard/human-impact note is geologically plausible." },
-          { "id": "events-justification", "label": "Event justification", "points": 5, "description": "Each modelling choice is clearly tied to evidence from the map or cross section." }
+          {
+            "id": "model-consistency",
+            "label": "Model–map–section consistency",
+            "points": 20,
+            "description": "3D model matches the map pattern and cross section; deformation sequence is geologically valid."
+          },
+          {
+            "id": "screenshots",
+            "label": "Screenshot annotations",
+            "points": 10,
+            "description": "All key features clearly labelled; views chosen effectively communicate 3D structure."
+          },
+          {
+            "id": "geo-history",
+            "label": "Geological history narrative",
+            "points": 15,
+            "description": "Events in correct chronological order; correct terminology used; hazard/human-impact note is geologically plausible."
+          },
+          {
+            "id": "events-justification",
+            "label": "Event justification",
+            "points": 5,
+            "description": "Each modelling choice is clearly tied to evidence from the map or cross section."
+          }
         ]
       },
       "estimatedHours": 4,
-      "week": 3
+      "week": 3,
+      "attribution": "Activity worksheet published through the Visible Geology platform (visiblegeology.com, Seequent Ltd.)."
     },
     {
       "id": "cyoa-proposal",
-      "sequence": 9,
+      "sequence": 11,
       "unit": "CYOA Final Project",
       "type": "cyoa",
       "title": "Independent Mapping Project — Proposal",
@@ -390,7 +734,9 @@
       "url": null,
       "embedUrl": null,
       "canEmbed": false,
-      "materials": ["Choose Your Own Adventure Final Mapping Project.pdf"],
+      "materials": [
+        "Choose Your Own Adventure Final Mapping Project.pdf"
+      ],
       "locationOptions": [
         {
           "id": "remote-structural",
@@ -429,18 +775,58 @@
         }
       ],
       "milestones": [
-        { "id": "topic-selection", "label": "Topic and study area selected", "week": 3 },
-        { "id": "proposal-submitted", "label": "Proposal submitted", "week": 3 }
+        {
+          "id": "topic-selection",
+          "label": "Topic and study area selected",
+          "week": 3
+        },
+        {
+          "id": "proposal-submitted",
+          "label": "Proposal submitted",
+          "week": 3
+        }
       ],
       "proposalSections": [
-        { "id": "summary", "label": "1. Project summary", "description": "A brief overview of what you will map, where, and why it is geologically interesting." },
-        { "id": "location", "label": "2. Location / study area", "description": "Describe the location; include coordinates or a map extract. If field-based, confirm the site is on public land." },
-        { "id": "hypothesis", "label": "3. Hypothesis to be tested", "description": "A clear, testable geological hypothesis your map will address (e.g., 'The landslide deposits at X are controlled by the dip of underlying bedding')." },
-        { "id": "data-type", "label": "4. Type of data to be collected", "description": "Specify all data types: outcrop observations, strike/dip measurements, Lidar DEMs, satellite imagery, published maps, etc." },
-        { "id": "data-method", "label": "5. Method of data collection", "description": "How will data be collected? Name specific tools (Google Earth Engine, OpenTopography, compass-clinometer, QGIS, etc.)." },
-        { "id": "equipment", "label": "6. Equipment list", "description": "List all required equipment. If field-based, include safety equipment (first-aid kit, communication device, etc.)." },
-        { "id": "deliverables", "label": "7. Expected deliverables", "description": "List all outputs: geological map (type and scale), cross section, stereonet if applicable, hazard/impact assessment." },
-        { "id": "safety", "label": "8. Safety acknowledgement (field projects only)", "description": "If conducting any field work, confirm you have read the relevant field safety guide and understand that all risks are your responsibility." }
+        {
+          "id": "summary",
+          "label": "1. Project summary",
+          "description": "A brief overview of what you will map, where, and why it is geologically interesting."
+        },
+        {
+          "id": "location",
+          "label": "2. Location / study area",
+          "description": "Describe the location; include coordinates or a map extract. If field-based, confirm the site is on public land."
+        },
+        {
+          "id": "hypothesis",
+          "label": "3. Hypothesis to be tested",
+          "description": "A clear, testable geological hypothesis your map will address (e.g., 'The landslide deposits at X are controlled by the dip of underlying bedding')."
+        },
+        {
+          "id": "data-type",
+          "label": "4. Type of data to be collected",
+          "description": "Specify all data types: outcrop observations, strike/dip measurements, Lidar DEMs, satellite imagery, published maps, etc."
+        },
+        {
+          "id": "data-method",
+          "label": "5. Method of data collection",
+          "description": "How will data be collected? Name specific tools (Google Earth Engine, OpenTopography, compass-clinometer, QGIS, etc.)."
+        },
+        {
+          "id": "equipment",
+          "label": "6. Equipment list",
+          "description": "List all required equipment. If field-based, include safety equipment (first-aid kit, communication device, etc.)."
+        },
+        {
+          "id": "deliverables",
+          "label": "7. Expected deliverables",
+          "description": "List all outputs: geological map (type and scale), cross section, stereonet if applicable, hazard/impact assessment."
+        },
+        {
+          "id": "safety",
+          "label": "8. Safety acknowledgement (field projects only)",
+          "description": "If conducting any field work, confirm you have read the relevant field safety guide and understand that all risks are your responsibility."
+        }
       ],
       "deliverables": [
         {
@@ -452,17 +838,33 @@
       "rubric": {
         "totalPoints": 30,
         "criteria": [
-          { "id": "scope", "label": "Project scope and feasibility", "points": 10, "description": "Project is achievable within the remaining camp timeframe; hypothesis is clear, specific, and testable." },
-          { "id": "methodology", "label": "Methodology and deliverables", "points": 10, "description": "Data collection methods are appropriate for the project type; all required deliverables are explicitly listed." },
-          { "id": "hazard-integration", "label": "Hazard / human-impacts integration", "points": 10, "description": "A specific, relevant geohazard or human-impacts theme is explicitly incorporated into the project design." }
+          {
+            "id": "scope",
+            "label": "Project scope and feasibility",
+            "points": 10,
+            "description": "Project is achievable within the remaining camp timeframe; hypothesis is clear, specific, and testable."
+          },
+          {
+            "id": "methodology",
+            "label": "Methodology and deliverables",
+            "points": 10,
+            "description": "Data collection methods are appropriate for the project type; all required deliverables are explicitly listed."
+          },
+          {
+            "id": "hazard-integration",
+            "label": "Hazard / human-impacts integration",
+            "points": 10,
+            "description": "A specific, relevant geohazard or human-impacts theme is explicitly incorporated into the project design."
+          }
         ]
       },
       "estimatedHours": 2,
-      "week": 3
+      "week": 3,
+      "attribution": "Original assignment design for this virtual field camp course."
     },
     {
       "id": "cyoa-final",
-      "sequence": 10,
+      "sequence": 12,
       "unit": "CYOA Final Project",
       "type": "cyoa",
       "title": "Independent Mapping Project — Final Submission",
@@ -471,13 +873,31 @@
       "url": null,
       "embedUrl": null,
       "canEmbed": false,
-      "materials": ["Choose Your Own Adventure Final Mapping Project.pdf"],
+      "materials": [
+        "Choose Your Own Adventure Final Mapping Project.pdf"
+      ],
       "locationOptions": null,
       "milestones": [
-        { "id": "map-draft", "label": "Map draft complete", "week": 3 },
-        { "id": "section-complete", "label": "Cross section complete", "week": 3 },
-        { "id": "stereonet-complete", "label": "Stereonet complete (if required by project type)", "week": 3 },
-        { "id": "final-submitted", "label": "Final project submitted", "week": 3 }
+        {
+          "id": "map-draft",
+          "label": "Map draft complete",
+          "week": 3
+        },
+        {
+          "id": "section-complete",
+          "label": "Cross section complete",
+          "week": 3
+        },
+        {
+          "id": "stereonet-complete",
+          "label": "Stereonet complete (if required by project type)",
+          "week": 3
+        },
+        {
+          "id": "final-submitted",
+          "label": "Final project submitted",
+          "week": 3
+        }
       ],
       "deliverables": [
         {
@@ -511,15 +931,41 @@
       "rubric": {
         "totalPoints": 100,
         "criteria": [
-          { "id": "map-quality", "label": "Map quality and accuracy", "points": 30, "description": "Unit boundaries are geologically consistent; structural symbols are correct; all cartographic conventions followed." },
-          { "id": "cross-section", "label": "Cross section quality", "points": 20, "description": "Topographic profile is accurate; units project correctly to depth; section is consistent with the map." },
-          { "id": "stereonet", "label": "Stereonet (structural projects only, otherwise pro-rated)", "points": 15, "description": "Poles and planes plotted correctly; fold axis interpreted accurately; fold classified with correct terminology." },
-          { "id": "hazard-assessment", "label": "Hazard / human-impacts assessment", "points": 20, "description": "Grounded in mapped geology; at least three specific map features referenced; recommendations are actionable and realistic." },
-          { "id": "integration", "label": "Overall integration and geological reasoning", "points": 15, "description": "Map, section, stereonet, and narrative form a coherent, internally consistent geological interpretation." }
+          {
+            "id": "map-quality",
+            "label": "Map quality and accuracy",
+            "points": 30,
+            "description": "Unit boundaries are geologically consistent; structural symbols are correct; all cartographic conventions followed."
+          },
+          {
+            "id": "cross-section",
+            "label": "Cross section quality",
+            "points": 20,
+            "description": "Topographic profile is accurate; units project correctly to depth; section is consistent with the map."
+          },
+          {
+            "id": "stereonet",
+            "label": "Stereonet (structural projects only, otherwise pro-rated)",
+            "points": 15,
+            "description": "Poles and planes plotted correctly; fold axis interpreted accurately; fold classified with correct terminology."
+          },
+          {
+            "id": "hazard-assessment",
+            "label": "Hazard / human-impacts assessment",
+            "points": 20,
+            "description": "Grounded in mapped geology; at least three specific map features referenced; recommendations are actionable and realistic."
+          },
+          {
+            "id": "integration",
+            "label": "Overall integration and geological reasoning",
+            "points": 15,
+            "description": "Map, section, stereonet, and narrative form a coherent, internally consistent geological interpretation."
+          }
         ]
       },
       "estimatedHours": 10,
-      "week": 3
+      "week": 3,
+      "attribution": "Original assignment design for this virtual field camp course."
     }
   ]
 }
