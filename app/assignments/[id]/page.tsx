@@ -176,7 +176,7 @@ export default async function AssignmentPage({ params }: Props) {
               {/* Online link — only shown if not offline */}
               {assignment.url && !assignment.urlOffline && (
                 <a
-                  href={assignment.embedUrl ?? assignment.url}
+                  href={assignment.url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 rounded-xl border border-stone-200 px-4 py-3 text-sm font-medium text-stone-700 transition hover:border-violet-300 hover:bg-violet-50 group"
@@ -184,7 +184,7 @@ export default async function AssignmentPage({ params }: Props) {
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-violet-50 text-violet-700 group-hover:bg-violet-100 transition-colors text-base">↗</span>
                   <div className="min-w-0">
                     <div className="font-medium text-stone-800">Open Visible Geology</div>
-                    <div className="text-xs text-stone-400 truncate">{assignment.embedUrl ?? assignment.url}</div>
+                    <div className="text-xs text-stone-400 truncate">{assignment.url}</div>
                   </div>
                 </a>
               )}
