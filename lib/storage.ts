@@ -30,6 +30,7 @@ export async function storeFile(
       access: 'public',
       contentType: 'application/pdf',
       addRandomSuffix: false,
+      allowOverwrite: true,
     })
     return url
   }

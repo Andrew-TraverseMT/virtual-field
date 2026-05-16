@@ -85,7 +85,8 @@ export async function POST(request: NextRequest) {
     } catch (err) {
       // Storage is best-effort — submission and AI grading still proceed without a
       // stored file. Re-grading by the instructor will not be possible without it.
-      console.warn('[submissions] File storage unavailable, continuing without stored file:', err)
+      const errMsg = err instanceof Error ? `${err.name}: ${err.message}` : String(err)
+      console.error('[submissions] File storage failed:', errMsg, err)
     }
     fileName = file.name
   }
