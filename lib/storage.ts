@@ -45,11 +45,15 @@ export async function storeFile(
 /**
  * Read a stored file into a Buffer.
  * Accepts either a local filesystem path or an https:// URL (Vercel Blob).
+ * For private Vercel Blob URLs, automatically includes the read/write token.
  */
 export async function getFileBuffer(pathOrUrl: string): Promise<Buffer> {
   if (pathOrUrl.startsWith('http://') || pathOrUrl.startsWith('https://')) {
-    const res = await fetch(pathOrUrl)
-    if (!res.ok) throw new Error(`Failed to fetch stored file: ${res.status}`)
+    const token = process.env.BLOB_READ_WRITE_TOKEN
+    const res = await fetch(pathOrUrl, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    })
+    if (!res.ok) throw new Error(`Failed to fetch stored file: ${res.status} ${res.statusText}`)
     return Buffer.from(await res.arrayBuffer())
   }
   return readFile(pathOrUrl)
