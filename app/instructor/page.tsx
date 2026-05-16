@@ -172,7 +172,19 @@ export default async function InstructorPage({
                       {sub.file_name && (
                         <>
                           <span className="text-xs text-stone-300">·</span>
-                          <span className="text-xs text-stone-400 truncate max-w-[200px]">{sub.file_name}</span>
+                          {sub.file_url ? (
+                            <a
+                              href={sub.file_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs text-violet-600 hover:text-violet-800 hover:underline truncate max-w-[200px] transition-colors"
+                              title="Download submission"
+                            >
+                              {sub.file_name} ↗
+                            </a>
+                          ) : (
+                            <span className="text-xs text-stone-400 truncate max-w-[200px]">{sub.file_name}</span>
+                          )}
                         </>
                       )}
                     </div>
