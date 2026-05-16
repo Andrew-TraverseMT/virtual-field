@@ -174,7 +174,7 @@ export default async function InstructorPage({
                           <span className="text-xs text-stone-300">·</span>
                           {sub.file_url ? (
                             <a
-                              href={sub.file_url}
+                              href={`/api/submissions/${sub.id}/file`}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-xs text-violet-600 hover:text-violet-800 hover:underline truncate max-w-[200px] transition-colors"

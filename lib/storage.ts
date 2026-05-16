@@ -27,7 +27,7 @@ export async function storeFile(
 ): Promise<string> {
   if (blobEnabled()) {
     const { url } = await put(`submissions/${key}/${filename}`, buffer, {
-      access: 'public',
+      access: 'private',
       contentType: 'application/pdf',
       addRandomSuffix: false,
       allowOverwrite: true,
