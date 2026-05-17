@@ -29,7 +29,7 @@
         {
           "id": "topo-contact-explanation",
           "label": "Contour–contact relationship explanation (150–200 words)",
-          "description": "Explain geometrically why horizontal rock beds produce contacts that match topographic contour lines in the 2D map view. Include a description of what you observe as the contacts cross the valley and why they form a V shape pointing upstream."
+          "description": "Explain geometrically why horizontal rock beds produce contacts that match topographic contour lines in the 2D map view. Include a description of what you observe as the contacts cross the valley and why the contacts in the valley closely follow the valley's own V shape (note this differs from the V-pattern produced by dipping beds, which is the focus of the next assignment)."
         },
         {
           "id": "topo-reflection",
@@ -71,7 +71,7 @@
       "type": "visible-geology",
       "title": "Dip Angle and Map Patterns",
       "subtitle": "How the angle of dip controls V-patterns and outcrop band width in a valley",
-      "description": "Using a pre-built valley topography in Visible Geology, systematically tilt the six horizontal beds from the previous assignment and observe how dip angle changes the shape and orientation of outcrop bands in map view. Open the embedded model below (it loads a valley topography with horizontal beds). Use the Events tool → Tilt to apply each scenario; delete the previous Tilt event from the History panel before adding a new one so tilts do not compound. Test: upstream dip at 20° (Strike 0°, Dip 20° RHR), upstream dip at 60° (Strike 0°, Dip 60°), and vertical bedding (Dip 90°). Screenshot the 2D map view after each change.",
+      "description": "Using a pre-built valley topography in Visible Geology, use the embedded model below (a pre-built valley with six horizontal beds) to observe how dip angle changes the shape and orientation of outcrop bands in map view. Use the Events tool → Tilt to apply each scenario; delete the previous Tilt event from the History panel before adding a new one so tilts do not compound. Test: upstream dip at 20° (Strike 0°, Dip 20° RHR), upstream dip at 60° (Strike 0°, Dip 60°), and vertical bedding (Dip 90°). Screenshot the 2D map view after each change.",
       "url": "https://www.visiblegeology.com",
       "embedUrl": "https://www.visiblegeology.com?sharecode=ejKwZmhrQDkKxVHz5Nwxbr",
       "canEmbed": true,
@@ -89,7 +89,7 @@
         {
           "id": "dip-screenshots",
           "label": "Screenshot set — three dip scenarios",
-          "description": "For each of the three dip scenarios (upstream 20°, upstream 60°, vertical 90°) provide a 2D map-view screenshot with the tilt parameters labelled (strike, dip). Annotate each to indicate the direction the V’s point and whether the V’s are wider or narrower than the topographic contours."
+          "description": "For each of the three dip scenarios (upstream 20°, upstream 60°, vertical 90°) provide a 2D map-view screenshot with the tilt parameters labelled (strike, dip). For the two dipping cases (20° and 60°), annotate the direction the V’s point and whether they are wider or narrower than the topographic contours. For the vertical case, note that contacts are straight and independent of topography — no V forms."
         },
         {
           "id": "dip-analysis",
@@ -131,7 +131,7 @@
       "type": "visible-geology",
       "title": "Strike, Downstream Dip, and the Rule of V’s",
       "subtitle": "Complete the Rule of V’s by testing downstream dipping beds and varying strike",
-      "description": "Continuing from the previous assignment, use the same Visible Geology valley model to test two remaining dip scenarios: beds dipping downstream at 60° and beds dipping downstream at 20° (in Visible Geology, reverse the RHR dip direction to point dip downstream). Then rotate the strike while keeping dip constant and observe how the orientation of outcrop bands shifts. Delete previous Tilt events from the History panel before each new test. After all experiments, synthesise your observations into a complete written summary of the Rule of V’s — a foundational concept applied in every subsequent mapping assignment.",
+      "description": "Continuing from the previous assignment, use the same Visible Geology valley model to test two remaining dip scenarios: beds dipping downstream at 60° and beds dipping downstream at 20° (to reverse the dip direction in Visible Geology, change the Strike from 0° to 180° — this flips the RHR dip to the opposite side of the valley). Then rotate the strike while keeping dip constant and observe how the orientation of outcrop bands shifts. Delete previous Tilt events from the History panel before each new test. After all experiments, synthesise your observations into a complete written summary of the Rule of V’s — a foundational concept applied in every subsequent mapping assignment.",
       "url": "https://www.visiblegeology.com",
       "embedUrl": "https://www.visiblegeology.com?sharecode=ejKwZmhrQDkKxVHz5Nwxbr",
       "canEmbed": true,
@@ -202,7 +202,7 @@
       "type": "virtual-landscape",
       "title": "Geological Mapping — Lighthouse Bay",
       "subtitle": "Introductory full mapping exercise on a virtual coastal landscape",
-      "description": "Lighthouse Bay is an entry-level virtual mapping landscape. Navigate the 3D environment, identify rock unit boundaries and structural features, plot your observations on the provided field slip, and produce a completed geological map with a cross section. Conclude with a brief geohazard commentary identifying any coastal or slope instability risks associated with the mapped geology.",
+      "description": "Lighthouse Bay is an entry-level virtual mapping landscape. Navigate the 3D environment, identify rock unit boundaries and structural features, plot your observations on the provided field slip (use the 'no outcrops' version for your map; the 'with outcrops' version is for reference), and produce a completed geological map with a cross section. Conclude with a brief geohazard commentary identifying any coastal or slope instability risks associated with the mapped geology.",
       "url": "https://www.see.leeds.ac.uk/virtual-landscapes/schools/index.html",
       "embedUrl": "https://www.see.leeds.ac.uk/virtual-landscapes/schools/index.html",
       "canEmbed": false,
@@ -238,7 +238,7 @@
         {
           "id": "lhb-crosssection",
           "label": "Geological cross section A–B",
-          "description": "A cross section constructed perpendicular to the regional strike. Must include a topographic profile as the top of the section, all mapped units projected to depth, and correct dip angles."
+          "description": "A cross section along section line A–B (which you marked on your geological map). The section should run roughly perpendicular to the regional strike. Must include a topographic profile as the top of the section, all mapped units projected to depth, and correct dip angles."
         },
         {
           "id": "lhb-hazard",
@@ -319,7 +319,7 @@
         {
           "id": "trh-map",
           "label": "Completed geological map",
-          "description": "Filled-in Three River Hills field slip with all unit boundaries, strike/dip symbols, formation colours, north arrow, scale bar, legend, and section line clearly marked."
+          "description": "Filled-in Three River Hills field slip with all unit boundaries, strike/dip symbols, formation colours, north arrow, scale bar, legend, and section line clearly marked (draw it roughly perpendicular to the dominant strike direction across the key structural feature — e.g., a fold hinge or fault)."
         },
         {
           "id": "trh-crosssection",
@@ -381,7 +381,7 @@
       "type": "visible-geology",
       "title": "Stereonets and Fold Map Patterns",
       "subtitle": "Explore how stereonets and geological map patterns relate to each other",
-      "description": "Using the Visible Geology Geology Explorer and Stereonet tools (Blatchford, EMU), investigate how the map pattern of folded layers corresponds to equal-area stereographic projections of the same structural data. Work through the pre-loaded fold models to build stereonet construction and interpretation skills that are essential for the Rhoscolyn assignment and the CYOA project.",
+      "description": "Using the Visible Geology Geology Explorer — which includes a built-in equal-area stereonet plotter (open the Stereonet panel, add your measurements, and screenshot the result for submission) — investigate how the map pattern of folded layers corresponds to equal-area stereographic projections of the same structural data. Work through the pre-loaded fold models in the activity PDF to build stereonet construction and interpretation skills that are essential for the Rhoscolyn assignment and the CYOA project.",
       "url": "https://www.visiblegeology.com",
       "embedUrl": "https://www.visiblegeology.com?sharecode=Y7AFxxTPw4C5zufoR9bn5D",
       "canEmbed": true,
@@ -398,7 +398,7 @@
         {
           "id": "vg-stereonet-worksheet",
           "label": "Completed activity worksheet",
-          "description": "Work through all models in the activity PDF. For each model include: (a) a sketch of the relevant map-face pattern with strike/dip symbols; (b) a photograph or export of your constructed stereonet; (c) written answers to the interpretation questions in the activity."
+          "description": "Work through all models in the activity PDF. For each model include: (a) a sketch of the relevant map-face pattern with strike/dip symbols; (b) a screenshot of your stereonet from the Visible Geology Stereonet panel (or a photograph of a hand-drawn stereonet); (c) written answers to the interpretation questions in the activity."
         },
         {
           "id": "vg-stereonet-summary",
@@ -537,7 +537,7 @@
       "type": "visible-geology",
       "title": "Basin Stratigraphic Correlation",
       "subtitle": "Interpret sedimentary basin structure from geological maps, virtual drill cores, and subsurface models",
-      "description": "Oil and gas exploration has generated more than 150 years of subsurface data from North American sedimentary basins. In this three-part assignment you use those data — represented through geological maps and virtual drill cores — to investigate the Appalachian basin, then build your own subsurface model of the adjacent Illinois basin.\n\nPart 1 — Appalachian basin map and model: Load the pre-built Visible Geology model below (Southern PA to SW OH transect, ~10× vertical exaggeration, actual dip ~5°). In both 2D map view and 3D block view, identify the western basin edge, the direction of regional dip, and how depth to Precambrian crystalline basement changes along the transect. Explain geometrically how these observations account for the concentric belts of progressively older surface bedrock seen on a geological map of the same area. Propose two alternative mechanisms — one involving subsidence, one involving uplift — that could produce the observed geometry.\n\nPart 2 — Drill-core correlation: The model shows virtual cores at SW OH, Central OH, and Southern PA. Using these as constraints, sketch a predicted core for Northern WV (between Central OH and Southern PA). Show all geologic periods at appropriate relative thicknesses. Construct a colour-coded lithostratigraphic correlation diagram linking all four locations and explain why Pennsylvanian strata thickness varies across the transect.\n\nPart 3 — Illinois basin model: Using the Visible Geology Geology Explorer, build a new block model of the Illinois basin. The Illinois basin contains the same Cambrian–Pennsylvanian stratigraphy as the Appalachian basin but has a circular, bowl-shaped outcrop pattern — youngest rocks at the centre, oldest at the margins. Set dip direction and magnitude to match this constraint. Add two virtual cores and correlate them, then propose a formation mechanism for this basin.",
+      "description": "Oil and gas exploration has generated more than 150 years of subsurface data from North American sedimentary basins. In this three-part assignment you use those data — represented through geological maps and virtual drill cores — to investigate the Appalachian basin, then build your own subsurface model of the adjacent Illinois basin.\n\nPart 1 — Appalachian basin map and model: Load the pre-built Visible Geology model below (Southern PA to SW OH transect, ~10× vertical exaggeration, actual dip ~5°). In both 2D map view and 3D block view, identify the western basin edge, the direction of regional dip, and how depth to Precambrian crystalline basement changes along the transect. Explain geometrically how these observations account for the concentric belts of progressively older surface bedrock seen on a geological map of the same area. Propose two alternative mechanisms — one involving subsidence, one involving uplift — that could produce the observed geometry.\n\nPart 2 — Drill-core correlation: The model shows virtual cores at SW OH, Central OH, and Southern PA. Using these as constraints, sketch a predicted core for Northern WV (between Central OH and Southern PA). Show all geologic periods at appropriate relative thicknesses. Construct a colour-coded lithostratigraphic correlation diagram linking all four locations (a panel of side-by-side stratigraphic columns connected by horizontal tie-lines drawn between equivalent units) and explain why Pennsylvanian strata thickness varies across the transect.\n\nPart 3 — Illinois basin model: Using the Visible Geology Geology Explorer, build a new block model of the Illinois basin. The Illinois basin contains the same Cambrian–Pennsylvanian stratigraphy as the Appalachian basin but has a circular, bowl-shaped outcrop pattern — youngest rocks at the centre, oldest at the margins. Set dip direction and magnitude to match this constraint. Add two virtual cores and correlate them, then propose a formation mechanism for this basin.",
       "url": "https://www.visiblegeology.com",
       "embedUrl": "https://www.visiblegeology.com?sharecode=BEYmS4xdZFtZWPmheBnapz",
       "canEmbed": true,
@@ -608,7 +608,7 @@
       "type": "visible-geology",
       "title": "Reservoir Geology and CO₂ Sequestration",
       "subtitle": "Construct stratigraphic columns, model lateral facies variability, and evaluate subsurface CO₂ storage sites",
-      "description": "Carbon capture and underground storage (CCS) is a key strategy for reducing atmospheric CO₂ from industrial point sources. In this three-part assignment you assess potential storage sites in the Upper Devonian Hampshire Formation of the Appalachian basin using real archived core descriptions, Visible Geology block models, and structural analysis.\n\nPart 1 — Stratigraphic column construction: A detailed bed-by-bed description of a 30 ft Hampshire Formation core from Northern WV is provided in the assignment materials (Table 1). The core is divided into three stratigraphic units: Unit 1 (offshore shale/mudstone, 0–6.7 ft), Unit 2 (nearshore fine-grained sandstone, 6.7–18.05 ft), and Unit 3 (delta-plain coarse-grained sandstone, 18.05–30.05 ft). Using the blank log template and symbol legend in the assignment PDF, construct a formal sedimentary log. Identify whether the stacking pattern records overall shoreline transgression or regression.\n\nPart 2 — Lateral facies modeling: The Hampshire Formation was deposited by a delta system prograding from eastern Pennsylvania westward toward Ohio. Build representative core models in Visible Geology for Central OH (distal) and Western MD (proximal). Adjust the proportion of each facies unit accordingly: Central OH should show a greater proportion of offshore mudstone; Western MD should include delta-plain or alluvial-plain units. Layer colours: offshore = grey, nearshore = light yellow, delta plain = dark orange, alluvial plain = green.\n\nPart 3 — Structural trapping analysis: A thick mudstone overlies the Hampshire Formation, forming an impermeable seal. Modify your Central OH model (tilt 5° east, 2× vertical exaggeration) and Western MD model (fold: axis trend/plunge 022/10°, amplitude 16, wavelength 20, no vertical exaggeration). Annotate fluid migration directions on screenshots, then rank all three locations — Northern WV, Central OH, Western MD — for CO₂ storage viability and recommend one site.",
+      "description": "Carbon capture and underground storage (CCS) is a key strategy for reducing atmospheric CO₂ from industrial point sources. In this three-part assignment you assess potential storage sites in the Upper Devonian Hampshire Formation of the Appalachian basin using real archived core descriptions, Visible Geology block models, and structural analysis.\n\nPart 1 — Stratigraphic column construction: A detailed bed-by-bed description of a 30 ft Hampshire Formation core from Northern WV is provided in the assignment PDF (Table 1). The core is divided into three stratigraphic units: Unit 1 (offshore shale/mudstone, 0–6.7 ft), Unit 2 (nearshore fine-grained sandstone, 6.7–18.05 ft), and Unit 3 (delta-plain coarse-grained sandstone, 18.05–30.05 ft). Using the blank log template and symbol legend in the assignment PDF, construct a formal sedimentary log. Identify whether the stacking pattern records overall shoreline transgression or regression.\n\nPart 2 — Lateral facies modeling: The Hampshire Formation was deposited by a delta system prograding from eastern Pennsylvania westward toward Ohio. Build representative core models in Visible Geology for Central OH (distal) and Western MD (proximal). Adjust the proportion of each facies unit accordingly: Central OH should show a greater proportion of offshore mudstone; Western MD should include delta-plain or alluvial-plain units. Layer colours: offshore = grey, nearshore = light yellow, delta plain = dark orange, alluvial plain = green.\n\nPart 3 — Structural trapping analysis: A thick mudstone overlies the Hampshire Formation, forming an impermeable seal. Modify your Central OH model (tilt 5° east, 2× vertical exaggeration) and Western MD model (fold: axis trend/plunge 022/10°, amplitude 16, wavelength 20 (Visible Geology fold tool values), no vertical exaggeration). Annotate fluid migration directions on screenshots, then rank all three locations — Northern WV, Central OH, Western MD — for CO₂ storage viability and recommend one site.",
       "url": "https://www.visiblegeology.com",
       "embedUrl": "https://www.visiblegeology.com",
       "canEmbed": true,
@@ -628,12 +628,12 @@
         {
           "id": "strat-column",
           "label": "Part 1 — Hampshire Formation stratigraphic column and transgression/regression interpretation",
-          "description": "A completed sedimentary log for the Northern WV core using Table 1 from the materials. The column must include: the grain-size axis (clay → gravel), a depth scale (0–30 ft), the correct lithological symbol for each bed at proportional thickness, key sedimentary structures noted in the right-hand column, and the three stratigraphic units labelled with their depositional environments. Submit as a scan or digital file. Add 150–200 words identifying whether the overall stacking pattern records transgression or regression, with geological reasoning."
+          "description": "A completed sedimentary log for the Northern WV core using Table 1 from the assignment PDF. The column must include: the grain-size axis (clay → gravel), a depth scale (0–30 ft), the correct lithological symbol for each bed at proportional thickness, key sedimentary structures noted in the right-hand column, and the three stratigraphic units labelled with their depositional environments. Submit as a scan or digital file. Add 150–200 words identifying whether the overall stacking pattern records transgression or regression, with geological reasoning."
         },
         {
           "id": "core-models",
           "label": "Part 2 — Visible Geology core models (Central OH and Western MD)",
-          "description": "Two Visible Geology block models — one for Central OH, one for Western MD — each with at least one vertical core. Facies proportions must reflect the delta progradation direction (more offshore toward OH; more delta-plain/alluvial toward MD). Layer colours must match the standard legend. Provide one shareable link per model and a screenshot of each with the core visible. Add 50–75 words per model justifying your choice of facies proportions."
+          "description": "Two Visible Geology block models — one for Central OH, one for Western MD — each with at least one vertical core. Facies proportions must reflect the delta progradation direction (more offshore toward OH; more delta-plain/alluvial toward MD). Layer colours must match those defined in the Part 2 description (offshore = grey, nearshore = light yellow, delta plain = dark orange, alluvial plain = green). Provide one shareable link per model and a screenshot of each with the core visible. Add 50–75 words per model justifying your choice of facies proportions."
         },
         {
           "id": "co2-assessment",
@@ -742,7 +742,7 @@
       "type": "cyoa",
       "title": "Independent Mapping Project — Proposal",
       "subtitle": "Design your own geology mapping project",
-      "description": "Design and propose an original geological mapping project on a topic of your choosing. Projects may be conducted entirely online using remote-sensing data (satellite imagery, LiDAR, published maps) or in the field on public land (all risks assumed by the student). Every project must produce a geological map, a geological cross section, and a human-impacts or geohazard assessment. Structurally complex projects must also include a stereonet analysis. Submit your proposal as a PDF covering all eight required sections.",
+      "description": "Design and propose an original geological mapping project on a topic of your choosing. Projects may be conducted entirely online using remote-sensing data (satellite imagery, LiDAR, published maps) or in the field on public land (students conducting field work are responsible for their own safety and must follow all applicable local regulations). Every project must produce a geological map, a geological cross section, and a human-impacts or geohazard assessment. Projects of type 'Remote Structural Geology' or 'Field Structural Geology' must also include a stereonet analysis. Submit your proposal as a PDF covering all eight required sections.",
       "url": null,
       "embedUrl": null,
       "canEmbed": false,
@@ -881,7 +881,7 @@
       "type": "cyoa",
       "title": "Independent Mapping Project — Final Submission",
       "subtitle": "Submit your completed self-designed geology mapping project",
-      "description": "Submit your completed mapping project as a single PDF. All projects must include: a geological map (at the scale specified in your proposal), a geological cross section with topographic profile, and a human-impacts or geohazard assessment referencing specific map features. Projects with significant structural data must also include a stereonet analysis. Your PDF should contain all deliverables specified in your approved proposal.",
+      "description": "Submit your completed mapping project as a single PDF. All projects must include: a geological map (at the scale specified in your proposal), a geological cross section with topographic profile, and a human-impacts or geohazard assessment referencing specific map features. Projects of type 'Remote Structural Geology' or 'Field Structural Geology' must also include a stereonet analysis. Your PDF should contain all deliverables specified in your approved proposal.",
       "url": null,
       "embedUrl": null,
       "canEmbed": false,
