@@ -742,13 +742,11 @@
       "type": "cyoa",
       "title": "Independent Mapping Project — Proposal",
       "subtitle": "Design your own geology mapping project",
-      "description": "Design and propose an original geological mapping project on a topic of your choosing. Projects may be conducted entirely online using remote-sensing data (satellite imagery, LiDAR, published maps) or in the field on public land (students conducting field work are responsible for their own safety and must follow all applicable local regulations). Every project must produce a geological map, a geological cross section, and a human-impacts or geohazard assessment. Projects of type 'Remote Structural Geology' or 'Field Structural Geology' must also include a stereonet analysis. Submit your proposal as a PDF covering all eight required sections.",
+      "description": "Design and propose an original geological mapping project on a topic of your choosing. Projects may be conducted entirely online using remote-sensing data (satellite imagery, LiDAR, published maps) or in the field on public land. Every project must produce a geological map, a geological cross section, and a human-impacts or geohazard assessment. Projects of type 'Remote Structural Geology' or 'Field Structural Geology' must also include a stereonet analysis. Submit your proposal as a PDF covering all seven required sections.",
       "url": null,
       "embedUrl": null,
       "canEmbed": false,
-      "materials": [
-        "Choose Your Own Adventure Final Mapping Project.pdf"
-      ],
+      "materials": [],
       "locationOptions": [
         {
           "id": "remote-structural",
@@ -827,24 +825,19 @@
         {
           "id": "equipment",
           "label": "6. Equipment list",
-          "description": "List all required equipment. If field-based, include safety equipment (first-aid kit, communication device, etc.)."
+          "description": "List all required equipment."
         },
         {
           "id": "deliverables",
           "label": "7. Expected deliverables",
           "description": "List all outputs: geological map (type and scale), cross section, stereonet if applicable, hazard/impact assessment."
-        },
-        {
-          "id": "safety",
-          "label": "8. Safety acknowledgement (field projects only)",
-          "description": "If conducting any field work, confirm you have read the relevant field safety guide and understand that all risks are your responsibility."
         }
       ],
       "deliverables": [
         {
           "id": "cyoa-proposal-pdf",
           "label": "Proposal PDF covering all 8 sections",
-          "description": "A single PDF document covering all eight proposal sections listed above. Be concise but specific: a good proposal is typically 1–2 pages."
+          "description": "A single PDF document covering all seven proposal sections listed above. Be concise but specific: a good proposal is typically 1–2 pages."
         }
       ],
       "rubric": {
@@ -885,9 +878,7 @@
       "url": null,
       "embedUrl": null,
       "canEmbed": false,
-      "materials": [
-        "Choose Your Own Adventure Final Mapping Project.pdf"
-      ],
+      "materials": [],
       "locationOptions": null,
       "milestones": [
         {
