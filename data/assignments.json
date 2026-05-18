@@ -381,10 +381,10 @@
       "type": "visible-geology",
       "title": "Stereonets and Fold Map Patterns",
       "subtitle": "Explore how stereonets and geological map patterns relate to each other",
-      "description": "Using the Visible Geology Geology Explorer — which includes a built-in equal-area stereonet plotter (open the Stereonet panel, add your measurements, and screenshot the result for submission) — investigate how the map pattern of folded layers corresponds to equal-area stereographic projections of the same structural data. Work through the pre-loaded fold models in the activity PDF to build stereonet construction and interpretation skills that are essential for the Rhoscolyn assignment and the CYOA project.",
+      "description": "Using the Visible Geology Geology Explorer — which includes a built-in equal-area stereonet plotter (open the Stereonet panel, add your measurements, and screenshot the result for submission) — investigate how the map pattern of folded layers corresponds to equal-area stereographic projections of the same structural data. Each fold model in the activity PDF has its own sharecode link; load them directly in Visible Geology as you work through the exercises. This activity builds the stereonet skills you will use in the Rhoscolyn assignment and the CYOA project.",
       "url": "https://www.visiblegeology.com",
-      "embedUrl": "https://www.visiblegeology.com?sharecode=Y7AFxxTPw4C5zufoR9bn5D",
-      "canEmbed": true,
+      "embedUrl": null,
+      "canEmbed": false,
       "materials": [
         "Exploring relationships between map patterns of cylindrically folded layers and their stereonets.pdf"
       ],
@@ -397,13 +397,13 @@
       "deliverables": [
         {
           "id": "vg-stereonet-worksheet",
-          "label": "Completed activity worksheet",
-          "description": "Work through all models in the activity PDF. For each model include: (a) a sketch of the relevant map-face pattern with strike/dip symbols; (b) a screenshot of your stereonet from the Visible Geology Stereonet panel (or a photograph of a hand-drawn stereonet); (c) written answers to the interpretation questions in the activity."
+          "label": "Stereonet outputs and map sketches",
+          "description": "Work through the activity PDF at your own pace. Only the following items need to be submitted for grading — for each fold model in the PDF: (a) a sketch of the map-face pattern with strike/dip symbols marked; (b) a screenshot of your completed stereonet from the Visible Geology Stereonet panel. You do not need to transcribe your written responses to every PDF question; those are for your own learning. The synthesis paragraph below is where your written interpretation is assessed."
         },
         {
           "id": "vg-stereonet-summary",
           "label": "Synthesis paragraph (150–200 words)",
-          "description": "Summarise the key geometric relationship between a pi-girdle on a stereonet and the fold axis in 3D. Include one concrete example of how you would apply this to your Rhoscolyn dataset or to a structural project involving real field data."
+          "description": "Summarise the key geometric relationship between a pi-girdle on a stereonet and the fold axis in 3D. Include one concrete example of how you will apply this when you reach the Rhoscolyn mapping assignment or another structural geology project."
         }
       ],
       "rubric": {
