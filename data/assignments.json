@@ -221,7 +221,8 @@
       ],
       "materials": [
         "03_Lighthouse Bay field slip no outcrops.png",
-        "03_Lighthouse Bay field slip with outcrops.pdf"
+        "03_Lighthouse Bay field slip with outcrops.pdf",
+        "symbology_reference.pdf"
       ],
       "learningGoals": [
         "Plot rock unit boundaries from virtual field observations onto a base map",
@@ -307,7 +308,8 @@
         }
       ],
       "materials": [
-        "05_Three_River_Hills_Fieldslip.pdf"
+        "05_Three_River_Hills_Fieldslip.pdf",
+        "symbology_reference.pdf"
       ],
       "learningGoals": [
         "Map a multi-unit geology with varying strike and dip across a 3D landscape",
@@ -461,7 +463,8 @@
         "04_Rhoscolyn mapping slip no outcrops.pdf",
         "04_Rhoscolyn mapping slip with outcrops.png",
         "04_Rhoscolyn whole area no outcrops.pdf",
-        "04_Rhoscolyn whole area with outcrops.pdf"
+        "04_Rhoscolyn whole area with outcrops.pdf",
+        "symbology_reference.pdf"
       ],
       "learningGoals": [
         "Map complexly deformed metasediments in a real virtual landscape",
@@ -746,7 +749,7 @@
       "url": null,
       "embedUrl": null,
       "canEmbed": false,
-      "materials": [],
+      "materials": ["symbology_reference.pdf"],
       "locationOptions": [
         {
           "id": "remote-structural",
@@ -878,7 +881,7 @@
       "url": null,
       "embedUrl": null,
       "canEmbed": false,
-      "materials": [],
+      "materials": ["symbology_reference.pdf"],
       "locationOptions": null,
       "milestones": [
         {
