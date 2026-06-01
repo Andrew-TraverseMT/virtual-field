@@ -101,71 +101,73 @@ export default async function StudentsPage() {
           </div>
         ) : (
           <div className="rounded-2xl border border-stone-200 bg-white shadow-sm overflow-hidden">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-stone-100">
-                  <th className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-widest text-stone-400">
-                    Name
-                  </th>
-                  <th className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-widest text-stone-400">
-                    Email
-                  </th>
-                  <th className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-widest text-stone-400">
-                    Enrolled
-                  </th>
-                  <th className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-widest text-stone-400">
-                    Deadline
-                  </th>
-                  <th className="text-right px-5 py-3 text-xs font-semibold uppercase tracking-widest text-stone-400">
-                    Submissions
-                  </th>
-                  <th className="text-right px-5 py-3 text-xs font-semibold uppercase tracking-widest text-stone-400">
-                    Score (all)
-                  </th>
-                  <th className="text-right px-5 py-3 text-xs font-semibold uppercase tracking-widest text-stone-400">
-                    Score (submitted)
-                  </th>
-                  <th className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-widest text-stone-400">
-                    Password
-                  </th>
-                  <th className="px-5 py-3" />
-                </tr>
-              </thead>
-              <tbody>
-                {students.map((student, i) => {
-                  const studentScore = scoreByStudentId.get(student.id) ?? { earned: 0, submittedPossible: 0 }
-                  const scoreAll = `${studentScore.earned}/${totalPossiblePoints}`
-                  const scoreSubmitted = studentScore.submittedPossible > 0
-                    ? `${studentScore.earned}/${studentScore.submittedPossible}`
-                    : '—'
-
-                  return (
-                  <tr
-                    key={student.id}
-                    className={i < students.length - 1 ? 'border-b border-stone-100' : ''}
-                  >
-                    <td className="px-5 py-3 font-medium text-stone-800">{student.name}</td>
-                    <td className="px-5 py-3 text-stone-500">{student.email}</td>
-                    <td className="px-5 py-3 text-stone-500">{formatDate(student.enrolled_at)}</td>
-                    <td className="px-5 py-3 text-stone-500">{formatDate(student.deadline_at)}</td>
-                    <td className="px-5 py-3 text-right">
-                      <span className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset ring-stone-200 text-stone-600">
-                        {student.submission_count}
-                      </span>
-                    </td>
-                    <td className="px-5 py-3 text-right text-stone-600 font-medium tabular-nums">{scoreAll}</td>
-                    <td className="px-5 py-3 text-right text-stone-600 font-medium tabular-nums">{scoreSubmitted}</td>
-                    <td className="px-5 py-3">
-                      <PasswordCell studentId={student.id} initialPassword={student.temp_password} />
-                    </td>
-                    <td className="px-5 py-3">
-                      <DeleteStudentButton studentId={student.id} studentName={student.name} />
-                    </td>
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[1100px] text-sm">
+                <thead>
+                  <tr className="border-b border-stone-100">
+                    <th className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-widest text-stone-400 whitespace-nowrap">
+                      Name
+                    </th>
+                    <th className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-widest text-stone-400 whitespace-nowrap">
+                      Email
+                    </th>
+                    <th className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-widest text-stone-400 whitespace-nowrap">
+                      Enrolled
+                    </th>
+                    <th className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-widest text-stone-400 whitespace-nowrap">
+                      Deadline
+                    </th>
+                    <th className="text-right px-5 py-3 text-xs font-semibold uppercase tracking-widest text-stone-400 whitespace-nowrap">
+                      Submissions
+                    </th>
+                    <th className="text-right px-5 py-3 text-xs font-semibold uppercase tracking-widest text-stone-400 whitespace-nowrap">
+                      Score (all)
+                    </th>
+                    <th className="text-right px-5 py-3 text-xs font-semibold uppercase tracking-widest text-stone-400 whitespace-nowrap">
+                      Score (submitted)
+                    </th>
+                    <th className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-widest text-stone-400 whitespace-nowrap">
+                      Password
+                    </th>
+                    <th className="px-5 py-3" />
                   </tr>
-                  )
-                })}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {students.map((student, i) => {
+                    const studentScore = scoreByStudentId.get(student.id) ?? { earned: 0, submittedPossible: 0 }
+                    const scoreAll = `${studentScore.earned}/${totalPossiblePoints}`
+                    const scoreSubmitted = studentScore.submittedPossible > 0
+                      ? `${studentScore.earned}/${studentScore.submittedPossible}`
+                      : '—'
+
+                    return (
+                    <tr
+                      key={student.id}
+                      className={i < students.length - 1 ? 'border-b border-stone-100' : ''}
+                    >
+                      <td className="px-5 py-3 font-medium text-stone-800">{student.name}</td>
+                      <td className="px-5 py-3 text-stone-500">{student.email}</td>
+                      <td className="px-5 py-3 text-stone-500">{formatDate(student.enrolled_at)}</td>
+                      <td className="px-5 py-3 text-stone-500">{formatDate(student.deadline_at)}</td>
+                      <td className="px-5 py-3 text-right">
+                        <span className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset ring-stone-200 text-stone-600">
+                          {student.submission_count}
+                        </span>
+                      </td>
+                      <td className="px-5 py-3 text-right text-stone-600 font-medium tabular-nums whitespace-nowrap">{scoreAll}</td>
+                      <td className="px-5 py-3 text-right text-stone-600 font-medium tabular-nums whitespace-nowrap">{scoreSubmitted}</td>
+                      <td className="px-5 py-3">
+                        <PasswordCell studentId={student.id} initialPassword={student.temp_password} />
+                      </td>
+                      <td className="px-5 py-3 whitespace-nowrap">
+                        <DeleteStudentButton studentId={student.id} studentName={student.name} />
+                      </td>
+                    </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
       </div>
