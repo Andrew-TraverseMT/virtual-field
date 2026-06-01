@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { authOptions } from '@/lib/auth'
 import { sql } from '@/lib/db'
+import { assignments } from '@/lib/assignments'
 import { AddStudentForm, PasswordCell, DeleteStudentButton } from './StudentActions'
 
 interface StudentRow {
@@ -15,10 +16,25 @@ interface StudentRow {
   temp_password: string | null
 }
 
+interface SubmissionScoreRow {
+  student_id: string
+  assignment_id: string
+  ai_grade: number | null
+  instructor_grade: number | null
+}
+
 export default async function StudentsPage() {
   const session = await getServerSession(authOptions)
   const role = (session?.user as { role?: string } | undefined)?.role
   if (role !== 'instructor') redirect('/dashboard')
+
+  const assignmentPointsById = new Map(
+    assignments.map((assignment) => [assignment.id, assignment.rubric.totalPoints])
+  )
+  const totalPossiblePoints = assignments.reduce(
+    (sum, assignment) => sum + assignment.rubric.totalPoints,
+    0
+  )
 
   const { rows: students } = await sql`
     SELECT
@@ -34,6 +50,22 @@ export default async function StudentsPage() {
     GROUP BY s.id
     ORDER BY s.enrolled_at DESC
   ` as { rows: StudentRow[] }
+
+  const { rows: submissionScores } = await sql`
+    SELECT student_id, assignment_id, ai_grade, instructor_grade
+    FROM submissions
+  ` as { rows: SubmissionScoreRow[] }
+
+  const scoreByStudentId = new Map<string, { earned: number; submittedPossible: number }>()
+  for (const scoreRow of submissionScores) {
+    const pointsForAssignment = assignmentPointsById.get(scoreRow.assignment_id)
+    if (pointsForAssignment === undefined) continue
+
+    const current = scoreByStudentId.get(scoreRow.student_id) ?? { earned: 0, submittedPossible: 0 }
+    current.earned += scoreRow.instructor_grade ?? scoreRow.ai_grade ?? 0
+    current.submittedPossible += pointsForAssignment
+    scoreByStudentId.set(scoreRow.student_id, current)
+  }
 
   function formatDate(ts: number | null) {
     if (!ts) return '—'
@@ -87,6 +119,12 @@ export default async function StudentsPage() {
                   <th className="text-right px-5 py-3 text-xs font-semibold uppercase tracking-widest text-stone-400">
                     Submissions
                   </th>
+                  <th className="text-right px-5 py-3 text-xs font-semibold uppercase tracking-widest text-stone-400">
+                    Score (all)
+                  </th>
+                  <th className="text-right px-5 py-3 text-xs font-semibold uppercase tracking-widest text-stone-400">
+                    Score (submitted)
+                  </th>
                   <th className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-widest text-stone-400">
                     Password
                   </th>
@@ -94,7 +132,14 @@ export default async function StudentsPage() {
                 </tr>
               </thead>
               <tbody>
-                {students.map((student, i) => (
+                {students.map((student, i) => {
+                  const studentScore = scoreByStudentId.get(student.id) ?? { earned: 0, submittedPossible: 0 }
+                  const scoreAll = `${studentScore.earned}/${totalPossiblePoints}`
+                  const scoreSubmitted = studentScore.submittedPossible > 0
+                    ? `${studentScore.earned}/${studentScore.submittedPossible}`
+                    : '—'
+
+                  return (
                   <tr
                     key={student.id}
                     className={i < students.length - 1 ? 'border-b border-stone-100' : ''}
@@ -108,6 +153,8 @@ export default async function StudentsPage() {
                         {student.submission_count}
                       </span>
                     </td>
+                    <td className="px-5 py-3 text-right text-stone-600 font-medium tabular-nums">{scoreAll}</td>
+                    <td className="px-5 py-3 text-right text-stone-600 font-medium tabular-nums">{scoreSubmitted}</td>
                     <td className="px-5 py-3">
                       <PasswordCell studentId={student.id} initialPassword={student.temp_password} />
                     </td>
@@ -115,7 +162,8 @@ export default async function StudentsPage() {
                       <DeleteStudentButton studentId={student.id} studentName={student.name} />
                     </td>
                   </tr>
-                ))}
+                  )
+                })}
               </tbody>
             </table>
           </div>
