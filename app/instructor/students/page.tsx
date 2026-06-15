@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { authOptions } from '@/lib/auth'
 import { sql } from '@/lib/db'
 import { assignments } from '@/lib/assignments'
-import { AddStudentForm, PasswordCell, DeleteStudentButton } from './StudentActions'
+import { AddInstructorForm, AddStudentForm, PasswordCell, DeleteStudentButton } from './StudentActions'
 
 interface StudentRow {
   id: string
@@ -93,7 +93,8 @@ export default async function StudentsPage() {
           </div>
         </div>
 
-        <AddStudentForm />
+  <AddInstructorForm />
+  <AddStudentForm />
 
         {students.length === 0 ? (
           <div className="rounded-2xl border border-stone-200 bg-white shadow-sm p-8 text-center">

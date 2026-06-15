@@ -4,6 +4,13 @@ import bcrypt from 'bcryptjs'
 import { sql } from '@/lib/db'
 import type { RegisteredUser } from '@/lib/db'
 
+function getLegacyInstructorEmails() {
+  return (process.env.INSTRUCTOR_EMAILS ?? '')
+    .split(',')
+    .map((email) => email.trim().toLowerCase())
+    .filter(Boolean)
+}
+
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -50,13 +57,11 @@ export const authOptions: NextAuthOptions = {
         const passwordOk = await bcrypt.compare(credentials.password, dbUser.password_hash)
         if (!passwordOk) return null
 
-        // Allow registered users to hold instructor role via INSTRUCTOR_EMAILS env var
-        // (comma-separated list of emails, e.g. "alice@example.com,bob@example.com")
-        const instructorEmails = (process.env.INSTRUCTOR_EMAILS ?? '')
-          .split(',')
-          .map((e) => e.trim().toLowerCase())
-          .filter(Boolean)
-        const role = instructorEmails.includes(dbUser.email.toLowerCase()) ? 'instructor' : 'student'
+        const role = dbUser.role === 'instructor'
+          ? 'instructor'
+          : getLegacyInstructorEmails().includes(dbUser.email.toLowerCase())
+            ? 'instructor'
+            : 'student'
 
         return {
           id: dbUser.id,

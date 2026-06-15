@@ -39,11 +39,15 @@ export async function initSchema(): Promise<void> {
       name                TEXT NOT NULL,
       email               TEXT NOT NULL UNIQUE,
       password_hash       TEXT NOT NULL,
+      role                TEXT NOT NULL DEFAULT 'student',
       verified            SMALLINT NOT NULL DEFAULT 0,
       email_bounced       SMALLINT NOT NULL DEFAULT 0,
       verification_token  TEXT UNIQUE,
       created_at          BIGINT NOT NULL
     )
+  `
+  await vercelSql`
+    ALTER TABLE registered_users ADD COLUMN IF NOT EXISTS role TEXT NOT NULL DEFAULT 'student'
   `
   await vercelSql`
     CREATE TABLE IF NOT EXISTS students (
@@ -146,6 +150,7 @@ export type RegisteredUser = {
   name: string
   email: string
   password_hash: string
+  role: 'student' | 'instructor'
   verified: 0 | 1
   email_bounced: 0 | 1
   verification_token: string | null
