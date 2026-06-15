@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { randomBytes } from 'crypto'
 import bcrypt from 'bcryptjs'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
@@ -22,10 +21,21 @@ export async function POST(req: NextRequest) {
   if ((session?.user as { role?: string })?.role !== 'instructor') {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
+  const instructorId = (session?.user as { id?: string })?.id
+  if (!instructorId) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
 
   const { studentId } = await req.json() as { studentId?: string }
   if (!studentId) {
     return NextResponse.json({ error: 'studentId required.' }, { status: 400 })
+  }
+
+  const { rows: ownedStudentRows } = await sql`
+    SELECT id FROM students WHERE id = ${studentId} AND owner_instructor_id = ${instructorId}
+  `
+  if (ownedStudentRows.length === 0) {
+    return NextResponse.json({ error: 'Student not found.' }, { status: 404 })
   }
 
   const { rows } = await sql`SELECT * FROM registered_users WHERE id = ${studentId}`

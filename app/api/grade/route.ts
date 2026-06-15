@@ -33,6 +33,8 @@ export async function POST(request: NextRequest) {
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
+  const callerRole = (session.user as { role?: string }).role
+  const callerId = (session.user as { id?: string }).id
 
   let body: { submissionId: string }
   try {
@@ -46,7 +48,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'submissionId required' }, { status: 400 })
   }
 
-  const { rows } = await sql`SELECT * FROM submissions WHERE id = ${submissionId}`
+  const { rows } = await sql`
+    SELECT sub.*, st.owner_instructor_id
+    FROM submissions sub
+    JOIN students st ON st.id = sub.student_id
+    WHERE sub.id = ${submissionId}
+  `
   const submission = rows[0] as
     | {
         id: string
@@ -55,6 +62,7 @@ export async function POST(request: NextRequest) {
         file_name: string | null
         file_url: string | null
         status: string
+        owner_instructor_id: string | null
       }
     | undefined
 
@@ -63,9 +71,10 @@ export async function POST(request: NextRequest) {
   }
 
   // Students can only trigger grading of their own submissions
-  const callerRole = (session.user as { role?: string }).role
-  const callerId = (session.user as { id?: string }).id
   if (callerRole !== 'instructor' && submission.student_id !== callerId) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  }
+  if (callerRole === 'instructor' && submission.owner_instructor_id !== callerId) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 

@@ -27,6 +27,8 @@ export default async function StudentsPage() {
   const session = await getServerSession(authOptions)
   const role = (session?.user as { role?: string } | undefined)?.role
   if (role !== 'instructor') redirect('/dashboard')
+  const instructorId = (session?.user as { id?: string } | undefined)?.id
+  if (!instructorId) redirect('/login')
 
   const assignmentPointsById = new Map(
     assignments.map((assignment) => [assignment.id, assignment.rubric.totalPoints])
@@ -41,19 +43,23 @@ export default async function StudentsPage() {
       s.id,
       s.name,
       s.email,
+      s.owner_instructor_id,
       s.enrolled_at,
       s.deadline_at,
       s.temp_password,
       COUNT(sub.id) AS submission_count
     FROM students s
     LEFT JOIN submissions sub ON sub.student_id = s.id
+    WHERE s.owner_instructor_id = ${instructorId}
     GROUP BY s.id
     ORDER BY s.enrolled_at DESC
   ` as { rows: StudentRow[] }
 
   const { rows: submissionScores } = await sql`
-    SELECT student_id, assignment_id, ai_grade, instructor_grade
-    FROM submissions
+    SELECT sub.student_id, sub.assignment_id, sub.ai_grade, sub.instructor_grade
+    FROM submissions sub
+    JOIN students st ON st.id = sub.student_id
+    WHERE st.owner_instructor_id = ${instructorId}
   ` as { rows: SubmissionScoreRow[] }
 
   const scoreByStudentId = new Map<string, { earned: number; submittedPossible: number }>()

@@ -34,6 +34,10 @@ export default async function InstructorPage({
   if (!session || (session.user as { role?: string }).role !== 'instructor') {
     redirect('/login')
   }
+  const instructorId = (session.user as { id?: string }).id
+  if (!instructorId) {
+    redirect('/login')
+  }
 
   const { filter } = await searchParams
 
@@ -41,6 +45,7 @@ export default async function InstructorPage({
     SELECT s.*, st.name as student_name, st.email as student_email
     FROM submissions s
     JOIN students st ON st.id = s.student_id
+    WHERE st.owner_instructor_id = ${instructorId}
     ORDER BY s.submitted_at DESC
   `
   const submissionsRaw = rows as FullSubmission[]

@@ -23,6 +23,10 @@ export async function POST(req: NextRequest) {
   if ((session?.user as { role?: string })?.role !== 'instructor') {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
+  const instructorId = (session?.user as { id?: string })?.id
+  if (!instructorId) {
+    return NextResponse.json({ error: 'Instructor session missing id.' }, { status: 401 })
+  }
 
   const { name, email, startDate } = await req.json() as { name?: string; email?: string; startDate?: string }
 
@@ -65,8 +69,8 @@ export async function POST(req: NextRequest) {
 
   // Create enrollment record (drives submission FK and student roster)
   await sql`
-    INSERT INTO students (id, name, email, enrolled_at, deadline_at, temp_password)
-    VALUES (${id}, ${name.trim()}, ${normalizedEmail}, ${now}, ${baseTs + threeWeeks}, ${tempPassword})
+    INSERT INTO students (id, name, email, owner_instructor_id, enrolled_at, deadline_at, temp_password)
+    VALUES (${id}, ${name.trim()}, ${normalizedEmail}, ${instructorId}, ${now}, ${baseTs + threeWeeks}, ${tempPassword})
     ON CONFLICT (id) DO NOTHING
   `
 

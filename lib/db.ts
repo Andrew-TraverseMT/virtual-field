@@ -54,10 +54,14 @@ export async function initSchema(): Promise<void> {
       id           TEXT PRIMARY KEY,
       name         TEXT NOT NULL,
       email        TEXT NOT NULL UNIQUE,
+      owner_instructor_id TEXT,
       enrolled_at  BIGINT NOT NULL,
       deadline_at  BIGINT NOT NULL,
       temp_password TEXT
     )
+  `
+  await vercelSql`
+    ALTER TABLE students ADD COLUMN IF NOT EXISTS owner_instructor_id TEXT
   `
   // Migration: add temp_password to existing deployments
   await vercelSql`
@@ -114,6 +118,11 @@ export async function initSchema(): Promise<void> {
     UPDATE students SET deadline_at = ${now + threeWeeks}
     WHERE id = 'student-001' AND deadline_at < ${now + threeWeeks}
   `
+  await vercelSql`
+    UPDATE students
+    SET owner_instructor_id = 'instructor-001'
+    WHERE id <> 'student-001' AND owner_instructor_id IS NULL
+  `
 }
 
 export type Submission = {
@@ -141,6 +150,7 @@ export type Student = {
   id: string
   name: string
   email: string
+  owner_instructor_id: string | null
   enrolled_at: number
   deadline_at: number
 }

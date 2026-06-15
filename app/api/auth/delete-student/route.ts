@@ -10,10 +10,21 @@ export async function POST(req: NextRequest) {
   if ((session?.user as { role?: string })?.role !== 'instructor') {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
+  const instructorId = (session?.user as { id?: string })?.id
+  if (!instructorId) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
 
   const { studentId, force } = await req.json() as { studentId?: string; force?: boolean }
   if (!studentId) {
     return NextResponse.json({ error: 'studentId required.' }, { status: 400 })
+  }
+
+  const { rows: ownedStudentRows } = await sql`
+    SELECT id FROM students WHERE id = ${studentId} AND owner_instructor_id = ${instructorId}
+  `
+  if (ownedStudentRows.length === 0) {
+    return NextResponse.json({ error: 'Student not found.' }, { status: 404 })
   }
 
   // Prevent accidental deletion of students with graded/approved work unless explicitly forced.

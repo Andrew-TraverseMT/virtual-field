@@ -10,6 +10,10 @@ export async function PATCH(request: NextRequest, { params }: Params) {
   if (!session || (session.user as { role?: string }).role !== 'instructor') {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
+  const instructorId = (session.user as { id?: string }).id
+  if (!instructorId) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
 
   const { submissionId } = await params
 
@@ -26,7 +30,12 @@ export async function PATCH(request: NextRequest, { params }: Params) {
 
   const { action, grade, notes } = body
 
-  const { rows } = await sql`SELECT id FROM submissions WHERE id = ${submissionId}`
+  const { rows } = await sql`
+    SELECT sub.id
+    FROM submissions sub
+    JOIN students st ON st.id = sub.student_id
+    WHERE sub.id = ${submissionId} AND st.owner_instructor_id = ${instructorId}
+  `
   if (rows.length === 0) {
     return NextResponse.json({ error: 'Submission not found' }, { status: 404 })
   }

@@ -11,9 +11,18 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
   if (role !== 'instructor') {
     return new NextResponse('Forbidden', { status: 403 })
   }
+  const instructorId = (session?.user as { id?: string })?.id
+  if (!instructorId) {
+    return new NextResponse('Unauthorized', { status: 401 })
+  }
 
   const { id } = await params
-  const { rows } = await sql`SELECT file_url, file_name FROM submissions WHERE id = ${id}`
+  const { rows } = await sql`
+    SELECT sub.file_url, sub.file_name
+    FROM submissions sub
+    JOIN students st ON st.id = sub.student_id
+    WHERE sub.id = ${id} AND st.owner_instructor_id = ${instructorId}
+  `
   const sub = rows[0] as { file_url: string | null; file_name: string | null } | undefined
 
   if (!sub?.file_url) {
