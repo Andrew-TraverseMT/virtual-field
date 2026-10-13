@@ -55,6 +55,14 @@ export default async function StudentsPage() {
     ORDER BY s.enrolled_at DESC
   ` as { rows: StudentRow[] }
 
+  const { rows: creditRows } = await sql`
+    SELECT pc.student_id
+    FROM participation_credit pc
+    JOIN students st ON st.id = pc.student_id
+    WHERE st.owner_instructor_id = ${instructorId}
+  ` as { rows: { student_id: string }[] }
+  const participationCredit = new Set(creditRows.map((row) => row.student_id))
+
   const { rows: submissionScores } = await sql`
     SELECT sub.student_id, sub.assignment_id, sub.ai_grade, sub.instructor_grade
     FROM submissions sub
@@ -94,7 +102,8 @@ export default async function StudentsPage() {
           <div>
             <h1 className="text-2xl font-bold tracking-tight text-stone-800">Student roster</h1>
             <p className="text-sm text-stone-500 mt-1">
-              {students.length} student{students.length !== 1 ? 's' : ''} enrolled
+              {students.length} student{students.length !== 1 ? 's' : ''} enrolled.
+              Participation shows whether credit was recorded. It does not show consent or which option the student used.
             </p>
           </div>
         </div>
@@ -134,6 +143,9 @@ export default async function StudentsPage() {
                       Score (submitted)
                     </th>
                     <th className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-widest text-stone-400 whitespace-nowrap">
+                      Participation
+                    </th>
+                    <th className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-widest text-stone-400 whitespace-nowrap">
                       Password
                     </th>
                     <th className="px-5 py-3" />
@@ -163,6 +175,7 @@ export default async function StudentsPage() {
                       </td>
                       <td className="px-5 py-3 text-right text-stone-600 font-medium tabular-nums whitespace-nowrap">{scoreAll}</td>
                       <td className="px-5 py-3 text-right text-stone-600 font-medium tabular-nums whitespace-nowrap">{scoreSubmitted}</td>
+                      <td className="px-5 py-3 text-stone-600">{participationCredit.has(student.id) ? 'Recorded' : '—'}</td>
                       <td className="px-5 py-3">
                         <PasswordCell studentId={student.id} initialPassword={student.temp_password} />
                       </td>

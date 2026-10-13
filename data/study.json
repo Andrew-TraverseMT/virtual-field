@@ -1,10 +1,6 @@
 {
-  "note": "Survey links stay hidden until survey.baseUrl is a real https URL. The app then appends ex, phase, and v as in survey.placeholderUrl. Student names, IDs, emails, and self-generated codes stay out of the URL. Usage metrics stay off, and make no network call, until metrics.endpoint is a real https URL. placeholderUrl and placeholderEndpoint are labeled examples only. Leave version empty until a release is tagged.",
+  "note": "Usage metrics stay off, and make no network call, until metrics.endpoint is a real https URL. placeholderEndpoint is a labeled example and is never requested. Leave version empty until a release is tagged. Survey answers are stored in this app, not sent to the metrics URL.",
   "version": "",
-  "survey": {
-    "baseUrl": "",
-    "placeholderUrl": "https://PLACEHOLDER.example/survey?ex=<n>&phase=<pre|mid|post>&v=<version>"
-  },
   "metrics": {
     "endpoint": "",
     "placeholderEndpoint": "https://PLACEHOLDER.example/collect"

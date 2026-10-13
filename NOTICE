@@ -1,0 +1,112 @@
+Third-party teaching materials
+==============================
+
+Verified 13 October 2026 by fetching the SERC pages below. This file records
+those pages and their stated reuse terms. It does not relicense them.
+
+Original exercise text, images, and documentation in this repository are
+CC BY 4.0 (LICENSE-CONTENT). Application code is MIT (LICENSE). Andrew
+Laskowski confirmed that split. It does not apply to the University of Leeds
+files or the Visible Geology SERC activity files. Those files state Creative
+Commons Attribution-NonCommercial-ShareAlike terms, which are stricter than
+CC BY 4.0 (non-commercial, and derivatives stay under the same license).
+
+University of Leeds virtual field material
+------------------------------------------
+
+Jacqueline Houghton, University of Leeds. Virtual Landscapes Geological
+Mapping. The landscapes are described as available at
+www.see.leeds.ac.uk/virtual-landscapes/.
+
+SERC activity pages, both fetched and confirmed as the same activity:
+
+- https://serc.carleton.edu/teachearth/activities/197181.html
+- https://serc.carleton.edu/NAGTWorkshops/online_field/activities/197181.html
+
+SERC states that the accompanying field slips and notes on the Teach the Earth
+page are offered under CC BY-NC-SA 3.0:
+http://creativecommons.org/licenses/by-nc-sa/3.0/
+
+One file on that page, "04_Rhoscolyn whole area with outcrops.pdf", has no
+reuse terms recorded. SERC says to contact the original creator for uses that
+exceed fair use. Do not treat that file as CC BY-NC-SA or as CC BY.
+
+The same SERC page lists the field-slip filenames used in this course,
+including the topographic sheet, dip and strike sheets, Lighthouse Bay,
+Rhoscolyn, and Three River Hills.
+
+Related exercises that use those landscapes, also fetched:
+
+- Mark Helper, The University of Texas at Austin. Geological Mapping of a
+  Virtual Landscape (Lighthouse Bay), based on the Leeds landscape.
+  https://serc.carleton.edu/NAGTWorkshops/online_field/activities/236670.html
+  The page says the Leeds Lighthouse Bay landscape is available under
+  CC BY-NC-SA 4.0 and that the materials posted there are shared under the
+  same license.
+
+- Mark Helper, The University of Texas at Austin. Geologic Mapping of a
+  Virtual Landscape II — Three River Hills, based on the Leeds landscape.
+  https://serc.carleton.edu/NAGTWorkshops/online_field/activities/237061.html
+
+Houghton, Lloyd, Robinson, Gordon, and Morgan (2015), The Virtual Worlds
+Project: Geological mapping and field skills, Geology Today, 31, 227–231.
+https://doi.org/10.1111/gto.12117
+
+Visible Geology SERC activity pages
+-----------------------------------
+
+Collection index, fetched:
+https://serc.carleton.edu/visiblegeology/teaching_materials/index.html
+
+Each activity page below was fetched. The worksheet files on those pages are
+stated as CC BY-NC-SA 3.0.
+
+Exercises 1–3 (topographic maps, dip, and the Rule of V's). Course text credits
+Alyssa Abbey, California State University, Long Beach.
+
+- How geologic beds and other planar features interact with topography:
+  Rule of V's. Alyssa Abbey.
+  https://serc.carleton.edu/visiblegeology/teaching_materials/310972.html
+
+Exercise 6 (stereonets and fold map patterns). Course text credits Hannah
+Blatchford, Eastern Michigan University.
+
+- Exploring relationships between map patterns and stereonets of cylindrically
+  folded layers. Hannah Blatchford.
+  https://serc.carleton.edu/visiblegeology/teaching_materials/311066.html
+
+Exercise 8 (basin stratigraphic correlation). Course text credits Amy
+Weislogel, West Virginia University.
+
+- Basin Stratigraphic Correlation. Amy Weislogel.
+  https://serc.carleton.edu/visiblegeology/teaching_materials/311247.html
+
+Exercise 9 (reservoir sandstone and CO2 storage). Course text credits Amy
+Weislogel.
+
+- Reservoir Sandstone Stratigraphic Correlation. Amy Weislogel.
+  https://serc.carleton.edu/visiblegeology/teaching_materials/311249.html
+
+Exercise 10 (map and cross section built into a 3D model). The closest fetched
+SERC activity is Blatchford's page below. That activity is written for any
+previously mapped field area (the SERC notes use a subset of the Argenta,
+Montana quadrangle). This course asks students to model Rhoscolyn.
+
+- Combining Map and Cross Section Results into a 3-D Model. Hannah Blatchford.
+  https://serc.carleton.edu/visiblegeology/teaching_materials/311065.html
+
+Pages not verified as a standalone activity
+-------------------------------------------
+
+TODO: No SERC activity page titled "Reading Topographic Maps in 3D" was found.
+Exercise 1 uses the Leeds topographic sheet listed on the Houghton pages above
+and follows the Abbey Rule of V's preparation work on page 310972. The Visible
+Geology index also lists a Hoult and Pedley workflow, "Topography and contour
+lines: the shape of a surface." This pass did not confirm a stable activity
+URL for that workflow, so it is not cited here.
+
+TODO: No standalone SERC activity page for Rhoscolyn was found. The Rhoscolyn
+field slips are files on the Houghton Virtual Landscapes pages cited above.
+
+Exercises 11 and 12 are original course assignments. They do not cite a
+third-party SERC activity.

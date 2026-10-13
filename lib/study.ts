@@ -1,15 +1,8 @@
 import studyConfig from '@/data/study.json'
 
-export type SurveyPhase = 'pre' | 'mid' | 'post'
-
 export type StudyConfig = {
   note: string
   version: string
-  survey: {
-    baseUrl: string
-    /** Labeled example only. The app does not request this URL. */
-    placeholderUrl: string
-  }
   metrics: {
     endpoint: string
     /** Labeled example only. The app does not request this URL. */
@@ -57,35 +50,6 @@ export function isConfiguredHttpsUrl(value: string): boolean {
   }
   if (host.includes('placeholder')) return false
   return true
-}
-
-/**
- * Survey link for one exercise and phase.
- * The only query keys this adds are ex, phase, and v.
- * There is no parameter for a student name, id, email, or code.
- */
-export function buildSurveyHref(
-  baseUrl: string,
-  version: string,
-  exercise: number,
-  phase: SurveyPhase,
-): string | null {
-  if (!Number.isInteger(exercise) || exercise < 1) return null
-  if (phase !== 'pre' && phase !== 'mid' && phase !== 'post') return null
-  if (!isConfiguredHttpsUrl(baseUrl)) return null
-
-  const url = new URL(baseUrl.trim())
-  url.searchParams.set('ex', String(exercise))
-  url.searchParams.set('phase', phase)
-  const release = version.trim()
-  if (release) url.searchParams.set('v', release)
-  else url.searchParams.delete('v')
-  url.hash = ''
-  return url.toString()
-}
-
-export function surveyHref(exercise: number, phase: SurveyPhase): string | null {
-  return buildSurveyHref(study.survey.baseUrl, study.version, exercise, phase)
 }
 
 /** Aggregate collector URL, or null when metrics stay off. */

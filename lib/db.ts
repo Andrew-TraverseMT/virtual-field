@@ -3,6 +3,7 @@ import {
   type QueryResult,
   type QueryResultRow,
 } from '@vercel/postgres'
+import { SEED_STUDENT_EMAIL, SEED_STUDENT_ID } from '@/lib/legacy-accounts'
 
 type Primitive = string | number | boolean | undefined | null
 
@@ -97,31 +98,108 @@ export async function initSchema(): Promise<void> {
       instructor_grade       INTEGER,
       instructor_notes       TEXT,
       instructor_reviewed_at BIGINT,
+      ai_model               TEXT,
+      ai_graded_at           BIGINT,
       FOREIGN KEY (student_id) REFERENCES students(id),
       UNIQUE(student_id, assignment_id)
     )
   `
 
-  // Seed the hardcoded test student.
-  // ON CONFLICT DO NOTHING handles both the primary-key (id) and the unique email
-  // constraint — so re-running ensureSchema after the student was deleted (or after
-  // another account claimed that email) never crashes.
-  const now = Math.floor(Date.now() / 1000)
-  const threeWeeks = 21 * 24 * 60 * 60
   await vercelSql`
-    INSERT INTO students (id, name, email, enrolled_at, deadline_at)
-    VALUES ('student-001', 'Test Student', 'student@virtualfield.dev', ${now}, ${now + threeWeeks})
-    ON CONFLICT DO NOTHING
-  `
-  // Separately refresh the deadline so the test account never expires
-  await vercelSql`
-    UPDATE students SET deadline_at = ${now + threeWeeks}
-    WHERE id = 'student-001' AND deadline_at < ${now + threeWeeks}
+    ALTER TABLE submissions ADD COLUMN IF NOT EXISTS ai_model TEXT
   `
   await vercelSql`
-    UPDATE students
-    SET owner_instructor_id = 'instructor-001'
-    WHERE id <> 'student-001' AND owner_instructor_id IS NULL
+    ALTER TABLE submissions ADD COLUMN IF NOT EXISTS ai_graded_at BIGINT
+  `
+
+  await vercelSql`
+    CREATE TABLE IF NOT EXISTS consent_records (
+      id TEXT PRIMARY KEY,
+      receipt_hash TEXT NOT NULL UNIQUE,
+      ciphertext TEXT NOT NULL,
+      kid TEXT NOT NULL,
+      created_at BIGINT NOT NULL
+    )
+  `
+  await vercelSql`
+    CREATE TABLE IF NOT EXISTS study_audit (
+      id TEXT PRIMARY KEY,
+      action TEXT NOT NULL,
+      actor_id TEXT NOT NULL,
+      created_at BIGINT NOT NULL,
+      detail TEXT NOT NULL
+    )
+  `
+  await vercelSql`
+    CREATE TABLE IF NOT EXISTS participation_credit (
+      student_id TEXT PRIMARY KEY REFERENCES students(id) ON DELETE CASCADE,
+      credited_at BIGINT NOT NULL
+    )
+  `
+  await vercelSql`
+    CREATE TABLE IF NOT EXISTS participation_alternative (
+      student_id TEXT PRIMARY KEY REFERENCES students(id) ON DELETE CASCADE,
+      response TEXT NOT NULL,
+      submitted_at BIGINT NOT NULL
+    )
+  `
+  await vercelSql`
+    CREATE TABLE IF NOT EXISTS survey_responses (
+      id TEXT PRIMARY KEY,
+      participant_code TEXT NOT NULL,
+      exercise INTEGER NOT NULL,
+      phase TEXT NOT NULL,
+      answers TEXT NOT NULL,
+      submitted_at BIGINT NOT NULL,
+      UNIQUE (participant_code, exercise, phase),
+      CONSTRAINT survey_responses_phase CHECK (phase IN ('pre', 'mid', 'post'))
+    )
+  `
+  await vercelSql`
+    CREATE TABLE IF NOT EXISTS study_settings (
+      id INTEGER PRIMARY KEY,
+      grades_posted SMALLINT NOT NULL DEFAULT 0,
+      grades_posted_at BIGINT,
+      consent_granted_count INTEGER,
+      consent_declined_count INTEGER,
+      CONSTRAINT study_settings_singleton CHECK (id = 1)
+    )
+  `
+  await vercelSql`
+    INSERT INTO study_settings (id, grades_posted)
+    VALUES (1, 0)
+    ON CONFLICT (id) DO NOTHING
+  `
+
+  // Remove the old demo student if a previous run created it.
+  // Both id and email must match. Other accounts, including last year's students, stay.
+  await vercelSql`
+    DELETE FROM submissions
+    WHERE student_id = ${SEED_STUDENT_ID}
+      AND EXISTS (
+        SELECT 1 FROM students
+        WHERE id = ${SEED_STUDENT_ID} AND lower(email) = ${SEED_STUDENT_EMAIL}
+      )
+  `
+  await vercelSql`
+    DELETE FROM students
+    WHERE id = ${SEED_STUDENT_ID} AND lower(email) = ${SEED_STUDENT_EMAIL}
+  `
+
+  // Drop the unreleased plaintext consent table only when it is empty.
+  // Rows, if any, are not rewritten and are not served. Purge is the consent holder's action.
+  await vercelSql`
+    DO $$
+    BEGIN
+      IF EXISTS (
+        SELECT 1 FROM information_schema.tables
+        WHERE table_schema = 'public' AND table_name = 'research_consent'
+      ) THEN
+        IF (SELECT COUNT(*) FROM research_consent) = 0 THEN
+          DROP TABLE research_consent;
+        END IF;
+      END IF;
+    END $$
   `
 }
 
@@ -144,6 +222,8 @@ export type Submission = {
   instructor_grade: number | null
   instructor_notes: string | null
   instructor_reviewed_at: number | null
+  ai_model: string | null
+  ai_graded_at: number | null
 }
 
 export type Student = {
@@ -160,7 +240,7 @@ export type RegisteredUser = {
   name: string
   email: string
   password_hash: string
-  role: 'student' | 'instructor'
+  role: 'student' | 'instructor' | 'consent_holder'
   verified: 0 | 1
   email_bounced: 0 | 1
   verification_token: string | null

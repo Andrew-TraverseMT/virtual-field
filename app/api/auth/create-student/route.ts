@@ -44,8 +44,7 @@ export async function POST(req: NextRequest) {
 
   const normalizedEmail = email.toLowerCase().trim()
 
-  // Check for existing account in both tables (registered_users for normal accounts,
-  // students for the hardcoded test student and any direct roster entries)
+  // Check for an existing account in either table.
   const { rows: existing } = await sql`
     SELECT id FROM registered_users WHERE email = ${normalizedEmail}
     UNION

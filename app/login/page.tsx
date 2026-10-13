@@ -3,12 +3,12 @@ import { LoginForm } from './LoginForm'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import { redirect } from 'next/navigation'
+import { homeForRole, sessionRole } from '@/lib/session'
 
 export default async function LoginPage() {
   const session = await getServerSession(authOptions)
   if (session) {
-    const role = (session.user as { role?: string })?.role
-    redirect(role === 'instructor' ? '/instructor' : '/dashboard')
+    redirect(homeForRole(sessionRole(session)))
   }
 
   return (

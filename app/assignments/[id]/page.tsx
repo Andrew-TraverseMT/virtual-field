@@ -7,9 +7,11 @@ import type { Submission } from '@/lib/db'
 import Link from 'next/link'
 import SubmitPanel from './SubmitPanel'
 import FeedbackPanel from './FeedbackPanel'
-import SurveyLink from './SurveyLink'
 import UsageMetric from './UsageMetric'
+import SurveyForm from '@/app/study/SurveyForm'
 import { metricsEndpoint } from '@/lib/study'
+import { sessionRole, sessionUserId } from '@/lib/session'
+import { isExercisePhaseOpen, type SurveyPhase } from '@/lib/survey-timing'
 
 type Props = { params: Promise<{ id: string }> }
 
@@ -23,15 +25,19 @@ export default async function AssignmentPage({ params }: Props) {
   const { id } = await params
   const session = await getServerSession(authOptions)
   if (!session) redirect('/login')
+  const role = sessionRole(session)
+  if (role === 'consent_holder') redirect('/consent')
+  if (role !== 'student' && role !== 'instructor') redirect('/login')
 
   const assignment = getAssignment(id)
   if (!assignment) notFound()
 
-  const studentId = (session.user as { id?: string }).id ?? 'student-001'
+  const studentId = role === 'student' ? sessionUserId(session) : null
+  if (role === 'student' && !studentId) redirect('/login')
 
   // Check if this assignment is accessible
   let isLocked = false
-  if (assignment.sequence > 1) {
+  if (role === 'student' && studentId && assignment.sequence > 1) {
     const prevAssignment = assignments.find((a) => a.sequence === assignment.sequence - 1)
     if (prevAssignment) {
       const { rows: prevRows } = await sql`SELECT id FROM submissions WHERE student_id = ${studentId} AND assignment_id = ${prevAssignment.id}`
@@ -39,14 +45,33 @@ export default async function AssignmentPage({ params }: Props) {
     }
   }
 
-  const { rows: subRows } = await sql`SELECT * FROM submissions WHERE student_id = ${studentId} AND assignment_id = ${id}`
-  const sub = subRows[0] as Submission | undefined
+  const sub = studentId
+    ? (await sql`SELECT * FROM submissions WHERE student_id = ${studentId} AND assignment_id = ${id}`).rows[0] as Submission | undefined
+    : undefined
 
   const prevAssignment =
     assignment.sequence > 1
       ? assignments.find((a) => a.sequence === assignment.sequence - 1)
       : null
   const nextAssignment = assignments.find((a) => a.sequence === assignment.sequence + 1)
+
+  const openPhases = new Set<SurveyPhase>()
+  if (role === 'student' && studentId && !isLocked) {
+    const { rows: timingRows } = await sql`
+      SELECT enrolled_at, deadline_at FROM students WHERE id = ${studentId}
+    `
+    const timing = timingRows[0] as { enrolled_at?: number; deadline_at?: number } | undefined
+    if (typeof timing?.enrolled_at === 'number' && typeof timing.deadline_at === 'number') {
+      const now = Math.floor(Date.now() / 1000)
+      const cohort = assignments.map((item) => ({ sequence: item.sequence, week: item.week }))
+      for (const phase of ['pre', 'mid', 'post'] as const) {
+        if (isExercisePhaseOpen(now, timing.enrolled_at, timing.deadline_at, assignment, cohort, phase)) {
+          openPhases.add(phase)
+        }
+      }
+    }
+  }
+  const showSurvey = (phase: SurveyPhase) => (role === 'student' ? openPhases.has(phase) : true)
 
   return (
     <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 py-10">
@@ -111,8 +136,8 @@ export default async function AssignmentPage({ params }: Props) {
         )}
       </div>
 
-      {!isLocked && metricsEndpoint() && <UsageMetric exercise={assignment.sequence} />}
-      {!isLocked && <SurveyLink exercise={assignment.sequence} phase="pre" className="mb-6" />}
+      {!isLocked && role === 'student' && metricsEndpoint() && <UsageMetric exercise={assignment.sequence} />}
+      {!isLocked && showSurvey('pre') && <SurveyForm exercise={assignment.sequence} phase="pre" readOnly={role !== 'student'} />}
 
       <div className="grid gap-6 lg:grid-cols-5">
         {/* Left column */}
@@ -133,7 +158,7 @@ export default async function AssignmentPage({ params }: Props) {
             </div>
           )}
 
-          {!isLocked && <SurveyLink exercise={assignment.sequence} phase="mid" />}
+          {!isLocked && showSurvey('mid') && <SurveyForm exercise={assignment.sequence} phase="mid" readOnly={role !== 'student'} />}
 
           {/* Activity / Tool */}
           {(assignment.url || (assignment.downloads && assignment.downloads.length > 0)) && (
@@ -372,7 +397,7 @@ export default async function AssignmentPage({ params }: Props) {
             />
           )}
 
-          {!isLocked && <SurveyLink exercise={assignment.sequence} phase="post" />}
+          {!isLocked && showSurvey('post') && <SurveyForm exercise={assignment.sequence} phase="post" readOnly={role !== 'student'} />}
         </div>
       </div>
 

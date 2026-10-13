@@ -22,11 +22,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
-  const { name, email } = await req.json() as { name?: string; email?: string }
+  const { name, email, role } = await req.json() as { name?: string; email?: string; role?: string }
 
   if (!name?.trim() || !email?.trim()) {
     return NextResponse.json({ error: 'Name and email are required.' }, { status: 400 })
   }
+  const accountRole = role === 'consent_holder' ? 'consent_holder' : 'instructor'
 
   const normalizedEmail = email.toLowerCase().trim()
   const { rows: existing } = await sql`
@@ -46,7 +47,7 @@ export async function POST(req: NextRequest) {
 
   await sql`
     INSERT INTO registered_users (id, name, email, password_hash, role, verified, created_at)
-    VALUES (${id}, ${name.trim()}, ${normalizedEmail}, ${passwordHash}, 'instructor', 1, ${now})
+    VALUES (${id}, ${name.trim()}, ${normalizedEmail}, ${passwordHash}, ${accountRole}, 1, ${now})
   `
 
   return NextResponse.json({ ok: true, tempPassword })
