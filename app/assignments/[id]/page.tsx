@@ -7,6 +7,9 @@ import type { Submission } from '@/lib/db'
 import Link from 'next/link'
 import SubmitPanel from './SubmitPanel'
 import FeedbackPanel from './FeedbackPanel'
+import SurveyLink from './SurveyLink'
+import UsageMetric from './UsageMetric'
+import { metricsEndpoint } from '@/lib/study'
 
 type Props = { params: Promise<{ id: string }> }
 
@@ -108,6 +111,9 @@ export default async function AssignmentPage({ params }: Props) {
         )}
       </div>
 
+      {!isLocked && metricsEndpoint() && <UsageMetric exercise={assignment.sequence} />}
+      {!isLocked && <SurveyLink exercise={assignment.sequence} phase="pre" className="mb-6" />}
+
       <div className="grid gap-6 lg:grid-cols-5">
         {/* Left column */}
         <div className="space-y-5 lg:col-span-3">
@@ -126,6 +132,8 @@ export default async function AssignmentPage({ params }: Props) {
               </ul>
             </div>
           )}
+
+          {!isLocked && <SurveyLink exercise={assignment.sequence} phase="mid" />}
 
           {/* Activity / Tool */}
           {(assignment.url || (assignment.downloads && assignment.downloads.length > 0)) && (
@@ -363,6 +371,8 @@ export default async function AssignmentPage({ params }: Props) {
               totalPoints={assignment.rubric.totalPoints}
             />
           )}
+
+          {!isLocked && <SurveyLink exercise={assignment.sequence} phase="post" />}
         </div>
       </div>
 
