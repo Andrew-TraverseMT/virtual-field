@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "node --experimental-strip-types --test lib/study-access.test.ts lib/consent-crypto.test.ts lib/survey-timing.test.ts lib/grade-compare.test.ts lib/legacy-accounts.test.ts lib/participation.test.ts"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

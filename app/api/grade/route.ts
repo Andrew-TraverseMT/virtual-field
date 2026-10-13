@@ -22,7 +22,7 @@ import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import { sql } from '@/lib/db'
 import { assignments } from '@/lib/assignments'
-import { gradeSubmission } from '@/lib/gemini'
+import { GEMINI_GRADE_MODEL, gradeSubmission } from '@/lib/gemini'
 import { getFileBuffer } from '@/lib/storage'
 import path from 'path'
 
@@ -99,12 +99,15 @@ export async function POST(request: NextRequest) {
       result.overall_feedback +
       (result.confidence_notes !== 'None' ? `\n\nNote: ${result.confidence_notes}` : '')
 
+    const gradedAt = Math.floor(Date.now() / 1000)
     await sql`
       UPDATE submissions
       SET status = 'ai_graded',
           ai_grade = ${result.total_score},
           ai_feedback = ${feedback},
-          ai_rubric_scores = ${JSON.stringify(result.rubric_scores)}
+          ai_rubric_scores = ${JSON.stringify(result.rubric_scores)},
+          ai_model = ${GEMINI_GRADE_MODEL},
+          ai_graded_at = ${gradedAt}
       WHERE id = ${submissionId}
     `
 

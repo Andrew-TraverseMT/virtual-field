@@ -5,6 +5,7 @@ import { assignments, getAssignment } from '@/lib/assignments'
 import Link from 'next/link'
 import SubmitPanel from '@/app/assignments/[id]/SubmitPanel'
 import FeedbackPanel from '@/app/assignments/[id]/FeedbackPanel'
+import SurveyForm from '@/app/study/SurveyForm'
 
 type Props = { params: Promise<{ id: string }> }
 
@@ -79,6 +80,8 @@ export default async function InstructorPreviewAssignmentPage({ params }: Props)
         )}
       </div>
 
+      <SurveyForm exercise={assignment.sequence} phase="pre" readOnly />
+
       <div className="grid gap-6 lg:grid-cols-5">
         {/* Left column */}
         <div className="space-y-5 lg:col-span-3">
@@ -97,6 +100,8 @@ export default async function InstructorPreviewAssignmentPage({ params }: Props)
               </ul>
             </div>
           )}
+
+          <SurveyForm exercise={assignment.sequence} phase="mid" readOnly />
 
           {/* Activity / Tool */}
           {(assignment.url || (assignment.downloads && assignment.downloads.length > 0)) && (
@@ -317,6 +322,8 @@ export default async function InstructorPreviewAssignmentPage({ params }: Props)
             instructorNotes={null}
             totalPoints={assignment.rubric.totalPoints}
           />
+
+          <SurveyForm exercise={assignment.sequence} phase="post" readOnly />
         </div>
       </div>
 

@@ -1,0 +1,116 @@
+{
+  "note": "Draft study instrument. Wording is for Andrew and the consent holder to confirm. Responses are stored by participant code only.",
+  "phases": {
+    "pre": {
+      "title": "Before you start",
+      "detail": "About two minutes. This is not graded.",
+      "questions": [
+        {
+          "id": "confidence",
+          "type": "scale",
+          "min": 0,
+          "max": 100,
+          "label": "I can do the main task in this exercise (0 = cannot do it, 100 = certain I can)."
+        },
+        {
+          "id": "anxiety",
+          "type": "scale",
+          "min": 1,
+          "max": 5,
+          "label": "I feel anxious about this exercise (1 = not at all, 5 = very)."
+        },
+        {
+          "id": "enjoyment",
+          "type": "scale",
+          "min": 1,
+          "max": 5,
+          "label": "I expect to enjoy this exercise (1 = not at all, 5 = very)."
+        },
+        {
+          "id": "goal",
+          "type": "text",
+          "maxLength": 1000,
+          "label": "What do you most want to be able to do by the end of this exercise?"
+        }
+      ]
+    },
+    "mid": {
+      "title": "Check in",
+      "detail": "A short exit ticket while you work. This is not graded.",
+      "questions": [
+        {
+          "id": "confidence",
+          "type": "scale",
+          "min": 0,
+          "max": 100,
+          "label": "I can do the main task in this exercise right now (0–100)."
+        },
+        {
+          "id": "minutes",
+          "type": "scale",
+          "min": 0,
+          "max": 600,
+          "label": "About how many minutes have you spent on this exercise?"
+        },
+        {
+          "id": "muddiest",
+          "type": "text",
+          "maxLength": 1000,
+          "label": "What is the muddiest point so far?"
+        },
+        {
+          "id": "technical",
+          "type": "text",
+          "maxLength": 1000,
+          "optional": true,
+          "label": "Any technical problems? Leave blank if none."
+        }
+      ]
+    },
+    "post": {
+      "title": "Exit ticket",
+      "detail": "After you finish. This is not graded.",
+      "questions": [
+        {
+          "id": "confidence",
+          "type": "scale",
+          "min": 0,
+          "max": 100,
+          "label": "I can do the main task in this exercise (0–100)."
+        },
+        {
+          "id": "anxiety",
+          "type": "scale",
+          "min": 1,
+          "max": 5,
+          "label": "I feel anxious about this kind of task (1 = not at all, 5 = very)."
+        },
+        {
+          "id": "enjoyment",
+          "type": "scale",
+          "min": 1,
+          "max": 5,
+          "label": "I enjoyed this exercise (1 = not at all, 5 = very)."
+        },
+        {
+          "id": "saw",
+          "type": "text",
+          "maxLength": 1000,
+          "label": "What changed in how you see the outcrop, map, or model?"
+        },
+        {
+          "id": "missing",
+          "type": "text",
+          "maxLength": 1000,
+          "label": "What could the virtual format not give you?"
+        },
+        {
+          "id": "field",
+          "type": "text",
+          "maxLength": 1000,
+          "label": "What would you do next if you were at the outcrop?"
+        }
+      ]
+    }
+  }
+}
