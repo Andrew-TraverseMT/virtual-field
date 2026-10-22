@@ -4,6 +4,9 @@ import Link from 'next/link'
 import { authOptions } from '@/lib/auth'
 import { sql } from '@/lib/db'
 import { assignments } from '@/lib/assignments'
+import { participationPoints } from '@/lib/participation'
+import { participationPercent } from '@/lib/study'
+import { homeForRole, mustChangePassword, sessionRole } from '@/lib/session'
 import { AddInstructorForm, AddStudentForm, PasswordCell, DeleteStudentButton } from './StudentActions'
 
 interface StudentRow {
@@ -25,18 +28,21 @@ interface SubmissionScoreRow {
 
 export default async function StudentsPage() {
   const session = await getServerSession(authOptions)
-  const role = (session?.user as { role?: string } | undefined)?.role
-  if (role !== 'instructor') redirect('/dashboard')
+  if (mustChangePassword(session)) redirect('/account/password')
+  const role = sessionRole(session)
+  if (role !== 'instructor') redirect(homeForRole(role))
   const instructorId = (session?.user as { id?: string } | undefined)?.id
   if (!instructorId) redirect('/login')
 
   const assignmentPointsById = new Map(
     assignments.map((assignment) => [assignment.id, assignment.rubric.totalPoints])
   )
-  const totalPossiblePoints = assignments.reduce(
+  const assignmentPoints = assignments.reduce(
     (sum, assignment) => sum + assignment.rubric.totalPoints,
     0
   )
+  const participationSlice = participationPoints(assignmentPoints, participationPercent())
+  const totalPossiblePoints = assignmentPoints + participationSlice
 
   const { rows: students } = await sql`
     SELECT
@@ -154,7 +160,8 @@ export default async function StudentsPage() {
                 <tbody>
                   {students.map((student, i) => {
                     const studentScore = scoreByStudentId.get(student.id) ?? { earned: 0, submittedPossible: 0 }
-                    const scoreAll = `${studentScore.earned}/${totalPossiblePoints}`
+                    const credited = participationCredit.has(student.id)
+                    const scoreAll = `${studentScore.earned + (credited ? participationSlice : 0)}/${totalPossiblePoints}`
                     const scoreSubmitted = studentScore.submittedPossible > 0
                       ? `${studentScore.earned}/${studentScore.submittedPossible}`
                       : '—'

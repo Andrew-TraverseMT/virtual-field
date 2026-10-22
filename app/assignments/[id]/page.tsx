@@ -10,7 +10,7 @@ import FeedbackPanel from './FeedbackPanel'
 import UsageMetric from './UsageMetric'
 import SurveyForm from '@/app/study/SurveyForm'
 import { metricsEndpoint } from '@/lib/study'
-import { sessionRole, sessionUserId } from '@/lib/session'
+import { homeForRole, mustChangePassword, sessionRole, sessionUserId } from '@/lib/session'
 import { isExercisePhaseOpen, type SurveyPhase } from '@/lib/survey-timing'
 
 type Props = { params: Promise<{ id: string }> }
@@ -25,9 +25,10 @@ export default async function AssignmentPage({ params }: Props) {
   const { id } = await params
   const session = await getServerSession(authOptions)
   if (!session) redirect('/login')
+  if (mustChangePassword(session)) redirect('/account/password')
   const role = sessionRole(session)
-  if (role === 'consent_holder') redirect('/consent')
-  if (role !== 'student' && role !== 'instructor') redirect('/login')
+  if (role === 'researcher') redirect('/consent')
+  if (role !== 'student' && role !== 'instructor') redirect(homeForRole(role))
 
   const assignment = getAssignment(id)
   if (!assignment) notFound()

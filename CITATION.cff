@@ -12,7 +12,7 @@ authors:
     # TODO: add affiliation and ORCID when confirmed. Do not invent them.
 repository-code: https://github.com/Andrew-TraverseMT/virtual-field
 license: MIT
+version: 1.0.0
 # Code is MIT (see LICENSE). Exercise text, images, and documentation are
 # CC-BY-4.0 (see LICENSE-CONTENT).
-# TODO: add version when a release is tagged. Do not invent one.
-# TODO: add identifiers (a DOI) when a Zenodo record exists. Do not invent one.
+# The DOI will be minted on Zenodo when Andrew approves a release. Do not invent one.

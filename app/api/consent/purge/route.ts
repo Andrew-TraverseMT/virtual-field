@@ -2,10 +2,12 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import { purgeConsentRecords } from '@/lib/research'
-import { sessionRole, sessionUserId } from '@/lib/session'
+import { blockIfPasswordChangeRequired, sessionRole, sessionUserId } from '@/lib/session'
 
 export async function POST() {
   const session = await getServerSession(authOptions)
+  const blocked = blockIfPasswordChangeRequired(session)
+  if (blocked) return blocked
   const actorId = sessionUserId(session)
   if (!actorId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 

@@ -3,7 +3,8 @@ import 'next-auth/jwt'
 
 declare module 'next-auth' {
   interface User {
-    role: 'student' | 'instructor' | 'consent_holder'
+    role: 'student' | 'instructor' | 'researcher'
+    mustChangePassword?: boolean
   }
   interface Session {
     user: {
@@ -11,13 +12,15 @@ declare module 'next-auth' {
       name?: string | null
       email?: string | null
       image?: string | null
-      role: 'student' | 'instructor' | 'consent_holder'
+      role: 'student' | 'instructor' | 'researcher'
+      mustChangePassword?: boolean
     }
   }
 }
 
 declare module 'next-auth/jwt' {
   interface JWT {
-    role: 'student' | 'instructor' | 'consent_holder'
+    role: 'student' | 'instructor' | 'researcher'
+    mustChangePassword?: boolean
   }
 }

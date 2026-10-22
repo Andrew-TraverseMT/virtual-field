@@ -1,6 +1,6 @@
 export const SMALL_CELL_MINIMUM = 5
 
-export const APP_ROLES = ['student', 'instructor', 'consent_holder'] as const
+export const APP_ROLES = ['student', 'instructor', 'researcher'] as const
 export type AppRole = (typeof APP_ROLES)[number]
 
 export type SurveyPhase = 'pre' | 'mid' | 'post'
@@ -37,24 +37,30 @@ export const SURVEY_RESPONSE_COLUMNS = [
 ] as const
 
 /**
- * The consent list is readable by the consent holder only, and only before
+ * Consent records are readable by the researcher only, and only before
  * grades are marked posted. Instructors never pass this check.
  */
 export function canViewConsentList(role: AppRole | null, gradesPosted: boolean): boolean {
-  return role === 'consent_holder' && gradesPosted === false
+  return role === 'researcher' && gradesPosted === false
 }
 
+/** Only the instructor can mark grades posted. The researcher cannot. */
 export function canSetGradesPosted(role: AppRole | null): boolean {
-  return role === 'instructor' || role === 'consent_holder'
+  return role === 'instructor'
 }
 
 export function canExportConsent(role: AppRole | null, gradesPosted: boolean): boolean {
   return canViewConsentList(role, gradesPosted)
 }
 
-/** Purge deletes ciphertext. It does not return it. Instructor cannot purge. */
+/** Purge deletes consent and de-identified survey answers. Instructor cannot purge. */
 export function canPurgeConsent(role: AppRole | null): boolean {
-  return role === 'consent_holder'
+  return role === 'researcher'
+}
+
+/** Survey aggregates and the grade comparison are study data. Researcher only. */
+export function canViewStudyData(role: AppRole | null): boolean {
+  return role === 'researcher'
 }
 
 /** No role receives row-level survey responses. */
@@ -169,9 +175,9 @@ export type InstructorAggregateGroup = {
 }
 
 /**
- * Instructor view: counts and numeric summaries only.
+ * Study aggregate: counts and numeric summaries only.
  * Free-text answers are dropped. Groups smaller than the minimum are suppressed,
- * including the exact count.
+ * including the exact count. Row access stays closed for every role.
  */
 export function instructorAggregate(
   rows: StoredSurveyRow[],

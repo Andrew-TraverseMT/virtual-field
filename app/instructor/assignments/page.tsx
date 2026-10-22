@@ -3,11 +3,13 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { authOptions } from '@/lib/auth'
 import { assignments } from '@/lib/assignments'
+import { mustChangePassword } from '@/lib/session'
 import { buildGradePrompt, buildFeedbackPrompt } from '@/lib/gemini'
 import { AssignmentCard } from './AssignmentCard'
 
 export default async function InstructorAssignmentsPage() {
   const session = await getServerSession(authOptions)
+  if (mustChangePassword(session)) redirect('/account/password')
   if (!session || (session.user as { role?: string }).role !== 'instructor') {
     redirect('/login')
   }

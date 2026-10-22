@@ -2,6 +2,7 @@ import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import { assignments } from '@/lib/assignments'
+import { homeForRole, mustChangePassword, sessionRole } from '@/lib/session'
 import Link from 'next/link'
 
 const UNIT_COLORS: Record<string, string> = {
@@ -19,7 +20,8 @@ const WEEK_LABEL: Record<number, string> = {
 export default async function InstructorPreviewPage() {
   const session = await getServerSession(authOptions)
   if (!session) redirect('/login')
-  if ((session.user as { role?: string })?.role !== 'instructor') redirect('/dashboard')
+  if (mustChangePassword(session)) redirect('/account/password')
+  if (sessionRole(session) !== 'instructor') redirect(homeForRole(sessionRole(session)))
 
   const byWeek = [1, 2, 3].map((w) => ({
     week: w,

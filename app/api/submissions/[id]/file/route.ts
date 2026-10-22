@@ -2,11 +2,14 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import { sql } from '@/lib/db'
+import { blockIfPasswordChangeRequired } from '@/lib/session'
 
 export const runtime = 'nodejs'
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions)
+  const blocked = blockIfPasswordChangeRequired(session)
+  if (blocked) return blocked
   const role = (session?.user as { role?: string })?.role
   if (role !== 'instructor') {
     return new NextResponse('Forbidden', { status: 403 })

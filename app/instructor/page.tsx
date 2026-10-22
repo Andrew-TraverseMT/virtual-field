@@ -4,8 +4,11 @@ import { redirect } from 'next/navigation'
 import { sql } from '@/lib/db'
 import { getAssignment } from '@/lib/assignments'
 import type { Submission } from '@/lib/db'
+import { readGradesPosted } from '@/lib/research'
+import { mustChangePassword } from '@/lib/session'
 import GradeActions from './GradeActions'
 import ReGradeButton from './ReGradeButton'
+import GradesReleaseButton from '@/app/study/GradesReleaseButton'
 
 type FullSubmission = Submission & { student_name: string; student_email: string }
 
@@ -31,6 +34,7 @@ export default async function InstructorPage({
   searchParams: Promise<{ filter?: string }>
 }) {
   const session = await getServerSession(authOptions)
+  if (mustChangePassword(session)) redirect('/account/password')
   if (!session || (session.user as { role?: string }).role !== 'instructor') {
     redirect('/login')
   }
@@ -40,6 +44,7 @@ export default async function InstructorPage({
   }
 
   const { filter } = await searchParams
+  const gradesPosted = await readGradesPosted()
 
   const { rows } = await sql`
     SELECT s.*, st.name as student_name, st.email as student_email
@@ -88,6 +93,10 @@ export default async function InstructorPage({
             View assignments →
           </a>
         </div>
+      </div>
+
+      <div className="mb-8">
+        <GradesReleaseButton gradesPosted={gradesPosted} />
       </div>
 
       {/* Stats row */}

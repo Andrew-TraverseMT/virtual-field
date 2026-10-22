@@ -3,10 +3,12 @@ import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import { sql } from '@/lib/db'
 import { saveParticipationAlternative } from '@/lib/research'
-import { sessionRole, sessionUserId } from '@/lib/session'
+import { blockIfPasswordChangeRequired, sessionRole, sessionUserId } from '@/lib/session'
 
 export async function GET() {
   const session = await getServerSession(authOptions)
+  const blocked = blockIfPasswordChangeRequired(session)
+  if (blocked) return blocked
   if (sessionRole(session) !== 'student') {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
@@ -26,6 +28,8 @@ export async function GET() {
 
 export async function POST(request: Request) {
   const session = await getServerSession(authOptions)
+  const blocked = blockIfPasswordChangeRequired(session)
+  if (blocked) return blocked
   if (sessionRole(session) !== 'student') {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }

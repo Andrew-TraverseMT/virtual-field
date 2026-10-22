@@ -24,12 +24,15 @@ import { sql } from '@/lib/db'
 import { assignments } from '@/lib/assignments'
 import { GEMINI_GRADE_MODEL, gradeSubmission } from '@/lib/gemini'
 import { getFileBuffer } from '@/lib/storage'
+import { blockIfPasswordChangeRequired } from '@/lib/session'
 import path from 'path'
 
 export const runtime = 'nodejs'
 
 export async function POST(request: NextRequest) {
   const session = await getServerSession(authOptions)
+  const blocked = blockIfPasswordChangeRequired(session)
+  if (blocked) return blocked
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }

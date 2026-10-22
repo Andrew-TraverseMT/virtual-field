@@ -25,7 +25,7 @@ export default function GradesReleaseButton({ gradesPosted }: { gradesPosted: bo
   if (gradesPosted) {
     return (
       <p className="rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-sm text-stone-600">
-        Grades are marked posted. Consent export is closed. Survey responses stay stored by linking code. The consent holder purges ciphertext separately.
+        Grades are marked posted. The researcher can no longer view or export consent. Survey responses stay stored until the researcher purges them. This did not decrypt those records.
       </p>
     )
   }
@@ -34,12 +34,12 @@ export default function GradesReleaseButton({ gradesPosted }: { gradesPosted: bo
     <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
       <h2 className="text-xs font-semibold uppercase tracking-widest text-stone-400">Grades posted</h2>
       <p className="mt-2 text-sm leading-relaxed text-stone-600">
-        This app does not detect when official course grades are posted. An instructor or the consent holder marks that moment here.
-        Marking it is one-way and closes the consent export. It does not decrypt consent records and it does not delete survey responses. The consent holder purges ciphertext from the consent page.
+        Only an instructor can mark grades posted. The researcher cannot. This app does not detect when official course grades are posted.
+        Marking it is one-way. It closes the researcher’s consent view and export. It does not decrypt consent records and it does not delete survey responses.
       </p>
       <label className="mt-4 flex items-start gap-2 text-sm text-stone-700">
         <input type="checkbox" checked={confirm} onChange={(event) => setConfirm(event.target.checked)} className="mt-1" />
-        <span>I understand this closes consent export. It does not delete the encrypted records.</span>
+        <span>I understand this closes consent view and export. It does not delete the encrypted records.</span>
       </label>
       <button
         type="button"

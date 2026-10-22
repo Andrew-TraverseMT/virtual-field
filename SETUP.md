@@ -129,8 +129,8 @@ Omit the JSON body to initialize the schema only. Expected response: `{"ok":true
 Schema statements are idempotent. The first-instructor insert runs only while `registered_users` has no row with role `instructor`. Further accounts are created from the roster after that person signs in:
 
 - **Students.** Roster → add student. The app creates the login and the student record and shows a one-time temporary password. There is no shared student password.
-- **More instructors.** Roster → create account, role Instructor.
-- **Consent holder.** Roster → create account, role Consent holder. This is the only role that can see who granted or declined research consent, and only until an instructor or the consent holder marks grades posted. See the README for that release rule. The app does not hardcode a consent-holder email.
+- **More instructors.** Roster → Add instructor. That form cannot create a researcher.
+- **Researcher.** On the host that has `POSTGRES_URL`, run `npm run create-researcher -- --email <email> --name "Devon Orme" --affiliation "Montana State University"`. The temporary password prints once in that terminal. The account must set a new password at first sign-in, and the temporary password expires after 7 days if it is unused. Only this role can view, export, or purge consent and study data. The app does not seed it and does not hardcode the email.
 
 Public self-registration stays disabled. `STUDENT_PASSWORD` and `INSTRUCTOR_PASSWORD` are not read. If an older database still has the demo row `student-001` / `student@virtualfield.dev`, schema init deletes that row and its submissions.
 
@@ -149,7 +149,7 @@ Set all of the following in **Vercel → Project → Settings → Environment Va
 | `RESEND_FROM_EMAIL` | e.g. `noreply@yourdomain.edu` |
 | `BLOB_READ_WRITE_TOKEN` | Auto-added by Vercel when you create the Blob store |
 | `CRON_SECRET` | From Step 5a |
-| `CONSENT_PUBLIC_KEY` | Public PEM from the consent holder. Consent collection stays closed until this is set. Do not put the private key here. |
+| `CONSENT_ENCRYPTION_KEY` | 32-byte key, base64, from `openssl rand -base64 32`. Consent collection stays closed until this is set. Keep it only in the host environment. |
 | `POSTGRES_URL` (+ related) | Auto-added by Vercel when you create the Postgres store |
 
 After setting variables, push to `main` or trigger a deploy from the dashboard.

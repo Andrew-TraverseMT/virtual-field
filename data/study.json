@@ -4,5 +4,8 @@
   "metrics": {
     "endpoint": "",
     "placeholderEndpoint": "https://PLACEHOLDER.example/collect"
+  },
+  "participationCredit": {
+    "percentOfCourseGrade": 1
   }
 }

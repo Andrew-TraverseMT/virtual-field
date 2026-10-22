@@ -4,10 +4,12 @@ import { authOptions } from '@/lib/auth'
 import { sql } from '@/lib/db'
 import { readGradesPosted } from '@/lib/research'
 import { gateConsentList } from '@/lib/study-access'
-import { sessionRole } from '@/lib/session'
+import { blockIfPasswordChangeRequired, sessionRole } from '@/lib/session'
 
 export async function GET() {
   const session = await getServerSession(authOptions)
+  const blocked = blockIfPasswordChangeRequired(session)
+  if (blocked) return blocked
   const role = sessionRole(session)
   const gradesPosted = await readGradesPosted()
   const gated = await gateConsentList(role, gradesPosted, async () => {

@@ -51,6 +51,15 @@ export async function initSchema(): Promise<void> {
     ALTER TABLE registered_users ADD COLUMN IF NOT EXISTS role TEXT NOT NULL DEFAULT 'student'
   `
   await vercelSql`
+    ALTER TABLE registered_users ADD COLUMN IF NOT EXISTS must_change_password SMALLINT NOT NULL DEFAULT 0
+  `
+  await vercelSql`
+    ALTER TABLE registered_users ADD COLUMN IF NOT EXISTS temp_password_expires_at BIGINT
+  `
+  await vercelSql`
+    ALTER TABLE registered_users ADD COLUMN IF NOT EXISTS affiliation TEXT
+  `
+  await vercelSql`
     CREATE TABLE IF NOT EXISTS students (
       id           TEXT PRIMARY KEY,
       name         TEXT NOT NULL,
@@ -137,6 +146,15 @@ export async function initSchema(): Promise<void> {
     )
   `
   await vercelSql`
+    CREATE TABLE IF NOT EXISTS survey_progress (
+      student_id TEXT NOT NULL,
+      exercise INTEGER NOT NULL,
+      phase TEXT NOT NULL,
+      completed_at BIGINT NOT NULL,
+      PRIMARY KEY (student_id, exercise, phase)
+    )
+  `
+  await vercelSql`
     CREATE TABLE IF NOT EXISTS participation_alternative (
       student_id TEXT PRIMARY KEY REFERENCES students(id) ON DELETE CASCADE,
       response TEXT NOT NULL,
@@ -187,7 +205,7 @@ export async function initSchema(): Promise<void> {
   `
 
   // Drop the unreleased plaintext consent table only when it is empty.
-  // Rows, if any, are not rewritten and are not served. Purge is the consent holder's action.
+  // Rows, if any, are not rewritten and are not served. Purge is the researcher's action.
   await vercelSql`
     DO $$
     BEGIN
@@ -240,9 +258,12 @@ export type RegisteredUser = {
   name: string
   email: string
   password_hash: string
-  role: 'student' | 'instructor' | 'consent_holder'
+  role: 'student' | 'instructor' | 'researcher'
   verified: 0 | 1
   email_bounced: 0 | 1
   verification_token: string | null
   created_at: number
+  must_change_password?: number
+  temp_password_expires_at?: number | null
+  affiliation?: string | null
 }

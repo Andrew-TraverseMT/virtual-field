@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 
-export default function ParticipationPanel() {
+export default function ParticipationPanel({ percent, points }: { percent: number; points: number }) {
   const [credited, setCredited] = useState(false)
   const [response, setResponse] = useState('')
   const [error, setError] = useState('')
@@ -48,11 +48,11 @@ export default function ParticipationPanel() {
 
   return (
     <section className="mb-8 rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
-      <h2 className="text-xs font-semibold uppercase tracking-widest text-stone-400">Optional participation</h2>
+      <h2 className="text-xs font-semibold uppercase tracking-widest text-stone-400">Participation credit</h2>
       <p className="mt-2 text-sm leading-relaxed text-stone-600">
-        If participation credit is offered, you can earn it in either of two ways. Complete the exercise surveys, or write the course reflection below.
-        Both are recorded as the same credit. Your instructor sees only whether credit was recorded. They do not see which option you used, and they do not see your research consent.
-        The credit amount is not applied to your point total until it is confirmed.
+        Completing the pre, mid, and post survey on every exercise is worth {points} points, {percent}% of the course grade.
+        The course reflection below is an equal-value alternative and records the same {points} points.
+        Your instructor sees only whether credit was recorded. They do not see which option you used, and they do not see your research consent.
       </p>
       {credited && (
         <p className="mt-3 text-sm text-stone-700">Participation credit is recorded for your account.</p>

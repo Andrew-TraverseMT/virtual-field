@@ -4,6 +4,8 @@ import bcrypt from 'bcryptjs'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import { sql } from '@/lib/db'
+import { roleFromInstructorUi } from '@/lib/account-roles'
+import { blockIfPasswordChangeRequired } from '@/lib/session'
 
 export const runtime = 'nodejs'
 
@@ -18,6 +20,8 @@ function generateTempPassword(): string {
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions)
+  const blocked = blockIfPasswordChangeRequired(session)
+  if (blocked) return blocked
   if ((session?.user as { role?: string })?.role !== 'instructor') {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
@@ -27,7 +31,13 @@ export async function POST(req: NextRequest) {
   if (!name?.trim() || !email?.trim()) {
     return NextResponse.json({ error: 'Name and email are required.' }, { status: 400 })
   }
-  const accountRole = role === 'consent_holder' ? 'consent_holder' : 'instructor'
+  const accountRole = roleFromInstructorUi(role)
+  if (!accountRole) {
+    return NextResponse.json(
+      { error: 'The researcher role cannot be created from this page.' },
+      { status: 403 },
+    )
+  }
 
   const normalizedEmail = email.toLowerCase().trim()
   const { rows: existing } = await sql`

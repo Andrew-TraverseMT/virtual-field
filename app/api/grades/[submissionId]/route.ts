@@ -2,11 +2,14 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import { sql } from '@/lib/db'
+import { blockIfPasswordChangeRequired } from '@/lib/session'
 
 type Params = { params: Promise<{ submissionId: string }> }
 
 export async function PATCH(request: NextRequest, { params }: Params) {
   const session = await getServerSession(authOptions)
+  const blocked = blockIfPasswordChangeRequired(session)
+  if (blocked) return blocked
   if (!session || (session.user as { role?: string }).role !== 'instructor') {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }

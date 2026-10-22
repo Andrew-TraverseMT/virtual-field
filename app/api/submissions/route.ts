@@ -6,12 +6,14 @@ import { assignments } from '@/lib/assignments'
 import { GEMINI_GRADE_MODEL, gradeSubmission } from '@/lib/gemini'
 import { storeFile } from '@/lib/storage'
 import { randomUUID } from 'crypto'
-import { sessionRole, sessionUserId } from '@/lib/session'
+import { blockIfPasswordChangeRequired, sessionRole, sessionUserId } from '@/lib/session'
 
 export const runtime = 'nodejs'
 
 export async function POST(request: NextRequest) {
   const session = await getServerSession(authOptions)
+  const blocked = blockIfPasswordChangeRequired(session)
+  if (blocked) return blocked
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }

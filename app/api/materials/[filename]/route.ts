@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import { readFile } from 'fs/promises'
 import path from 'path'
+import { blockIfPasswordChangeRequired } from '@/lib/session'
 
 type Params = { params: Promise<{ filename: string }> }
 
@@ -10,6 +11,8 @@ const ALLOWED_EXTENSIONS = new Set(['.pdf', '.png', '.jpg', '.jpeg'])
 
 export async function GET(request: NextRequest, { params }: Params) {
   const session = await getServerSession(authOptions)
+  const blocked = blockIfPasswordChangeRequired(session)
+  if (blocked) return blocked
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }

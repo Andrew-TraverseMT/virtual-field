@@ -2,8 +2,27 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { useSession } from 'next-auth/react'
 
-export default function AccountForm({ email }: { email: string | null | undefined }) {
+const BLOCKED = new Set(['test1234', 'instructor1234', 'password', 'password1234'])
+
+function clientStrength(password: string): string | null {
+  if (password.length < 12) return 'Use at least 12 characters.'
+  if (!/[a-z]/.test(password)) return 'Include a lowercase letter.'
+  if (!/[A-Z]/.test(password)) return 'Include an uppercase letter.'
+  if (!/[0-9]/.test(password)) return 'Include a digit.'
+  if (BLOCKED.has(password.toLowerCase())) return 'Choose a password that is not a known demo password.'
+  return null
+}
+
+export default function AccountForm({
+  email,
+  forced = false,
+}: {
+  email: string | null | undefined
+  forced?: boolean
+}) {
+  const { data: session, update } = useSession()
   const [current, setCurrent] = useState('')
   const [next, setNext] = useState('')
   const [confirm, setConfirm] = useState('')
@@ -16,8 +35,9 @@ export default function AccountForm({ email }: { email: string | null | undefine
       setMsg({ type: 'error', text: 'New passwords do not match.' })
       return
     }
-    if (next.length < 8) {
-      setMsg({ type: 'error', text: 'New password must be at least 8 characters.' })
+    const strengthError = clientStrength(next)
+    if (strengthError) {
+      setMsg({ type: 'error', text: strengthError })
       return
     }
     setSaving(true)
@@ -33,10 +53,25 @@ export default function AccountForm({ email }: { email: string | null | undefine
       if (!res.ok) {
         setMsg({ type: 'error', text: data.error ?? 'Something went wrong.' })
       } else {
-        setMsg({ type: 'success', text: 'Password updated successfully.' })
         setCurrent('')
         setNext('')
         setConfirm('')
+        if (forced) {
+          try {
+            await update()
+          } catch {
+            // The database flag is already cleared. Navigation still loads a fresh session.
+          }
+          const role = session?.user?.role
+          const nextPath = role === 'researcher'
+            ? '/consent'
+            : role === 'instructor'
+              ? '/instructor/assignments'
+              : '/dashboard'
+          window.location.assign(nextPath)
+          return
+        }
+        setMsg({ type: 'success', text: 'Password updated successfully.' })
       }
     } catch {
       setMsg({ type: 'error', text: 'Network error. Please try again.' })
@@ -48,18 +83,24 @@ export default function AccountForm({ email }: { email: string | null | undefine
   return (
     <main className="min-h-screen px-4 py-12" style={{ backgroundColor: '#f8f7f4' }}>
       <div className="mx-auto max-w-md">
-        <div className="mb-6">
-          <Link
-            href="/dashboard"
-            className="text-xs font-semibold uppercase tracking-widest text-stone-400 hover:text-amber-700"
-          >
-            ← Dashboard
-          </Link>
-        </div>
+        {!forced && (
+          <div className="mb-6">
+            <Link
+              href="/dashboard"
+              className="text-xs font-semibold uppercase tracking-widest text-stone-400 hover:text-amber-700"
+            >
+              ← Dashboard
+            </Link>
+          </div>
+        )}
 
-        <h1 className="text-2xl font-bold tracking-tight text-stone-800 mb-1">Account</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-stone-800 mb-1">
+          {forced ? 'Set a new password' : 'Account'}
+        </h1>
         <p className="text-sm text-stone-500 mb-8">
-          Signed in as <span className="font-medium text-stone-700">{email}</span>
+          {forced
+            ? 'This temporary password has to be replaced before the rest of the site will open. Use at least 12 characters, with a lowercase letter, an uppercase letter, and a digit.'
+            : <>Signed in as <span className="font-medium text-stone-700">{email}</span></>}
         </p>
 
         <div className="rounded-2xl border border-stone-200 bg-white shadow-sm p-6">

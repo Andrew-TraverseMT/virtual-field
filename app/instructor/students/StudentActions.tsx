@@ -123,7 +123,6 @@ export function AddInstructorForm() {
   const router = useRouter()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
-  const [accountRole, setAccountRole] = useState<'instructor' | 'consent_holder'>('instructor')
   const [status, setStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle')
   const [error, setError] = useState('')
   const [createdPassword, setCreatedPassword] = useState('')
@@ -138,7 +137,7 @@ export function AddInstructorForm() {
     const res = await fetch('/api/auth/create-instructor', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: name.trim(), email: email.trim(), role: accountRole }),
+      body: JSON.stringify({ name: name.trim(), email: email.trim(), role: 'instructor' }),
     })
 
     const data = await res.json().catch(() => ({}))
@@ -165,10 +164,10 @@ export function AddInstructorForm() {
   return (
     <div className="rounded-2xl border border-stone-200 bg-white shadow-sm p-6 mb-8">
       <h2 className="text-xs font-semibold uppercase tracking-widest text-stone-400 mb-2">
-        Add instructor or consent holder
+        Add instructor
       </h2>
       <p className="text-sm text-stone-500 mb-4">
-        A consent holder can see research consent until grades are marked posted. They do not see the gradebook. The temporary password is generated for this account and is not a shared demo password.
+        This form creates an instructor. It cannot create a researcher. The temporary password is generated for this account and is not a shared demo password.
       </p>
       <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
         <input
@@ -187,14 +186,6 @@ export function AddInstructorForm() {
           onChange={(e) => setEmail(e.target.value)}
           className="flex-1 rounded-lg border border-stone-200 bg-stone-50 px-3.5 py-2.5 text-sm text-stone-900 placeholder:text-stone-400 outline-none transition focus:border-amber-500 focus:bg-white focus:ring-2 focus:ring-amber-100"
         />
-        <select
-          value={accountRole}
-          onChange={(e) => setAccountRole(e.target.value === 'consent_holder' ? 'consent_holder' : 'instructor')}
-          className="rounded-lg border border-stone-200 bg-stone-50 px-3.5 py-2.5 text-sm text-stone-900 outline-none focus:border-amber-500 focus:bg-white"
-        >
-          <option value="instructor">Instructor</option>
-          <option value="consent_holder">Consent holder</option>
-        </select>
         <button
           type="submit"
           disabled={status === 'loading'}

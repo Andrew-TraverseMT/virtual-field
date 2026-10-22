@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs'
 import { authOptions } from '@/lib/auth'
 import { sql } from '@/lib/db'
 import type { RegisteredUser } from '@/lib/db'
+import { passwordMeetsStrength } from '@/lib/passwords'
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions)
@@ -15,11 +16,9 @@ export async function POST(req: NextRequest) {
   if (typeof currentPassword !== 'string' || typeof newPassword !== 'string') {
     return NextResponse.json({ error: 'Invalid request.' }, { status: 400 })
   }
-  if (newPassword.length < 8) {
-    return NextResponse.json(
-      { error: 'New password must be at least 8 characters.' },
-      { status: 400 }
-    )
+  const strength = passwordMeetsStrength(newPassword)
+  if (!strength.ok) {
+    return NextResponse.json({ error: strength.error }, { status: 400 })
   }
 
   const { rows } = await sql`SELECT * FROM registered_users WHERE email = ${session.user.email}`
@@ -38,7 +37,13 @@ export async function POST(req: NextRequest) {
   }
 
   const hash = await bcrypt.hash(newPassword, 12)
-  await sql`UPDATE registered_users SET password_hash = ${hash} WHERE id = ${user.id}`
+  await sql`
+    UPDATE registered_users
+    SET password_hash = ${hash},
+        must_change_password = 0,
+        temp_password_expires_at = NULL
+    WHERE id = ${user.id}
+  `
 
   return NextResponse.json({ message: 'Password updated successfully.' })
 }

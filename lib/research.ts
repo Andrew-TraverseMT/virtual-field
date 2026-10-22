@@ -5,6 +5,7 @@ import { questionsFor, surveyPhases, type SurveyPhase } from '@/lib/surveys'
 import {
   canPurgeConsent,
   canSetGradesPosted,
+  canViewStudyData,
   gateConsentList,
   instructorAggregate,
   parseParticipantCode,
@@ -18,7 +19,11 @@ import {
   gradeComparisonAggregate,
   type GradeComparison,
 } from '@/lib/grade-compare'
-import type { ConsentEnvelope } from '@/lib/consent-crypto'
+import {
+  revealConsent,
+  type ConsentEnvelope,
+} from '@/lib/consent-crypto'
+import { surveyParticipationComplete } from '@/lib/participation'
 
 export async function readGradesPosted(): Promise<boolean> {
   const { rows } = await sql`SELECT grades_posted FROM study_settings WHERE id = 1`
@@ -43,7 +48,7 @@ export async function saveConsentCiphertext(input: {
   const ciphertext = JSON.stringify(input.envelope)
   await sql`
     INSERT INTO consent_records (id, receipt_hash, ciphertext, kid, created_at)
-    VALUES (${id}, ${input.receiptHash}, ${ciphertext}, ${input.envelope.kid}, ${now})
+    VALUES (${id}, ${input.receiptHash}, ${ciphertext}, ${'aes-256-gcm'}, ${now})
     ON CONFLICT (receipt_hash) DO UPDATE
     SET ciphertext = EXCLUDED.ciphertext,
         kid = EXCLUDED.kid,
@@ -52,37 +57,81 @@ export async function saveConsentCiphertext(input: {
   return { ok: true }
 }
 
-export type ConsentExportRecord = {
+export type RevealedConsent = {
   id: string
   createdAt: number
-  envelope: ConsentEnvelope
+  decision: string
+  participantCode: string
+  name: string
+  email: string
 }
 
-export async function exportConsentBundle(role: AppRole | null, actorId: string): Promise<
+function parseStoredEnvelope(raw: string): ConsentEnvelope | null {
+  try {
+    const envelope = JSON.parse(raw) as ConsentEnvelope
+    if (!envelope || envelope.v !== 1 || envelope.alg !== 'AES-256-GCM') return null
+    if (!envelope.iv || !envelope.tag || !envelope.ct) return null
+    return envelope
+  } catch {
+    return null
+  }
+}
+
+function revealRows(
+  role: AppRole | null,
+  key: Buffer,
+  rows: { id: string; ciphertext: string; created_at: number }[],
+): RevealedConsent[] {
+  const revealed: RevealedConsent[] = []
+  for (const row of rows) {
+    const envelope = parseStoredEnvelope(row.ciphertext)
+    if (!envelope) continue
+    const payload = revealConsent(role, key, envelope)
+    if (!payload || typeof payload !== 'object') continue
+    const record = payload as Record<string, unknown>
+    revealed.push({
+      id: row.id,
+      createdAt: row.created_at,
+      decision: typeof record.decision === 'string' ? record.decision : '',
+      participantCode: typeof record.participantCode === 'string' ? record.participantCode : '',
+      name: typeof record.name === 'string' ? record.name : '',
+      email: typeof record.email === 'string' ? record.email : '',
+    })
+  }
+  return revealed
+}
+
+async function readConsentCipherRows(): Promise<{ id: string; ciphertext: string; created_at: number }[]> {
+  const { rows } = await sql`
+    SELECT id, ciphertext, created_at
+    FROM consent_records
+    ORDER BY created_at ASC
+  `
+  return rows as { id: string; ciphertext: string; created_at: number }[]
+}
+
+export async function viewConsentRecords(role: AppRole | null, actorId: string, key: Buffer | null): Promise<
   | { allowed: false; gradesPosted: boolean }
-  | { allowed: true; gradesPosted: false; records: ConsentExportRecord[] }
+  | { allowed: true; gradesPosted: false; records: RevealedConsent[] }
 > {
   const gradesPosted = await readGradesPosted()
-  const gated = await gateConsentList(role, gradesPosted, async () => {
-    const { rows } = await sql`
-      SELECT id, ciphertext, created_at
-      FROM consent_records
-      ORDER BY created_at ASC
-    `
-    return rows as { id: string; ciphertext: string; created_at: number }[]
-  })
+  if (!key) return { allowed: false, gradesPosted }
+  const gated = await gateConsentList(role, gradesPosted, () => readConsentCipherRows())
   if (!gated.allowed) return { allowed: false, gradesPosted }
-  const records: ConsentExportRecord[] = []
-  for (const row of gated.rows) {
-    try {
-      const envelope = JSON.parse(row.ciphertext) as ConsentEnvelope
-      if (envelope && typeof envelope === 'object' && envelope.v === 1) {
-        records.push({ id: row.id, createdAt: row.created_at, envelope })
-      }
-    } catch {
-      continue
-    }
-  }
+  const records = revealRows(role, key, gated.rows)
+  await writeStudyAudit(actorId, 'consent_view', { count: records.length })
+  return { allowed: true, gradesPosted: false, records }
+}
+
+export async function exportConsentBundle(role: AppRole | null, actorId: string, key: Buffer | null): Promise<
+  | { allowed: false; gradesPosted: boolean }
+  | { allowed: true; gradesPosted: false; records: RevealedConsent[] }
+> {
+  const gradesPosted = await readGradesPosted()
+  if (!key) return { allowed: false, gradesPosted }
+  const gated = await gateConsentList(role, gradesPosted, () => readConsentCipherRows())
+  if (!gated.allowed) return { allowed: false, gradesPosted }
+  const records = revealRows(role, key, gated.rows)
   await writeStudyAudit(actorId, 'consent_export', { count: records.length })
   return { allowed: true, gradesPosted: false, records }
 }
@@ -96,7 +145,10 @@ export async function purgeConsentRecords(role: AppRole | null, actorId: string)
   }
   const { rows } = await sql`SELECT COUNT(*)::int AS n FROM consent_records`
   const count = Number((rows[0] as { n?: number } | undefined)?.n ?? 0)
+  const surveyCountRows = await sql`SELECT COUNT(*)::int AS n FROM survey_responses`
+  const surveyCount = Number((surveyCountRows.rows[0] as { n?: number } | undefined)?.n ?? 0)
   await sql`DELETE FROM consent_records`
+  await sql`DELETE FROM survey_responses`
   let legacy = 0
   try {
     const legacyRows = await sql`SELECT COUNT(*)::int AS n FROM research_consent`
@@ -105,8 +157,12 @@ export async function purgeConsentRecords(role: AppRole | null, actorId: string)
   } catch {
     legacy = 0
   }
-  await writeStudyAudit(actorId, 'consent_purge', { consentRecords: count, legacyPlaintextRows: legacy })
-  return { ok: true, count: count + legacy }
+  await writeStudyAudit(actorId, 'consent_purge', {
+    consentRecords: count,
+    surveyResponses: surveyCount,
+    legacyPlaintextRows: legacy,
+  })
+  return { ok: true, count: count + legacy + surveyCount }
 }
 
 async function writeStudyAudit(actorId: string, action: string, detail: Record<string, number>): Promise<void> {
@@ -163,11 +219,25 @@ export async function submitSurvey(input: {
   return { ok: true }
 }
 
-export async function loadInstructorAggregate(role: AppRole | null): Promise<
+export async function recordSurveyProgress(studentId: string, exercise: number, phase: string): Promise<void> {
+  const now = Math.floor(Date.now() / 1000)
+  await sql`
+    INSERT INTO survey_progress (student_id, exercise, phase, completed_at)
+    VALUES (${studentId}, ${exercise}, ${phase}, ${now})
+    ON CONFLICT (student_id, exercise, phase) DO NOTHING
+  `
+  const { rows } = await sql`SELECT exercise, phase FROM survey_progress WHERE student_id = ${studentId}`
+  const sequences = assignments.map((item) => item.sequence)
+  if (surveyParticipationComplete(sequences, rows as { exercise: number; phase: string }[])) {
+    await recordParticipationCredit(studentId)
+  }
+}
+
+export async function loadInstructorAggregate(role: AppRole | null, actorId: string | null = null): Promise<
   | { allowed: false }
   | { allowed: true; groups: InstructorAggregateGroup[] }
 > {
-  if (role !== 'instructor' && role !== 'consent_holder') return { allowed: false }
+  if (!canViewStudyData(role)) return { allowed: false }
   const { rows } = await sql`
     SELECT exercise, phase, answers
     FROM survey_responses
@@ -191,13 +261,15 @@ export async function loadInstructorAggregate(role: AppRole | null): Promise<
     mid: questionsFor('mid'),
     post: questionsFor('post'),
   }
-  return { allowed: true, groups: instructorAggregate(stored, questionsByPhase) }
+  const groups = instructorAggregate(stored, questionsByPhase)
+  if (actorId) await writeStudyAudit(actorId, 'study_view', { groups: groups.length })
+  return { allowed: true, groups }
 }
 
 /**
- * Marks grades posted. This is one-way. The app has no official grade-posting event.
+ * Marks grades posted. This is one-way, and only the instructor can call it.
  * It does not read consent ciphertext and does not delete survey responses.
- * The consent holder exports and purges the encrypted records separately.
+ * The researcher exports and purges study records separately.
  */
 export async function releaseAfterGradesPosted(role: AppRole | null): Promise<
   | { ok: true }
@@ -224,7 +296,7 @@ export async function loadGradeComparison(role: AppRole | null): Promise<
   | { allowed: false }
   | { allowed: true; summary: GradeComparison }
 > {
-  if (role !== 'instructor' && role !== 'consent_holder') return { allowed: false }
+  if (!canViewStudyData(role)) return { allowed: false }
   const { rows } = await sql`SELECT ai_grade, instructor_grade FROM submissions`
   const pairs = (rows as { ai_grade: number | null; instructor_grade: number | null }[]).map((row) => ({
     aiGrade: row.ai_grade,

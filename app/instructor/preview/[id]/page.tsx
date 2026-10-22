@@ -2,6 +2,7 @@ import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import { notFound, redirect } from 'next/navigation'
 import { assignments, getAssignment } from '@/lib/assignments'
+import { homeForRole, mustChangePassword, sessionRole } from '@/lib/session'
 import Link from 'next/link'
 import SubmitPanel from '@/app/assignments/[id]/SubmitPanel'
 import FeedbackPanel from '@/app/assignments/[id]/FeedbackPanel'
@@ -19,7 +20,8 @@ export default async function InstructorPreviewAssignmentPage({ params }: Props)
   const { id } = await params
   const session = await getServerSession(authOptions)
   if (!session) redirect('/login')
-  if ((session.user as { role?: string })?.role !== 'instructor') redirect('/dashboard')
+  if (mustChangePassword(session)) redirect('/account/password')
+  if (sessionRole(session) !== 'instructor') redirect(homeForRole(sessionRole(session)))
 
   const assignment = getAssignment(id)
   if (!assignment) notFound()

@@ -1,20 +1,21 @@
 import { redirect } from 'next/navigation'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
-import { loadGradeComparison, loadInstructorAggregate, readGradesPosted } from '@/lib/research'
-import { homeForRole, sessionRole } from '@/lib/session'
+import { loadGradeComparison, loadInstructorAggregate } from '@/lib/research'
+import { homeForRole, mustChangePassword, sessionRole, sessionUserId } from '@/lib/session'
 import AggregateView from './AggregateView'
 import GradeCompare from './GradeCompare'
-import GradesReleaseButton from './GradesReleaseButton'
 
 export default async function StudyPage() {
   const session = await getServerSession(authOptions)
   const role = sessionRole(session)
-  if (role !== 'instructor' && role !== 'consent_holder') redirect(homeForRole(role))
+  if (!session) redirect('/login')
+  if (mustChangePassword(session)) redirect('/account/password')
+  if (role !== 'researcher') redirect(homeForRole(role))
 
-  const [aggregate, gradesPosted, comparison] = await Promise.all([
-    loadInstructorAggregate(role),
-    readGradesPosted(),
+  const actorId = sessionUserId(session)
+  const [aggregate, comparison] = await Promise.all([
+    loadInstructorAggregate(role, actorId),
     loadGradeComparison(role),
   ])
   if (!aggregate.allowed || !comparison.allowed) redirect(homeForRole(role))
@@ -24,11 +25,8 @@ export default async function StudyPage() {
       <p className="text-xs font-semibold uppercase tracking-widest text-stone-400 mb-1">Study</p>
       <h1 className="text-2xl font-semibold tracking-tight text-stone-900">Survey totals</h1>
       <p className="mt-2 mb-8 text-sm leading-relaxed text-stone-500">
-        Counts and numeric summaries only. A cell with fewer than 5 responses is hidden, including the exact count. Written answers are not shown.
+        Counts and numeric summaries only. A cell with fewer than 5 responses is hidden, including the exact count. Written answers are not shown. Opening this page is written to the audit log.
       </p>
-      <div className="mb-8">
-        <GradesReleaseButton gradesPosted={gradesPosted} />
-      </div>
       <GradeCompare summary={comparison.summary} />
       <AggregateView groups={aggregate.groups} />
     </div>

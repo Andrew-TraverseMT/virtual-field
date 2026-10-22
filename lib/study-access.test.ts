@@ -28,9 +28,9 @@ const note: SurveyQuestion = {
 }
 
 describe('consent list visibility', () => {
-  it('allows only the consent holder before grades are posted', async () => {
-    assert.equal(canViewConsentList('consent_holder', false), true)
-    assert.equal(canViewConsentList('consent_holder', true), false)
+  it('allows only the researcher before grades are posted', async () => {
+    assert.equal(canViewConsentList('researcher', false), true)
+    assert.equal(canViewConsentList('researcher', true), false)
     assert.equal(canViewConsentList('instructor', false), false)
     assert.equal(canViewConsentList('instructor', true), false)
     assert.equal(canViewConsentList('student', false), false)
@@ -46,20 +46,20 @@ describe('consent list visibility', () => {
 
     const instructor = await gateConsentList('instructor', false, query)
     const student = await gateConsentList('student', false, query)
-    const afterGrades = await gateConsentList('consent_holder', true, query)
+    const afterGrades = await gateConsentList('researcher', true, query)
 
     assert.equal(instructor.allowed, false)
     assert.equal(student.allowed, false)
     assert.equal(afterGrades.allowed, false)
     assert.equal(called, false)
 
-    const allowed = await gateConsentList('consent_holder', false, async () => ['row'])
+    const allowed = await gateConsentList('researcher', false, async () => ['row'])
     assert.deepEqual(allowed, { allowed: true, rows: ['row'] })
   })
 
-  it('lets the instructor or consent holder mark grades posted', () => {
+  it('lets only the instructor mark grades posted', () => {
     assert.equal(canSetGradesPosted('instructor'), true)
-    assert.equal(canSetGradesPosted('consent_holder'), true)
+    assert.equal(canSetGradesPosted('researcher'), false)
     assert.equal(canSetGradesPosted('student'), false)
     assert.equal(canSetGradesPosted(null), false)
   })
@@ -68,7 +68,7 @@ describe('consent list visibility', () => {
 describe('aggregate-only instructor view', () => {
   it('never grants row-level survey access', () => {
     assert.equal(canViewSurveyRows('instructor'), false)
-    assert.equal(canViewSurveyRows('consent_holder'), false)
+    assert.equal(canViewSurveyRows('researcher'), false)
     assert.equal(canViewSurveyRows('student'), false)
   })
 

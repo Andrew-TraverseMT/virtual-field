@@ -1,82 +1,59 @@
 import assert from 'node:assert/strict'
-import { generateKeyPairSync, webcrypto } from 'node:crypto'
+import { randomBytes } from 'node:crypto'
 import { describe, it } from 'node:test'
 import {
   CONSENT_RECORD_COLUMNS,
   consentCollectionOpen,
   consentWriteDecision,
-  decryptConsentPayload,
-  describePublicKey,
-  encryptConsentPayload,
-  parseConsentEnvelope,
+  decryptConsentRecord,
+  encryptConsentRecord,
+  readConsentEncryptionKey,
+  revealConsent,
 } from './consent-crypto.ts'
-import { canExportConsent, canPurgeConsent, canViewConsentList } from './study-access.ts'
+import { canExportConsent, canPurgeConsent, canViewConsentList, canViewStudyData } from './study-access.ts'
 
-function keyPair() {
-  return generateKeyPairSync('rsa', { modulusLength: 2048 })
+function key(): Buffer {
+  return randomBytes(32)
 }
 
 describe('consent encryption fails closed', () => {
-  it('refuses collection when the public key is missing', () => {
+  it('refuses collection when the server key is missing or the wrong length', () => {
+    assert.equal(readConsentEncryptionKey(undefined), null)
+    assert.equal(readConsentEncryptionKey(''), null)
+    assert.equal(readConsentEncryptionKey(Buffer.alloc(16).toString('base64')), null)
     assert.equal(consentCollectionOpen(null), false)
     assert.equal(consentWriteDecision(null, false), 'closed')
     assert.equal(consentWriteDecision(null, true), 'closed')
+    assert.equal(consentWriteDecision(key(), true), 'grades_posted')
+    assert.equal(consentWriteDecision(key(), false), 'ok')
   })
 
-  it('stores ciphertext only and round-trips with the private key', async () => {
-    const { publicKey, privateKey } = keyPair()
-    const pem = publicKey.export({ type: 'spki', format: 'pem' }).toString()
-    const privatePem = privateKey.export({ type: 'pkcs8', format: 'pem' }).toString()
-    const described = describePublicKey(pem)
+  it('stores ciphertext only and reveals it to the researcher', () => {
+    const secret = key()
     const payload = {
       decision: 'grant',
       participantCode: 'River-4242',
       name: 'Distinct Student Name',
       email: 'distinct.student@example.edu',
     }
-    const envelope = encryptConsentPayload(pem, payload)
+    const envelope = encryptConsentRecord(secret, payload)
     const stored = JSON.stringify({
       id: 'row-1',
       receipt_hash: 'abc',
       ciphertext: JSON.stringify(envelope),
-      kid: envelope.kid,
+      kid: 'aes-256-gcm',
       created_at: 1,
     })
 
-    assert.equal(envelope.kid, described.kid)
+    assert.equal('decision' in envelope, false)
     assert.equal(stored.includes('Distinct Student Name'), false)
     assert.equal(stored.includes('distinct.student@example.edu'), false)
-    assert.equal(stored.includes('grant'), false)
     assert.equal(stored.includes('River-4242'), false)
-    assert.deepEqual(decryptConsentPayload(privatePem, envelope), payload)
-
-    const browserKey = await webcrypto.subtle.importKey(
-      'jwk',
-      described.jwk,
-      { name: 'RSA-OAEP', hash: 'SHA-256' },
-      false,
-      ['encrypt'],
-    )
-    const aes = await webcrypto.subtle.generateKey({ name: 'AES-GCM', length: 256 }, true, ['encrypt'])
-    const rawAes = new Uint8Array(await webcrypto.subtle.exportKey('raw', aes))
-    const ek = new Uint8Array(await webcrypto.subtle.encrypt({ name: 'RSA-OAEP' }, browserKey, rawAes))
-    const iv = webcrypto.getRandomValues(new Uint8Array(12))
-    const ct = new Uint8Array(
-      await webcrypto.subtle.encrypt(
-        { name: 'AES-GCM', iv },
-        aes,
-        new TextEncoder().encode(JSON.stringify(payload)),
-      ),
-    )
-    const browserEnvelope = {
-      v: 1 as const,
-      alg: 'RSA-OAEP-256+A256GCM' as const,
-      kid: described.kid,
-      iv: Buffer.from(iv).toString('base64'),
-      ek: Buffer.from(ek).toString('base64'),
-      ct: Buffer.from(ct).toString('base64'),
-    }
-    assert.deepEqual(decryptConsentPayload(privatePem, browserEnvelope), payload)
+    assert.deepEqual(decryptConsentRecord(secret, envelope), payload)
+    assert.equal(revealConsent('instructor', secret, envelope), null)
+    assert.equal(revealConsent('student', secret, envelope), null)
+    assert.equal(revealConsent('researcher', null, envelope), null)
+    assert.deepEqual(revealConsent('researcher', secret, envelope), payload)
     assert.equal(
       CONSENT_RECORD_COLUMNS.some((column) =>
         ['name', 'email', 'decision', 'student_id', 'participant_code'].includes(column),
@@ -85,25 +62,26 @@ describe('consent encryption fails closed', () => {
     )
   })
 
-  it('rejects a plaintext consent body', () => {
-    const { publicKey } = keyPair()
-    const pem = publicKey.export({ type: 'spki', format: 'pem' }).toString()
-    const kid = describePublicKey(pem).kid
-    const envelope = encryptConsentPayload(pem, { decision: 'decline' })
-    assert.equal(parseConsentEnvelope({ decision: 'grant', envelope }, kid), null)
-    assert.equal(parseConsentEnvelope({ email: 'a@b.edu', envelope }, kid), null)
-    assert.deepEqual(parseConsentEnvelope({ envelope, receipt: 'aa' }, kid)?.kid, kid)
+  it('accepts a 32-byte base64 key', () => {
+    const secret = key()
+    const read = readConsentEncryptionKey(secret.toString('base64'))
+    assert.ok(read)
+    assert.equal(read.length, 32)
   })
 })
 
-describe('instructor cannot read consent', () => {
-  it('blocks export and purge for the instructor', () => {
+describe('researcher is the only role that can read study data', () => {
+  it('blocks instructors and students from consent and study views', () => {
+    assert.equal(canViewConsentList('researcher', false), true)
+    assert.equal(canViewConsentList('researcher', true), false)
     assert.equal(canViewConsentList('instructor', false), false)
+    assert.equal(canExportConsent('researcher', false), true)
     assert.equal(canExportConsent('instructor', false), false)
-    assert.equal(canExportConsent('consent_holder', false), true)
-    assert.equal(canExportConsent('consent_holder', true), false)
+    assert.equal(canPurgeConsent('researcher'), true)
     assert.equal(canPurgeConsent('instructor'), false)
     assert.equal(canPurgeConsent('student'), false)
-    assert.equal(canPurgeConsent('consent_holder'), true)
+    assert.equal(canViewStudyData('researcher'), true)
+    assert.equal(canViewStudyData('instructor'), false)
+    assert.equal(canViewStudyData('student'), false)
   })
 })

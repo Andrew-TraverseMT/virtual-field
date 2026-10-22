@@ -22,8 +22,15 @@ Mapping landscapes, field slips, and topographic sheets come from the University
 There is no demo login and no seeded student. Public registration is off.
 
 1. Create the first instructor with `POST /api/setup` while the database has no instructor. The request needs `Authorization: Bearer <CRON_SECRET>` and a JSON body with `name`, `email`, and a password of at least 12 characters. Known demo passwords are rejected.
-2. That instructor creates later instructor accounts, the consent-holder account, and student accounts from the roster. Each new account receives its own temporary password. The consent holder is a role on that form, intended for the person who holds the research consent list (Devon Orme for this study). The app does not hardcode that email.
-3. Students change the temporary password after signing in.
+2. That instructor creates later instructor accounts and student accounts from the roster. Each new account receives its own temporary password. The roster cannot create a researcher, and an instructor cannot grant that role to themselves.
+3. The researcher account is created once, on the server, and is not seeded:
+
+```bash
+npm run create-researcher -- --email <email> --name "Devon Orme" --affiliation "Montana State University"
+```
+
+The command prints a random temporary password once on the operator's terminal. The database stores only the hash. The password is not written to the repo or to application logs. The account must replace it on first sign-in. An unused temporary password stops working after 7 days. Run the command again to reissue one only while that flag is still set.
+4. Students change the temporary password after signing in.
 
 Details are in [SETUP.md](SETUP.md).
 
@@ -35,48 +42,35 @@ Consent and the before, during, and after surveys live in the app. They use the 
 
 A student grants or declines research consent on the dashboard and chooses a linking code of 8–40 letters, numbers, or hyphens. The code cannot be the student's name, email, or account id.
 
-The browser encrypts the decision, the linking code, and the student's name and email to the consent holder's public key before the request is sent. The database stores the ciphertext, a key fingerprint, a receipt hash, and a timestamp. It does not store the decision or the name in plaintext. Collection is refused when `CONSENT_PUBLIC_KEY` is missing or invalid.
+The server encrypts the decision, the linking code, and the student's name and email with AES-256-GCM before the row is stored. The database stores the ciphertext, the algorithm id, a receipt hash, and a timestamp. It does not store the decision or the name in plaintext. Collection is refused when `CONSENT_ENCRYPTION_KEY` is missing or is not 32 bytes.
 
-The instructor cannot export or list those records. `canExportConsent` is the same check as `canViewConsentList`: consent holder only, and only while grades are not marked posted. The export route returns ciphertext. Decryption happens on the consent holder's computer.
-
-### Consent holder's key
-
-Devon generates the keypair on her own computer and keeps the private key there. It does not go in this repository, in Vercel, or in any server environment variable.
+Generate that key on the host and put only the base64 value in the environment. Do not commit it.
 
 ```bash
-openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out devon-consent-private.pem
-openssl pkey -in devon-consent-private.pem -pubout -out devon-consent-public.pem
+openssl rand -base64 32
 ```
 
-Put the public PEM in `CONSENT_PUBLIC_KEY`. Newlines in the environment value can be written as `\n`. After she downloads an export from the consent page:
-
-```bash
-node --experimental-strip-types scripts/decrypt-consent.ts --bundle consent-export.json --private-key /path/to/devon-consent-private.pem
-```
-
-That prints CSV to the terminal. Purge, on the same page, deletes the ciphertext. Export and purge both check the role on the server and write an audit row with the action, the actor, the time, and a count. The audit row does not contain the records.
+Only the researcher role can view or export the decrypted records, and only while grades are not marked posted. Instructors and students cannot. Decrypting for view or export, and purging, each write an audit row with the action, the actor, the time, and a count. The audit row does not contain the records. Purge deletes the ciphertext and the de-identified survey responses. It does not delete participation credit or the gradebook.
 
 ### When grades are marked posted
 
-The app has no course-wide "grades posted" event. An instructor or the consent holder sets a one-way flag from the study page or the consent page (`POST /api/study/release`). That sets `study_settings.grades_posted`. It closes consent export and new consent submissions. It does not decrypt records and it does not delete survey responses, because the server cannot see who declined. The consent holder purges ciphertext with `POST /api/consent/purge`.
-
-What should count as grades being posted, and who should flip the flag, is still open.
+The app has no course-wide "grades posted" event. Only the instructor sets the one-way flag, from the instructor portal (`POST /api/study/release`). The researcher cannot. That sets `study_settings.grades_posted`. It closes consent view, export, and new consent submissions. It does not decrypt records and it does not delete survey responses. The researcher purges those separately.
 
 ### Surveys
 
-Each exercise has a pre, mid, and post form. Question text is the draft in `data/surveys.json`. A response is stored in `survey_responses` with the linking code, exercise number, phase, and answers. The table has no student name, email, or id column.
+Each exercise has a pre, mid, and post form. Question text is in `data/surveys.json` and must match the IRB-approved text if that text differs. A response is stored in `survey_responses` with the linking code, exercise number, phase, and answers. The table has no student name, email, or id column.
 
 The three phases open from the due window the app already stores. Creating a student sets `enrolled_at` and `deadline_at` (the roster start date plus three weeks). That span is split across the assignment's existing week, and the exercises in that week share the week in sequence order. Pre is the first third of the exercise slot, mid the second, post the third. There is no separate survey calendar. A submission outside the open third is rejected by the server.
 
 Students may submit a survey whether or not they grant research consent. The link between a person and a code exists only inside the encrypted consent record.
 
-The instructor and the consent holder see `/study`. That page shows counts and numeric summaries (mean, min, max). It does not show individual rows. Free-text answers are omitted. A group with fewer than 5 responses is reported as hidden, including the exact count. `canViewSurveyRows` is always false.
+The researcher sees `/study`. Instructors do not. That page shows counts and numeric summaries (mean, min, max). It does not show individual rows. Free-text answers are omitted. A group with fewer than 5 responses is reported as hidden, including the exact count. `canViewSurveyRows` is always false. Opening the page writes an audit row.
 
 The same page shows an aggregate comparison of the Gemini draft grade and the instructor's final grade: how many pairs, the two means, and the mean absolute difference. Fewer than 5 pairs is hidden. Finalizing a grade writes `instructor_grade` and leaves `ai_grade`, `ai_model`, and `ai_graded_at` in place.
 
 ### Optional participation credit
 
-A student can record participation by completing a survey or by submitting the course reflection on the dashboard. Both write the same `participation_credit` row. That row has no column for which option was used and no consent field. The roster shows "Recorded" or nothing. The reflection text is visible to the student who wrote it. The point value of the credit is not added to the gradebook; the amount is still open.
+Participation credit is 1% of the course grade by default, set by `participationCredit.percentOfCourseGrade` in `data/study.json`. A student earns it by completing the pre, mid, and post survey on every exercise, or by submitting the course reflection. Both write the same `participation_credit` row and the same point value. That row has no column for which option was used and no consent field. The roster shows "Recorded" or nothing. The course total includes those points in the denominator. The numerator includes them only when credit is recorded. The reflection text is visible to the student who wrote it.
 
 ### Usage metrics
 

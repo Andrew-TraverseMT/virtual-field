@@ -47,13 +47,10 @@ export default function ConsentTools({ canExport }: { canExport: boolean }) {
     <div className="mb-8 rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
       <h2 className="text-xs font-semibold uppercase tracking-widest text-stone-400">Export and purge</h2>
       <p className="mt-2 text-sm leading-relaxed text-stone-600">
-        Export downloads ciphertext. Decrypt it on your computer with the private key:
+        Export downloads the decrypted consent records for this researcher account. The download is written to the audit log with a count, not the records.
       </p>
-      <pre className="mt-3 overflow-x-auto rounded-lg bg-stone-50 p-3 text-xs text-stone-700">
-        node --experimental-strip-types scripts/decrypt-consent.ts --bundle consent-export.json --private-key /path/to/private.pem
-      </pre>
       <p className="mt-3 text-sm leading-relaxed text-stone-600">
-        The private key is not on this server. Purge deletes the stored ciphertext and writes an audit row with the count. It does not show the records.
+        Purge deletes the stored ciphertext and the de-identified survey responses. It writes an audit row with those counts. It does not delete participation credit or the gradebook.
       </p>
       <div className="mt-4 flex flex-wrap gap-3">
         <button
@@ -62,7 +59,7 @@ export default function ConsentTools({ canExport }: { canExport: boolean }) {
           onClick={handleExport}
           className="rounded-lg bg-stone-900 px-4 py-2 text-sm font-semibold text-white hover:bg-stone-700 disabled:opacity-60"
         >
-          Download ciphertext
+          Download consent export
         </button>
         {!purgeArmed ? (
           <button
@@ -71,7 +68,7 @@ export default function ConsentTools({ canExport }: { canExport: boolean }) {
             onClick={() => setPurgeArmed(true)}
             className="rounded-lg border border-stone-300 px-4 py-2 text-sm font-semibold text-stone-700 hover:bg-stone-50 disabled:opacity-60"
           >
-            Purge consent records
+            Purge study records
           </button>
         ) : (
           <button

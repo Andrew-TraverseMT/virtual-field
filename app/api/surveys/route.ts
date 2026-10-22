@@ -2,12 +2,14 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import { sql } from '@/lib/db'
-import { recordParticipationCredit, submitSurvey } from '@/lib/research'
+import { recordSurveyProgress, submitSurvey } from '@/lib/research'
 import type { SurveyPhase } from '@/lib/surveys'
-import { sessionRole, sessionUserId } from '@/lib/session'
+import { blockIfPasswordChangeRequired, sessionRole, sessionUserId } from '@/lib/session'
 
 export async function POST(request: Request) {
   const session = await getServerSession(authOptions)
+  const blocked = blockIfPasswordChangeRequired(session)
+  if (blocked) return blocked
   if (sessionRole(session) !== 'student') {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
@@ -52,6 +54,6 @@ export async function POST(request: Request) {
     deadlineAt: student.deadline_at,
   })
   if (!result.ok) return NextResponse.json({ error: result.error }, { status: result.status })
-  await recordParticipationCredit(studentId)
+  await recordSurveyProgress(studentId, record.exercise, record.phase)
   return NextResponse.json({ ok: true })
 }

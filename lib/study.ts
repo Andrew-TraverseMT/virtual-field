@@ -8,6 +8,10 @@ export type StudyConfig = {
     /** Labeled example only. The app does not request this URL. */
     placeholderEndpoint: string
   }
+  participationCredit: {
+    /** Share of the combined course total. 1 means one percent. */
+    percentOfCourseGrade: number
+  }
 }
 
 export const study: StudyConfig = studyConfig
@@ -61,4 +65,9 @@ export function metricsEndpoint(): string | null {
 
 export function studyVersion(): string {
   return study.version.trim()
+}
+
+export function participationPercent(): number {
+  const value = study.participationCredit?.percentOfCourseGrade
+  return typeof value === 'number' && Number.isFinite(value) ? value : 1
 }

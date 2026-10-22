@@ -1,17 +1,26 @@
 import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
-import { CONSENT_ALGORITHM } from '@/lib/consent-crypto'
+import { readConsentEncryptionKey } from '@/lib/consent-crypto'
 import { exportConsentBundle } from '@/lib/research'
-import { sessionRole, sessionUserId } from '@/lib/session'
+import { blockIfPasswordChangeRequired, sessionRole, sessionUserId } from '@/lib/session'
 
 export async function GET() {
   const session = await getServerSession(authOptions)
-  const role = sessionRole(session)
+  const blocked = blockIfPasswordChangeRequired(session)
+  if (blocked) return blocked
   const actorId = sessionUserId(session)
   if (!actorId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const result = await exportConsentBundle(role, actorId)
+  const key = readConsentEncryptionKey()
+  if (!key) {
+    return NextResponse.json(
+      { error: 'Consent export is closed until CONSENT_ENCRYPTION_KEY is configured.' },
+      { status: 503 },
+    )
+  }
+
+  const result = await exportConsentBundle(sessionRole(session), actorId, key)
   if (!result.allowed) {
     return NextResponse.json(
       { error: 'The consent export is not available to this account.' },
@@ -20,8 +29,7 @@ export async function GET() {
   }
 
   const bundle = {
-    note: 'Ciphertext only. Decrypt on the consent holder’s computer. The private key never belongs on this server.',
-    algorithm: CONSENT_ALGORITHM,
+    note: 'Decrypted for the researcher account that downloaded this file. Store it outside the course database.',
     exportedAt: Math.floor(Date.now() / 1000),
     records: result.records,
   }
