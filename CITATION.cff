@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: If you use Virtual Field Geology Basecamp, please cite it using these metadata.
+title: Virtual Field Geology Basecamp
+type: software
+authors:
+  - family-names: Laskowski
+    given-names: Andrew
+    affiliation: Montana State University
+    # TODO: add ORCID when Andrew confirms one. Do not invent one.
+  - family-names: Orme
+    given-names: Devon
+    # TODO: add affiliation and ORCID when confirmed. Do not invent them.
+repository-code: https://github.com/Andrew-TraverseMT/virtual-field
+license: MIT
+version: 1.0.0
+# Code is MIT (see LICENSE). Exercise text, images, and documentation are
+# CC-BY-4.0 (see LICENSE-CONTENT).
+# The DOI will be minted on Zenodo when Andrew approves a release. Do not invent one.

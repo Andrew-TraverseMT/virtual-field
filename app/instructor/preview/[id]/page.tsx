@@ -2,9 +2,11 @@ import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import { notFound, redirect } from 'next/navigation'
 import { assignments, getAssignment } from '@/lib/assignments'
+import { homeForRole, mustChangePassword, sessionRole } from '@/lib/session'
 import Link from 'next/link'
 import SubmitPanel from '@/app/assignments/[id]/SubmitPanel'
 import FeedbackPanel from '@/app/assignments/[id]/FeedbackPanel'
+import SurveyForm from '@/app/study/SurveyForm'
 
 type Props = { params: Promise<{ id: string }> }
 
@@ -18,7 +20,8 @@ export default async function InstructorPreviewAssignmentPage({ params }: Props)
   const { id } = await params
   const session = await getServerSession(authOptions)
   if (!session) redirect('/login')
-  if ((session.user as { role?: string })?.role !== 'instructor') redirect('/dashboard')
+  if (mustChangePassword(session)) redirect('/account/password')
+  if (sessionRole(session) !== 'instructor') redirect(homeForRole(sessionRole(session)))
 
   const assignment = getAssignment(id)
   if (!assignment) notFound()
@@ -79,6 +82,8 @@ export default async function InstructorPreviewAssignmentPage({ params }: Props)
         )}
       </div>
 
+      <SurveyForm exercise={assignment.sequence} phase="pre" readOnly />
+
       <div className="grid gap-6 lg:grid-cols-5">
         {/* Left column */}
         <div className="space-y-5 lg:col-span-3">
@@ -97,6 +102,8 @@ export default async function InstructorPreviewAssignmentPage({ params }: Props)
               </ul>
             </div>
           )}
+
+          <SurveyForm exercise={assignment.sequence} phase="mid" readOnly />
 
           {/* Activity / Tool */}
           {(assignment.url || (assignment.downloads && assignment.downloads.length > 0)) && (
@@ -317,6 +324,8 @@ export default async function InstructorPreviewAssignmentPage({ params }: Props)
             instructorNotes={null}
             totalPoints={assignment.rubric.totalPoints}
           />
+
+          <SurveyForm exercise={assignment.sequence} phase="post" readOnly />
         </div>
       </div>
 

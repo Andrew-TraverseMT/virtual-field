@@ -4,6 +4,8 @@ import bcrypt from 'bcryptjs'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import { sql } from '@/lib/db'
+import { roleFromInstructorUi } from '@/lib/account-roles'
+import { blockIfPasswordChangeRequired } from '@/lib/session'
 
 export const runtime = 'nodejs'
 
@@ -18,14 +20,23 @@ function generateTempPassword(): string {
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions)
+  const blocked = blockIfPasswordChangeRequired(session)
+  if (blocked) return blocked
   if ((session?.user as { role?: string })?.role !== 'instructor') {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
-  const { name, email } = await req.json() as { name?: string; email?: string }
+  const { name, email, role } = await req.json() as { name?: string; email?: string; role?: string }
 
   if (!name?.trim() || !email?.trim()) {
     return NextResponse.json({ error: 'Name and email are required.' }, { status: 400 })
+  }
+  const accountRole = roleFromInstructorUi(role)
+  if (!accountRole) {
+    return NextResponse.json(
+      { error: 'The researcher role cannot be created from this page.' },
+      { status: 403 },
+    )
   }
 
   const normalizedEmail = email.toLowerCase().trim()
@@ -46,7 +57,7 @@ export async function POST(req: NextRequest) {
 
   await sql`
     INSERT INTO registered_users (id, name, email, password_hash, role, verified, created_at)
-    VALUES (${id}, ${name.trim()}, ${normalizedEmail}, ${passwordHash}, 'instructor', 1, ${now})
+    VALUES (${id}, ${name.trim()}, ${normalizedEmail}, ${passwordHash}, ${accountRole}, 1, ${now})
   `
 
   return NextResponse.json({ ok: true, tempPassword })

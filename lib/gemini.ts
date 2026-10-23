@@ -17,6 +17,8 @@ import { readFile } from 'fs/promises'
 import path from 'path'
 import type { Assignment } from '@/lib/assignments'
 
+export const GEMINI_GRADE_MODEL = 'gemini-2.5-pro'
+
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 export type RubricScore = {
@@ -169,7 +171,7 @@ export async function gradeSubmission(
       '\n\nREFERENCE ANSWER MAPS: The image(s) attached immediately before the student PDF are the instructor answer maps. Use them to assess the spatial accuracy of the student\'s mapped contacts, orientations, and patterns.'
   }
 
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.5-pro' })
+  const model = genAI.getGenerativeModel({ model: GEMINI_GRADE_MODEL })
 
   type InlineDataPart = { inlineData: { mimeType: string; data: string } }
   const parts: (string | InlineDataPart)[] = [prompt]
@@ -206,7 +208,7 @@ export async function getFeedback(
 
   const prompt = buildFeedbackPrompt(assignment)
 
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.5-pro' })
+  const model = genAI.getGenerativeModel({ model: GEMINI_GRADE_MODEL })
   const result = await model.generateContent([
     prompt,
     {

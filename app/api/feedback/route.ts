@@ -15,11 +15,14 @@ import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import { assignments } from '@/lib/assignments'
 import { getFeedback } from '@/lib/gemini'
+import { blockIfPasswordChangeRequired } from '@/lib/session'
 
 export const runtime = 'nodejs'
 
 export async function POST(request: NextRequest) {
   const session = await getServerSession(authOptions)
+  const blocked = blockIfPasswordChangeRequired(session)
+  if (blocked) return blocked
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }

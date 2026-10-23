@@ -106,18 +106,33 @@ The app uses `@vercel/postgres` (Neon-backed, included with Pro). The code migra
 
 ### 6b. Initialize the schema
 
-The app now initializes the schema automatically on first database access, including seeding the demo student.
+The app initializes the schema automatically on first database access. It does not create a demo student or any password.
 
-If you want to initialize it explicitly right after deploy, you can still run the one-time setup endpoint:
+To initialize it explicitly, and to create the first instructor when the database has none:
 
 ```powershell
+$body = @{
+  name = "Andrew Laskowski"
+  email = "you@example.edu"
+  password = "<at least 12 characters, not a known demo password>"
+} | ConvertTo-Json
+
 Invoke-RestMethod -Method Post -Uri "https://your-app.vercel.app/api/setup" `
-  -Headers @{ Authorization = "Bearer <CRON_SECRET>" }
+  -Headers @{ Authorization = "Bearer <CRON_SECRET>"; "Content-Type" = "application/json" } `
+  -Body $body
 ```
 
-Expected response: `{"ok":true,"message":"Schema initialized."}`
+Expected response when the body is included and no instructor exists yet: `{"ok":true,"message":"Schema initialized and the first instructor was created."}`
 
-All statements are idempotent — safe to run again if needed.
+Omit the JSON body to initialize the schema only. Expected response: `{"ok":true,"message":"Schema initialized."}`
+
+Schema statements are idempotent. The first-instructor insert runs only while `registered_users` has no row with role `instructor`. Further accounts are created from the roster after that person signs in:
+
+- **Students.** Roster → add student. The app creates the login and the student record and shows a one-time temporary password. There is no shared student password.
+- **More instructors.** Roster → Add instructor. That form cannot create a researcher.
+- **Researcher.** On the host that has `POSTGRES_URL`, run `npm run create-researcher -- --email <email> --name "Devon Orme" --affiliation "Montana State University"`. The temporary password prints once in that terminal. The account must set a new password at first sign-in, and the temporary password expires after 7 days if it is unused. Only this role can view, export, or purge consent and study data. The app does not seed it and does not hardcode the email.
+
+Public self-registration stays disabled. `STUDENT_PASSWORD` and `INSTRUCTOR_PASSWORD` are not read. If an older database still has the demo row `student-001` / `student@virtualfield.dev`, schema init deletes that row and its submissions.
 
 ---
 
@@ -134,8 +149,7 @@ Set all of the following in **Vercel → Project → Settings → Environment Va
 | `RESEND_FROM_EMAIL` | e.g. `noreply@yourdomain.edu` |
 | `BLOB_READ_WRITE_TOKEN` | Auto-added by Vercel when you create the Blob store |
 | `CRON_SECRET` | From Step 5a |
-| `STUDENT_PASSWORD` | Password for the demo student account |
-| `INSTRUCTOR_PASSWORD` | Password for the instructor account |
+| `CONSENT_ENCRYPTION_KEY` | 32-byte key, base64, from `openssl rand -base64 32`. Consent collection stays closed until this is set. Keep it only in the host environment. |
 | `POSTGRES_URL` (+ related) | Auto-added by Vercel when you create the Postgres store |
 
 After setting variables, push to `main` or trigger a deploy from the dashboard.

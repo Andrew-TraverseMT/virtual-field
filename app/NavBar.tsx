@@ -5,14 +5,21 @@ import Link from 'next/link'
 
 export default function NavBar() {
   const { data: session } = useSession()
-  const role = (session?.user as { role?: string })?.role
+  const role = session?.user?.role
+  const mustChangePassword = session?.user?.mustChangePassword === true
+  const home = mustChangePassword
+    ? '/account/password'
+    : role === 'instructor'
+      ? '/instructor'
+      : role === 'researcher'
+        ? '/consent'
+        : '/dashboard'
 
   return (
     <header className="sticky top-0 z-50 border-b border-stone-200/80 bg-white/90 backdrop-blur-md">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 sm:px-6 h-14">
-        {/* Wordmark */}
         <Link
-          href={role === 'instructor' ? '/instructor' : '/dashboard'}
+          href={home}
           className="flex items-center gap-2.5 group"
         >
           <span className="flex h-7 w-7 items-center justify-center rounded-md bg-amber-700 text-white text-sm font-bold select-none">
@@ -27,7 +34,15 @@ export default function NavBar() {
         </Link>
 
         <nav className="flex items-center gap-1">
-          {role === 'instructor' && (
+          {session && mustChangePassword && (
+            <Link
+              href="/account/password"
+              className="rounded-md px-3 py-1.5 text-sm font-medium text-stone-500 hover:bg-stone-100 hover:text-stone-900 transition-colors"
+            >
+              Set password
+            </Link>
+          )}
+          {session && !mustChangePassword && role === 'instructor' && (
             <>
               <Link
                 href="/instructor"
@@ -49,7 +64,23 @@ export default function NavBar() {
               </Link>
             </>
           )}
-          {role === 'student' && (
+          {session && !mustChangePassword && role === 'researcher' && (
+            <>
+              <Link
+                href="/consent"
+                className="rounded-md px-3 py-1.5 text-sm font-medium text-stone-500 hover:bg-stone-100 hover:text-stone-900 transition-colors"
+              >
+                Consent
+              </Link>
+              <Link
+                href="/study"
+                className="rounded-md px-3 py-1.5 text-sm font-medium text-stone-500 hover:bg-stone-100 hover:text-stone-900 transition-colors"
+              >
+                Study
+              </Link>
+            </>
+          )}
+          {session && !mustChangePassword && role === 'student' && (
             <>
               <Link
                 href="/dashboard"

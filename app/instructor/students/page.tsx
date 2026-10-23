@@ -4,6 +4,9 @@ import Link from 'next/link'
 import { authOptions } from '@/lib/auth'
 import { sql } from '@/lib/db'
 import { assignments } from '@/lib/assignments'
+import { participationPoints } from '@/lib/participation'
+import { participationPercent } from '@/lib/study'
+import { homeForRole, mustChangePassword, sessionRole } from '@/lib/session'
 import { AddInstructorForm, AddStudentForm, PasswordCell, DeleteStudentButton } from './StudentActions'
 
 interface StudentRow {
@@ -25,18 +28,21 @@ interface SubmissionScoreRow {
 
 export default async function StudentsPage() {
   const session = await getServerSession(authOptions)
-  const role = (session?.user as { role?: string } | undefined)?.role
-  if (role !== 'instructor') redirect('/dashboard')
+  if (mustChangePassword(session)) redirect('/account/password')
+  const role = sessionRole(session)
+  if (role !== 'instructor') redirect(homeForRole(role))
   const instructorId = (session?.user as { id?: string } | undefined)?.id
   if (!instructorId) redirect('/login')
 
   const assignmentPointsById = new Map(
     assignments.map((assignment) => [assignment.id, assignment.rubric.totalPoints])
   )
-  const totalPossiblePoints = assignments.reduce(
+  const assignmentPoints = assignments.reduce(
     (sum, assignment) => sum + assignment.rubric.totalPoints,
     0
   )
+  const participationSlice = participationPoints(assignmentPoints, participationPercent())
+  const totalPossiblePoints = assignmentPoints + participationSlice
 
   const { rows: students } = await sql`
     SELECT
@@ -54,6 +60,14 @@ export default async function StudentsPage() {
     GROUP BY s.id
     ORDER BY s.enrolled_at DESC
   ` as { rows: StudentRow[] }
+
+  const { rows: creditRows } = await sql`
+    SELECT pc.student_id
+    FROM participation_credit pc
+    JOIN students st ON st.id = pc.student_id
+    WHERE st.owner_instructor_id = ${instructorId}
+  ` as { rows: { student_id: string }[] }
+  const participationCredit = new Set(creditRows.map((row) => row.student_id))
 
   const { rows: submissionScores } = await sql`
     SELECT sub.student_id, sub.assignment_id, sub.ai_grade, sub.instructor_grade
@@ -94,7 +108,8 @@ export default async function StudentsPage() {
           <div>
             <h1 className="text-2xl font-bold tracking-tight text-stone-800">Student roster</h1>
             <p className="text-sm text-stone-500 mt-1">
-              {students.length} student{students.length !== 1 ? 's' : ''} enrolled
+              {students.length} student{students.length !== 1 ? 's' : ''} enrolled.
+              Participation shows whether credit was recorded. It does not show consent or which option the student used.
             </p>
           </div>
         </div>
@@ -134,6 +149,9 @@ export default async function StudentsPage() {
                       Score (submitted)
                     </th>
                     <th className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-widest text-stone-400 whitespace-nowrap">
+                      Participation
+                    </th>
+                    <th className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-widest text-stone-400 whitespace-nowrap">
                       Password
                     </th>
                     <th className="px-5 py-3" />
@@ -142,7 +160,8 @@ export default async function StudentsPage() {
                 <tbody>
                   {students.map((student, i) => {
                     const studentScore = scoreByStudentId.get(student.id) ?? { earned: 0, submittedPossible: 0 }
-                    const scoreAll = `${studentScore.earned}/${totalPossiblePoints}`
+                    const credited = participationCredit.has(student.id)
+                    const scoreAll = `${studentScore.earned + (credited ? participationSlice : 0)}/${totalPossiblePoints}`
                     const scoreSubmitted = studentScore.submittedPossible > 0
                       ? `${studentScore.earned}/${studentScore.submittedPossible}`
                       : '—'
@@ -163,6 +182,7 @@ export default async function StudentsPage() {
                       </td>
                       <td className="px-5 py-3 text-right text-stone-600 font-medium tabular-nums whitespace-nowrap">{scoreAll}</td>
                       <td className="px-5 py-3 text-right text-stone-600 font-medium tabular-nums whitespace-nowrap">{scoreSubmitted}</td>
+                      <td className="px-5 py-3 text-stone-600">{participationCredit.has(student.id) ? 'Recorded' : '—'}</td>
                       <td className="px-5 py-3">
                         <PasswordCell studentId={student.id} initialPassword={student.temp_password} />
                       </td>

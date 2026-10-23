@@ -137,7 +137,7 @@ export function AddInstructorForm() {
     const res = await fetch('/api/auth/create-instructor', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: name.trim(), email: email.trim() }),
+      body: JSON.stringify({ name: name.trim(), email: email.trim(), role: 'instructor' }),
     })
 
     const data = await res.json().catch(() => ({}))
@@ -167,7 +167,7 @@ export function AddInstructorForm() {
         Add instructor
       </h2>
       <p className="text-sm text-stone-500 mb-4">
-        Create a second instructor login with a temporary password.
+        This form creates an instructor. It cannot create a researcher. The temporary password is generated for this account and is not a shared demo password.
       </p>
       <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
         <input
@@ -191,7 +191,7 @@ export function AddInstructorForm() {
           disabled={status === 'loading'}
           className="self-end rounded-lg bg-stone-900 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-stone-700 disabled:opacity-60 whitespace-nowrap"
         >
-          {status === 'loading' ? 'Creating…' : 'Create instructor'}
+          {status === 'loading' ? 'Creating…' : 'Create account'}
         </button>
       </form>
 

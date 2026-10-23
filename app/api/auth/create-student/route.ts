@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import { sql } from '@/lib/db'
+import { blockIfPasswordChangeRequired } from '@/lib/session'
 
 
 export const runtime = 'nodejs'
@@ -20,6 +21,8 @@ function generateTempPassword(): string {
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions)
+  const blocked = blockIfPasswordChangeRequired(session)
+  if (blocked) return blocked
   if ((session?.user as { role?: string })?.role !== 'instructor') {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
@@ -44,8 +47,7 @@ export async function POST(req: NextRequest) {
 
   const normalizedEmail = email.toLowerCase().trim()
 
-  // Check for existing account in both tables (registered_users for normal accounts,
-  // students for the hardcoded test student and any direct roster entries)
+  // Check for an existing account in either table.
   const { rows: existing } = await sql`
     SELECT id FROM registered_users WHERE email = ${normalizedEmail}
     UNION

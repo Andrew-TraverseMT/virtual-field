@@ -1,0 +1,11 @@
+{
+  "note": "Usage metrics stay off, and make no network call, until metrics.endpoint is a real https URL. placeholderEndpoint is a labeled example and is never requested. Leave version empty until a release is tagged. Survey answers are stored in this app, not sent to the metrics URL.",
+  "version": "",
+  "metrics": {
+    "endpoint": "",
+    "placeholderEndpoint": "https://PLACEHOLDER.example/collect"
+  },
+  "participationCredit": {
+    "percentOfCourseGrade": 1
+  }
+}

@@ -4,6 +4,7 @@ import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import { sql } from '@/lib/db'
 import type { RegisteredUser } from '@/lib/db'
+import { blockIfPasswordChangeRequired } from '@/lib/session'
 
 export const runtime = 'nodejs'
 
@@ -18,6 +19,8 @@ function generateTempPassword(): string {
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions)
+  const blocked = blockIfPasswordChangeRequired(session)
+  if (blocked) return blocked
   if ((session?.user as { role?: string })?.role !== 'instructor') {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }

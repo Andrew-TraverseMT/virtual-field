@@ -4,6 +4,11 @@ import { redirect } from 'next/navigation'
 import { sql } from '@/lib/db'
 import { assignments } from '@/lib/assignments'
 import Link from 'next/link'
+import ConsentPanel from './ConsentPanel'
+import ParticipationPanel from './ParticipationPanel'
+import { participationPoints } from '@/lib/participation'
+import { participationPercent } from '@/lib/study'
+import { mustChangePassword, sessionRole, sessionUserId } from '@/lib/session'
 
 const UNIT_COLORS: Record<string, string> = {
   'Leeds Virtual Landscapes': 'bg-sky-50 text-sky-700 ring-1 ring-sky-200',
@@ -59,9 +64,12 @@ const STATUS_CONFIG = {
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions)
   if (!session) redirect('/login')
-  if ((session.user as { role?: string })?.role === 'instructor') redirect('/instructor')
-
-  const studentId = (session.user as { id?: string }).id ?? 'student-001'
+  if (mustChangePassword(session)) redirect('/account/password')
+  const role = sessionRole(session)
+  if (role === 'instructor') redirect('/instructor')
+  if (role === 'researcher') redirect('/consent')
+  const studentId = sessionUserId(session)
+  if (!studentId) redirect('/login')
 
   const { rows: submissions } = await sql`
     SELECT assignment_id, status, ai_grade, instructor_grade FROM submissions WHERE student_id = ${studentId}
@@ -106,7 +114,10 @@ export default async function DashboardPage() {
     ['pending', 'graded', 'approved', 'revision_requested'].includes(s.status)
   ).length
 
-  const totalPoints = assignments.reduce((sum, a) => sum + a.rubric.totalPoints, 0)
+  const assignmentPoints = assignments.reduce((sum, a) => sum + a.rubric.totalPoints, 0)
+  const percent = participationPercent()
+  const creditPoints = participationPoints(assignmentPoints, percent)
+  const totalPoints = assignmentPoints + creditPoints
 
   // Group by week
   const byWeek = [1, 2, 3].map((w) => ({
@@ -130,6 +141,9 @@ export default async function DashboardPage() {
           {session.user?.name}
         </h1>
       </div>
+
+      <ConsentPanel />
+      <ParticipationPanel percent={percent} points={creditPoints} />
 
       {/* Progress card */}
       <div className="mb-10 rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
